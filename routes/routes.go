@@ -2,6 +2,7 @@ package routes
 
 import (
 	"butschi84/f2s/configuration"
+	config "butschi84/f2s/configuration"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,7 +12,7 @@ import (
 )
 
 // pointer to F2SConfiguration
-var F2SConfiguration configuration.F2SConfiguration
+var F2SConfiguration config.F2SConfiguration
 
 func homepage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "welcome homepage")
@@ -20,18 +21,15 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 func returnAllFunctions(w http.ResponseWriter, r *http.Request) {
 	log.Println("request to get all functions")
 
-	functions := configuration.GetCRDs()
+	functions := config.ActiveConfiguration.Functions
 
 	json.NewEncoder(w).Encode(functions)
-
-	// test
-	configuration.GetCRDs()
 }
 func getFunction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["id"]
 
-	functions := configuration.GetCRDs()
+	functions := config.GetCRDs()
 
 	fmt.Println("searching for key ", key)
 	for _, function := range functions.Items {

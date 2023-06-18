@@ -4,7 +4,6 @@ import (
 	clientV1alpha1 "butschi84/f2s/configuration/api/clientset/v1alpha1"
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
 	"fmt"
-	"log"
 	"os"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,10 +20,10 @@ func getInClusterConfig() (*rest.Config, error) {
 
 	kubeconfig = "/Users/roman/.kube/config"
 	if kubeconfig == "" {
-		log.Printf("using in-cluster configuration")
+		logging.Printf("using in-cluster configuration")
 		config, err = rest.InClusterConfig()
 	} else {
-		log.Printf("using configuration from '%s'", kubeconfig)
+		logging.Printf("using configuration from '%s'", kubeconfig)
 		config, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
 	}
 
@@ -35,10 +34,12 @@ func getInClusterConfig() (*rest.Config, error) {
 }
 
 func GetCRDs() *typesV1alpha1.FunctionList {
+	logging.Println("querying all crds")
+
 	// Retrieve the in-cluster configuration
 	config, err := getInClusterConfig()
 	if err != nil {
-		fmt.Printf("Failed to get in-cluster config: %v\n", err)
+		logging.Printf("Failed to get in-cluster config: %v\n", err)
 		os.Exit(1)
 	}
 
