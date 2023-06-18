@@ -1,0 +1,14 @@
+apiVersion: "f2s.opensight.ch/v1alpha1"
+kind: "Function"
+metadata:
+  name: "test-function"
+  namespace: "f2s"
+spec:
+  endpoint: "/test"
+  method: "GET"
+target:
+  containerImage: "nginx"
+  endpoint: "/"
+  port: 80
+  minReplicas: 1
+  maxReplicas: 1

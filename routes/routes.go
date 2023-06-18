@@ -20,6 +20,9 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 func returnAllFunctions(w http.ResponseWriter, r *http.Request) {
 	log.Println("request to get all functions")
 	json.NewEncoder(w).Encode(F2SConfiguration.Functions)
+
+	// test
+	configuration.GetCRDs()
 }
 func getFunction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

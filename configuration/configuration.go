@@ -29,11 +29,26 @@ var F2SFunctions []F2SFunction
 func GetConfiguration() F2SConfiguration {
 	Configuration := F2SConfiguration{
 		Functions: []F2SFunction{
-			F2SFunction{
+			{
 				Metadata: F2SFunctionMetadata{
 					Id:       "1",
 					Name:     "Test Function",
 					Endpoint: "/testfunction",
+					Method:   "GET",
+				},
+				Target: F2SFunctionTarget{
+					ContainerImage: "nginx",
+					Endpoint:       "/",
+					Port:           80,
+					MaxReplicas:    1,
+					MinReplicas:    1,
+				},
+			},
+			{
+				Metadata: F2SFunctionMetadata{
+					Id:       "2",
+					Name:     "Test Function 2",
+					Endpoint: "/testfunction2",
 					Method:   "GET",
 				},
 				Target: F2SFunctionTarget{
