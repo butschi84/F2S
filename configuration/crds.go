@@ -2,6 +2,7 @@ package configuration
 
 import (
 	clientV1alpha1 "butschi84/f2s/configuration/api/clientset/v1alpha1"
+	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
 	"fmt"
 	"log"
 	"os"
@@ -33,7 +34,7 @@ func getInClusterConfig() (*rest.Config, error) {
 	return config, nil
 }
 
-func GetCRDs() {
+func GetCRDs() *typesV1alpha1.FunctionList {
 	// Retrieve the in-cluster configuration
 	config, err := getInClusterConfig()
 	if err != nil {
@@ -53,5 +54,5 @@ func GetCRDs() {
 	}
 
 	fmt.Printf("projects found: %+v\n", functions)
-
+	return functions
 }

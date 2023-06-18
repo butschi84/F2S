@@ -19,7 +19,10 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 }
 func returnAllFunctions(w http.ResponseWriter, r *http.Request) {
 	log.Println("request to get all functions")
-	json.NewEncoder(w).Encode(F2SConfiguration.Functions)
+
+	functions := configuration.GetCRDs()
+
+	json.NewEncoder(w).Encode(functions)
 
 	// test
 	configuration.GetCRDs()
@@ -28,9 +31,11 @@ func getFunction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["id"]
 
+	functions := configuration.GetCRDs()
+
 	fmt.Println("searching for key ", key)
-	for _, function := range F2SConfiguration.Functions {
-		if function.Metadata.Id == key {
+	for _, function := range functions.Items {
+		if string(function.ObjectMeta.UID) == key {
 			json.NewEncoder(w).Encode(function)
 			return
 		}
