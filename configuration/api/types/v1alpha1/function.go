@@ -33,3 +33,30 @@ type FunctionList struct {
 
 	Items []Function `json:"items"`
 }
+
+type PrettyFunction struct {
+	Name   string         `json:"name"`
+	UID    string         `json:"uid"`
+	Spec   FunctionSpec   `json:"spec"`
+	Target FunctionTarget `json:"target"`
+}
+
+// parse K8S Function object in REST API Schema
+func (function *Function) Prettify() PrettyFunction {
+	prettifiedFunction := PrettyFunction{
+		Name:   function.ObjectMeta.Name,
+		UID:    string(function.ObjectMeta.UID),
+		Spec:   function.Spec,
+		Target: function.Target,
+	}
+	return prettifiedFunction
+}
+
+// parse K8S Function object in REST API Schema
+func (functionlist *FunctionList) Prettify() []PrettyFunction {
+	outputArray := make([]PrettyFunction, len(functionlist.Items))
+	for i, f := range functionlist.Items {
+		outputArray[i] = f.Prettify()
+	}
+	return outputArray
+}
