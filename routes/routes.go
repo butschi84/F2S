@@ -44,6 +44,10 @@ func HandleRequests(config configuration.F2SConfiguration) {
 	F2SConfiguration = config
 	router := mux.NewRouter().StrictSlash(true)
 
+	// openAPI spec
+	openAPIHandler := http.FileServer(http.Dir("./static/openapi"))
+	router.PathPrefix("/docs/").Handler(http.StripPrefix("/docs/", openAPIHandler))
+
 	// retrieve configured f2s functions
 	router.HandleFunc("/functions", returnAllFunctions)
 	router.HandleFunc("/functions/{id}", getFunction)
