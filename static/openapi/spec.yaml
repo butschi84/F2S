@@ -1,56 +1,41 @@
 openapi: 3.0.3
 info:
-  title: Sample API
-  description: This is a sample API documentation.
+  title: F2S API
+  description: F2S Function as a Service Platform
   version: 1.0.0
-servers:
-  - url: http://api.example.com/v1
-    description: Production server
+
 paths:
-  /users:
+  /functions:
     get:
-      summary: Get all users
+      summary: get all configured functions
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-    post:
-      summary: Create a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-      responses:
-        "201":
-          description: Created
-          content:
-            application/json:
-              schema:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                  name:
+                  kind:
                     type: string
-  /users/{id}:
+                  apiVersion:
+                    type: string
+                  metadata:
+                    type: object
+                  items:
+                    type: array
+                    items:
+                      type: object
+
+  /functions/{id}:
     get:
-      summary: Get a user by ID
+      summary: get specific function
       parameters:
         - in: path
           name: id
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: OK
@@ -63,43 +48,3 @@ paths:
                     type: integer
                   name:
                     type: string
-    put:
-      summary: Update a user
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-    delete:
-      summary: Delete a user
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        "204":
-          description: No Content
