@@ -5,7 +5,6 @@ import (
 	config "butschi84/f2s/configuration"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -16,10 +15,10 @@ var F2SConfiguration config.F2SConfiguration
 
 func homepage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "welcome homepage")
-	fmt.Println("endpoint hit: homepage")
+	logging.Println("endpoint hit: homepage")
 }
 func returnAllFunctions(w http.ResponseWriter, r *http.Request) {
-	log.Println("request to get all functions")
+	logging.Println("request to get all functions")
 
 	functions := config.ActiveConfiguration.Functions
 
@@ -31,7 +30,7 @@ func getFunction(w http.ResponseWriter, r *http.Request) {
 
 	functions := config.GetCRDs()
 
-	fmt.Println("searching for key ", key)
+	logging.Println("searching for key ", key)
 	for _, function := range functions.Items {
 		if string(function.ObjectMeta.UID) == key {
 			json.NewEncoder(w).Encode(function)

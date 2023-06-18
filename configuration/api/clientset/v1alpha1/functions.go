@@ -3,7 +3,6 @@ package v1alpha1
 import (
 	"butschi84/f2s/configuration/api/types/v1alpha1"
 	"context"
-	"log"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -25,7 +24,7 @@ type functionClient struct {
 
 func (c *functionClient) List(opts metav1.ListOptions) (*v1alpha1.FunctionList, error) {
 	result := v1alpha1.FunctionList{}
-	log.Println("get function list for namespace", c.ns)
+	logging.Println("get function list for namespace", c.ns)
 	ctx := context.TODO()
 	err := c.restClient.
 		Get().
@@ -34,7 +33,7 @@ func (c *functionClient) List(opts metav1.ListOptions) (*v1alpha1.FunctionList, 
 		//VersionedParams(&opts, scheme.ParameterCodec).
 		Do(ctx).
 		Into(&result)
-	log.Println(err)
+	logging.Println(err)
 	return &result, err
 }
 

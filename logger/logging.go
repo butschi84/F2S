@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"log"
 	"os"
 )
@@ -9,6 +10,9 @@ var packageName string
 
 func Initialize(packageName string) *log.Logger {
 
-	var logger *log.Logger = log.New(os.Stdout, "["+packageName+"] ", log.LstdFlags)
+	packageNameLength := 20
+	packageNamePadded := fmt.Sprintf("%-*s", packageNameLength, packageName)
+
+	var logger *log.Logger = log.New(os.Stdout, "["+packageNamePadded+"] ", log.LstdFlags)
 	return logger
 }

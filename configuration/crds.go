@@ -54,6 +54,6 @@ func GetCRDs() *typesV1alpha1.FunctionList {
 		panic(err)
 	}
 
-	fmt.Printf("projects found: %+v\n", functions)
+	logging.Printf("number of configured functions: %+v\n", len(functions.Items))
 	return functions
 }
