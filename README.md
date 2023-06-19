@@ -41,6 +41,17 @@ This is a first draft of the architecture and can still change.
 
 ![](docs/architecture.png)
 
+* **API Server**<br/>
+  API Server is the REST API Interface. Functions can be defined and invoked via API
+* **Metrics**<br/>
+  F2S Exposes Metrics in order to be able to make scaling decisions and have insight in all activity
+* **Config**<br/>
+  The Config package observes CRD's (F2SFunction Declarations) in "f2s" namespace on kubernetes
+* **Kafka**<br/>
+  Package for Interaction with Kafka Event Bus (planned)
+* **Operator**<br/>
+  Operator reacts to Config Changes and creates or deletes deployments and services in f2s-containers namespace
+
 ## Namespaces
 F2S uses 2 fixed namespaces in kubernetes
 * **F2S**<br/>
