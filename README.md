@@ -11,7 +11,7 @@ Status <font color=red>Early Alpha</font>
   - [All Features included](#all-features-included)
 - [Architecture](#architecture)
   - [Namespaces](#namespaces)
-  - [Gitpos (CRDs Config)](#gitpos-crds-config)
+  - [Gitops (CRDs Config)](#gitops-crds-config)
 - [Configuration](#configuration)
   - [CRDs functions.f2s.opensight.ch](#crds-functionsf2sopensightch)
 # Core Concept
@@ -45,7 +45,7 @@ F2S uses 2 fixed namespaces in kubernetes
 contains the F2S operational components
 * **F2S-Containers**<br/>
 contains the running pods managed by F2S
-## Gitpos (CRDs Config)
+## Gitops (CRDs Config)
 F2SFunctions are managed by CRDs (bring your own Gitops)
 We use a redundant setup of 2 F2S Pods. Metrics go to a prometheus instance
 
