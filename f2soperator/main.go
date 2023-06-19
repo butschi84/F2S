@@ -34,7 +34,7 @@ func main() {
 
 	// start api router
 	logging.Println("=> initializng rest api server")
-	go routes.HandleRequests(F2SConfiguration, &wg)
+	go routes.HandleRequests(&F2SConfiguration, &wg)
 
 	// start operator (manages deployments in f2s-containers namespace)
 	logging.Println("=> initializng f2s-containers namespace operator")
