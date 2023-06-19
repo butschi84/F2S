@@ -1,0 +1,35 @@
+name: build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Repo Owner
+        id: get_repo_owner
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" > $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: ./f2soperator
+          file: ./f2soperator/Dockerfile
+          outputs: "type=image,push=false"
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
+          tags: |
+            ghcr.io/${{ env.REPO_OWNER }}/f2s:${{ github.sha }}
+            ghcr.io/${{ env.REPO_OWNER }}/f2s:latest
