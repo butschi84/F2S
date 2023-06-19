@@ -8,7 +8,8 @@ WORKDIR /app
 COPY . .
 
 # install go
-RUN apt update && apt install golang -y
+RUN apt update && apt install golang  ca-certificates -y
+RUN update-ca-certificates
 
 # Build the Go project
 RUN go build -o f2s
