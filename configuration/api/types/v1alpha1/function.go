@@ -61,3 +61,16 @@ func (functionlist *FunctionList) Prettify() []PrettyFunction {
 	}
 	return outputArray
 }
+
+// parse K8S F2SFunction object (crd) for REST API
+func (functionlist *FunctionList) GetNames() []string {
+	// Create a string array to store the names
+	names := make([]string, len(functionlist.Items))
+
+	// Extract the name property from each object
+	for i, obj := range functionlist.Items {
+		names[i] = obj.Name
+	}
+
+	return names
+}
