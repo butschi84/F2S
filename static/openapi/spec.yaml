@@ -105,7 +105,26 @@ paths:
                     type: integer
                   name:
                     type: string
-
+    delete:
+      summary: delete specific function
+      tags:
+        - Configuration
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
   /deployments:
     get:
       summary: get all current f2s deployments

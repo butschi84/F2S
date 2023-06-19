@@ -3,8 +3,10 @@ package v1alpha1
 import (
 	"butschi84/f2s/configuration/api/types/v1alpha1"
 	"context"
+	"fmt"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
@@ -12,9 +14,10 @@ import (
 
 type FunctionInterface interface {
 	List(opts metav1.ListOptions) (*v1alpha1.FunctionList, error)
-	Get(ctx context.Context, name string, options metav1.GetOptions) (*v1alpha1.Function, error)
+	Get(name string, options metav1.GetOptions) (*v1alpha1.Function, error)
 	Create(*v1alpha1.Function) (*v1alpha1.Function, error)
 	Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error)
+	Delete(uid string, opts metav1.DeleteOptions) error
 }
 
 type functionClient struct {
@@ -37,8 +40,9 @@ func (c *functionClient) List(opts metav1.ListOptions) (*v1alpha1.FunctionList, 
 	return &result, err
 }
 
-func (c *functionClient) Get(ctx context.Context, name string, opts metav1.GetOptions) (*v1alpha1.Function, error) {
+func (c *functionClient) Get(name string, opts metav1.GetOptions) (*v1alpha1.Function, error) {
 	result := v1alpha1.Function{}
+	ctx := context.TODO()
 	req := c.restClient.
 		Get().
 		Namespace(c.ns).
@@ -71,4 +75,31 @@ func (c *functionClient) Watch(ctx context.Context, opts metav1.ListOptions) (wa
 		Resource("functions").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch(ctx)
+}
+
+func (c *functionClient) Delete(uid string, opts metav1.DeleteOptions) error {
+	ctx := context.TODO()
+
+	objUID := types.UID(uid)
+	opts.Preconditions = &metav1.Preconditions{
+		UID: &objUID,
+	}
+
+	functions, _ := c.List(metav1.ListOptions{})
+	for _, f := range functions.Items {
+		if string(f.UID) == uid {
+			fmt.Println("functon found")
+			err := c.restClient.
+				Delete().
+				Namespace(c.ns).
+				Resource("functions").
+				Name(f.Name).
+				Do(ctx).
+				Error()
+
+			return err
+		}
+	}
+
+	return fmt.Errorf("function could not be found")
 }

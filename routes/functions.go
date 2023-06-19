@@ -86,3 +86,21 @@ func createFunction(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(result)
 }
+
+// delete a F2SFunction
+func deleteFunction(w http.ResponseWriter, r *http.Request) {
+	logging.Println("request to delete a function")
+
+	// parse uid
+	logging.Println("parsing uid from request")
+	vars := mux.Vars(r)
+	key := vars["id"]
+
+	err := kubernetesservice.DeleteF2SFunction(key)
+	if err != nil {
+		json.NewEncoder(w).Encode(Status{Status: "failed"})
+		return
+	}
+
+	json.NewEncoder(w).Encode(Status{Status: "success"})
+}
