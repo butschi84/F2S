@@ -8,8 +8,10 @@ WORKDIR /app
 COPY . .
 
 # install go
-RUN apt update && apt install golang  ca-certificates -y
+RUN apt update && apt install golang-1.19 ca-certificates -y
 RUN update-ca-certificates
+RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go1.19.10.linux-amd64.tar.gz
+ENV PATH="$PATH:/usr/local/go/bin"
 
 # Build the Go project
 RUN go build -o f2s
