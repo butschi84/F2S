@@ -53,6 +53,39 @@ func Rebalance() {
 	logging.Println("starting rebalance")
 
 	// check for surplus deployments in f2s-containers namespace
+	logging.Println("checking for k8s f2s-containers surplus deployments")
+	removeSurplusDeployments()
+
+	// check which deployments are missing in k8s namespace f2s-containers
+	logging.Println("checking for k8s f2s-containers missing deployments")
+	addMissingDeployments()
+}
+
+// check which deployments are missing in k8s namespace f2s-containers
+func addMissingDeployments() {
+	functions := configuration.ActiveConfiguration.Functions
+	deployments, err := kubernetesservice.GetDeployments()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range functions.Items {
+		// check if deployment can be found
+		deploymentExisting := false
+		for _, d := range deployments.Items {
+			if d.Name == f.Name {
+				deploymentExisting = true
+			}
+		}
+		if !deploymentExisting {
+			logging.Println(fmt.Sprintf("deployment for function %s (%s) has to be created", f.Name, f.UID))
+			kubernetesservice.CreateDeployment(f.Name, f.Target.ContainerImage)
+		}
+	}
+}
+
+// check which deployments in k8s namespace f2s-containers have no corresponding f2sfunction
+func removeSurplusDeployments() {
 	functions := configuration.ActiveConfiguration.Functions
 	deployments, err := kubernetesservice.GetDeployments()
 	if err != nil {

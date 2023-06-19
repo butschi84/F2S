@@ -29,7 +29,7 @@ func createDeployment(w http.ResponseWriter, r *http.Request) {
 	// set response headers
 	w.Header().Set("Content-Type", "application/json")
 
-	deployment, _ := kubernetesservice.CreateDeployment()
+	deployment, _ := kubernetesservice.CreateDeployment("test", "nginx")
 
 	json.NewEncoder(w).Encode(deployment)
 }

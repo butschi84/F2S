@@ -28,7 +28,7 @@ func GetDeployments() (*appsv1.DeploymentList, error) {
 	return deployments, err
 }
 
-func CreateDeployment() (*appsv1.Deployment, error) {
+func CreateDeployment(name string, image string) (*appsv1.Deployment, error) {
 	// get clientset
 	clientset, err := GetV1ClientSet()
 	if err != nil {
@@ -38,7 +38,7 @@ func CreateDeployment() (*appsv1.Deployment, error) {
 	// Create a new deployment
 	newDeployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "my-deployment",
+			Name: name,
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: int32Ptr(1),
@@ -57,7 +57,7 @@ func CreateDeployment() (*appsv1.Deployment, error) {
 					Containers: []corev1.Container{
 						{
 							Name:  "my-container",
-							Image: "nginx",
+							Image: image,
 						},
 					},
 				},
