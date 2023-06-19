@@ -1,0 +1,23 @@
+# Use the official Go image as the base image
+FROM golang:1.19
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Go project files into the container
+COPY . .
+
+# Build the Go project
+RUN go build -o f2s
+
+# expose api
+EXPOSE 8080
+
+# expose metrics
+EXPOSE 9090
+
+ENV http_proxy      ""
+ENV https_proxy     ""
+
+# Set the command to run when the container starts
+CMD ["./f2s"]
