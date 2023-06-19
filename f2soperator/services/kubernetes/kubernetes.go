@@ -19,7 +19,7 @@ func getInClusterConfig() (*rest.Config, error) {
 	var config *rest.Config
 	var err error
 
-	kubeconfig = "/Users/roman/.kube/config"
+	kubeconfig = os.Getenv("KUBECONFIG")
 	if kubeconfig == "" {
 		logging.Printf("using in-cluster configuration")
 		config, err = rest.InClusterConfig()

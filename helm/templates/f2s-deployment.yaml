@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: f2s
+  namespace: f2s
+  labels:
+    app: f2s
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: f2s
+  template:
+    metadata:
+      labels:
+        app: f2s
+    spec:
+      serviceAccountName: f2s-service
+      containers:
+        - name: f2s
+          image: romanhuesler/f2s
+          ports:
+            - containerPort: 9090
+            - containerPort: 8080

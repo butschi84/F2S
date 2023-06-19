@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: f2s-api
+  namespace: f2s
+spec:
+  selector:
+    app: f2s
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: f2s-metrics
+  namespace: f2s
+spec:
+  selector:
+    app: f2s
+  type: ClusterIP
+  ports:
+    - port: 9090
+      targetPort: 9090
