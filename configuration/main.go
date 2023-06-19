@@ -3,8 +3,8 @@ package configuration
 import (
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
 	"butschi84/f2s/logger"
+	kubernetesservice "butschi84/f2s/services/kubernetes"
 	"log"
-	"time"
 )
 
 var logging *log.Logger
@@ -19,27 +19,16 @@ func init() {
 	// initialize logging
 	logging = logger.Initialize("configuration")
 
+	functions, err := kubernetesservice.GetF2SFunctions()
+	if err != nil {
+		logging.Println("Failed to read f2s functions")
+		return
+	}
+
 	logging.Println("initializing config")
 	ActiveConfiguration = F2SConfiguration{
-		Functions: GetCRDs(),
+		Functions: functions,
 	}
 
-	// reload every 30 seconds
-	go reloadConfig()
-}
-
-func reloadConfig() {
-	ticker := time.NewTicker(30 * time.Second)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-ticker.C:
-			// Your logic here, executed every 30 seconds
-			logging.Println("reloading active config")
-			ActiveConfiguration = F2SConfiguration{
-				Functions: GetCRDs(),
-			}
-		}
-	}
+	go kubernetesservice.WatchF2SFunctions(OnF2SFunctionChanged)
 }

@@ -2,19 +2,37 @@ package kubernetesservice
 
 import (
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
-	"fmt"
 	"log"
 	"os"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/dynamic/dynamicinformer"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/tools/cache"
 )
+
+// get all f2s functions
+func GetF2SFunctions() (*typesV1alpha1.FunctionList, error) {
+	logging.Println("GetF2SFunctions: request to get all F2SFunctions (crd's in k8s namespace 'f2s')")
+
+	// initialize clientset
+	logging.Println("initializing k8s clientset")
+	clientSet, err := GetV1Alpha1ClientSet()
+	if err != nil {
+		logging.Println("error during clientset initialisation: ", err)
+		panic(err)
+	}
+
+	functions, err := clientSet.Functions("f2s").List(metav1.ListOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	logging.Printf("number of configured functions: %+v\n", len(functions.Items))
+	return functions, err
+}
 
 // create a new f2s function (crd in k8s namespace f2s)
 func CreateF2SFunction(prettyFunction *typesV1alpha1.PrettyFunction) (*typesV1alpha1.Function, error) {
@@ -100,38 +118,39 @@ func GetDynamicInformer() (informers.GenericInformer, error) {
 	return informer, nil
 }
 
-func WatchF2SFunctions() {
+func WatchF2SFunctions(callback func()) {
 	//dynamic informer needs to be told which type to watch
 	seldoninformer, _ := GetDynamicInformer()
 	stopper := make(chan struct{})
 	defer close(stopper)
-	runCRDInformer(stopper, seldoninformer.Informer())
+	runCRDInformer(stopper, seldoninformer.Informer(), callback)
 }
 
 // crd informer. watch changes to f2s functions in k8s namespace f2s
-func runCRDInformer(stopCh <-chan struct{}, s cache.SharedIndexInformer) {
+func runCRDInformer(stopCh <-chan struct{}, s cache.SharedIndexInformer, callback func()) {
 	handlers := cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			logging.Println("A new F2S Function has been added / configured")
 
-			logging.Println("trying to parse event to F2SFunction Obj")
-			d := &typesV1alpha1.Function{}
-			err := runtime.DefaultUnstructuredConverter.
-				FromUnstructured(obj.(*unstructured.Unstructured).UnstructuredContent(), d)
-			if err != nil {
-				logging.Println("could not convert event to F2SFunction")
-				logging.Print(err)
-				return
-			}
-			logging.Println(fmt.Sprintf("added function %s (%s)", d.Name, d.UID))
+			// logging.Println("trying to parse event to F2SFunction Obj")
+			// d := &typesV1alpha1.Function{}
+			// err := runtime.DefaultUnstructuredConverter.
+			// 	FromUnstructured(obj.(*unstructured.Unstructured).UnstructuredContent(), d)
+			// if err != nil {
+			// 	logging.Println("could not convert event to F2SFunction")
+			// 	logging.Print(err)
+			// 	return
+			// }
+			// logging.Println(fmt.Sprintf("added function %s (%s)", d.Name, d.UID))
+			callback()
 		},
 		DeleteFunc: func(obj interface{}) {
-			fmt.Println("deletefunc")
-			// convert the obj as above do what we want with the SeldonDeployment/event
+			logging.Println("A F2S Function has been removed")
+			callback()
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
-			fmt.Println("updatefunc")
-			// convert the obj as above do what we want with the SeldonDeployment/event
+			logging.Println("A F2S Function has been updated")
+			callback()
 		},
 	}
 	s.AddEventHandler(handlers)

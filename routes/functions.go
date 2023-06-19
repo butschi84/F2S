@@ -41,7 +41,12 @@ func getFunction(w http.ResponseWriter, r *http.Request) {
 	// set response headers
 	w.Header().Set("Content-Type", "application/json")
 
-	functions := config.GetCRDs()
+	functions, err := kubernetesservice.GetF2SFunctions()
+	if err != nil {
+		http.Error(w, "Failed to read f2s functions", http.StatusInternalServerError)
+		return
+	}
+
 	logging.Println("searching for uid: ", key)
 	for _, function := range functions.Items {
 		if string(function.ObjectMeta.UID) == key {
