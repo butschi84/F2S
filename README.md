@@ -12,6 +12,8 @@ Status <font color=red>Early Alpha</font>
 - [Architecture](#architecture)
   - [Namespaces](#namespaces)
   - [Gitops (CRDs Config)](#gitops-crds-config)
+  - [High Availability](#high-availability)
+  - [Autoscaling](#autoscaling)
 - [Configuration](#configuration)
   - [CRDs functions.f2s.opensight.ch](#crds-functionsf2sopensightch)
 # Core Concept
@@ -47,7 +49,12 @@ contains the F2S operational components
 contains the running pods managed by F2S
 ## Gitops (CRDs Config)
 F2SFunctions are managed by CRDs (bring your own Gitops)
-We use a redundant setup of 2 F2S Pods. Metrics go to a prometheus instance
+
+## High Availability
+We use a redundant setup of 2 F2S Pods. 
+
+## Autoscaling
+All Metrics go to the prometheus instance. The plan is to use it with autoscaler on k8s
 
 # Configuration
 ## CRDs functions.f2s.opensight.ch
