@@ -1,11 +1,14 @@
 # Use the official Go image as the base image
-FROM golang:1.19
+FROM ubuntu:latest
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy the Go project files into the container
 COPY . .
+
+# install go
+RUN apt update && apt install golang -y
 
 # Build the Go project
 RUN go build -o f2s
