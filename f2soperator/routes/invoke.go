@@ -2,6 +2,7 @@ package routes
 
 import (
 	v1alpha1types "butschi84/f2s/configuration/api/types/v1alpha1"
+	"butschi84/f2s/services/eventmanager"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -54,6 +55,13 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := "/" + vars["target"]
 
+	// send 'function invoked' event
+	F2SConfiguration.EventManager.Publish(eventmanager.Event{
+		Data: key,
+		Type: eventmanager.Event_FunctionInvoked,
+	})
+
+	// find relevant function for this target
 	f, err := findF2SFunctionForTarget(key)
 	if err != nil {
 		logging.Println(fmt.Sprintf("function not found for endpoint %s", key))

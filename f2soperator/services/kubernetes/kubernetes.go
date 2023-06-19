@@ -24,7 +24,7 @@ func getInClusterConfig() (*rest.Config, error) {
 		logging.Printf("using in-cluster configuration")
 		config, err = rest.InClusterConfig()
 	} else {
-		logging.Printf("using configuration from '%s'", kubeconfig)
+		// logging.Printf("using configuration from '%s'", kubeconfig)
 		config, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
 	}
 

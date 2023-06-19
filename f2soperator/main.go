@@ -3,6 +3,7 @@ package main
 import (
 	"butschi84/f2s/configuration"
 	"butschi84/f2s/logger"
+	"butschi84/f2s/metrics"
 	"butschi84/f2s/operator"
 	"butschi84/f2s/routes"
 	"log"
@@ -29,7 +30,7 @@ func main() {
 	var wg sync.WaitGroup
 
 	// Number of goroutines to wait for
-	numWorkers := 2
+	numWorkers := 3
 	wg.Add(numWorkers)
 
 	// start api router
@@ -39,6 +40,10 @@ func main() {
 	// start operator (manages deployments in f2s-containers namespace)
 	logging.Println("=> initializng f2s-containers namespace operator")
 	go operator.RunOperator(&F2SConfiguration, &wg)
+
+	// start metrics
+	logging.Println("=> initializng metrics")
+	go metrics.HandleRequests(&F2SConfiguration, &wg)
 
 	logging.Println("=> done initializing")
 	wg.Wait()

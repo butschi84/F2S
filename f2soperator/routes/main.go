@@ -28,7 +28,11 @@ func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	F2SConfiguration = *config
-	router := mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter().StrictSlash(false)
+
+	// subscribe to configuration changes
+	logging.Println("subscribing to config package events")
+	config.EventManager.Subscribe(handleEvent)
 
 	// openAPI spec
 	openAPIHandler := http.FileServer(http.Dir("./static/openapi"))

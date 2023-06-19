@@ -1,8 +1,17 @@
 package eventmanager
 
+// possible event types
+type EventType string
+
+const (
+	Event_FunctionInvoked      EventType = "function invoked"
+	Event_ConfigurationChanged EventType = "configuration changed"
+)
+
 type Event struct {
 	// Data is the payload of the event
 	Data interface{}
+	Type EventType
 }
 
 type EventHandler func(event Event)
