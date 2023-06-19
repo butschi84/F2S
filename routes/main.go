@@ -41,6 +41,7 @@ func HandleRequests(config config.F2SConfiguration, wg *sync.WaitGroup) {
 	router.HandleFunc("/functions/{id}", deleteFunction).Methods(http.MethodDelete)
 	router.HandleFunc("/deployments", getAllDeployments).Methods(http.MethodGet)
 	router.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
+	router.HandleFunc("/invoke/{target}", invokeFunction)
 
 	router.HandleFunc("/", root)
 

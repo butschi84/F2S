@@ -54,7 +54,7 @@ func Rebalance() {
 
 	// check for surplus deployments in f2s-containers namespace
 	logging.Println("checking for k8s f2s-containers surplus deployments")
-	removeSurplusDeployments()
+	removeSurplusItems()
 
 	// check which deployments are missing in k8s namespace f2s-containers
 	logging.Println("checking for k8s f2s-containers missing deployments")
@@ -79,19 +79,25 @@ func addMissingDeployments() {
 		}
 		if !deploymentExisting {
 			logging.Println(fmt.Sprintf("deployment for function %s (%s) has to be created", f.Name, f.UID))
-			kubernetesservice.CreateDeployment(f.Name, f.Target.ContainerImage)
+			kubernetesservice.CreateDeployment(f.Name, f.Target.ContainerImage, map[string]string{"f2sfunction": f.Name})
+			kubernetesservice.CreateService(f.Name, f.Target.Port, map[string]string{"f2sfunction": f.Name})
 		}
 	}
 }
 
 // check which deployments in k8s namespace f2s-containers have no corresponding f2sfunction
-func removeSurplusDeployments() {
+func removeSurplusItems() {
 	functions := configuration.ActiveConfiguration.Functions
 	deployments, err := kubernetesservice.GetDeployments()
 	if err != nil {
 		log.Fatal(err)
 	}
+	services, err := kubernetesservice.ListServices()
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	// check for surplus deployments
 	for _, d := range deployments.Items {
 		// check if deployment can be found in functions
 		functionExisting := stringArrayContains(d.Name, functions.GetNames())
@@ -100,6 +106,18 @@ func removeSurplusDeployments() {
 		if !functionExisting {
 			logging.Println(fmt.Sprintf("delete surplus deployment %s (%s)", d.Name, d.UID))
 			kubernetesservice.DeleteDeployment(string(d.UID))
+		}
+	}
+
+	// check for surplus services
+	for _, s := range services.Items {
+		// check if deployment can be found in functions
+		functionExisting := stringArrayContains(s.Name, functions.GetNames())
+		logging.Println(fmt.Sprintf("search result for service %s %v", s.Name, functionExisting))
+
+		if !functionExisting {
+			logging.Println(fmt.Sprintf("delete surplus service %s (%s)", s.Name, s.UID))
+			kubernetesservice.DeleteService(string(s.UID))
 		}
 	}
 }

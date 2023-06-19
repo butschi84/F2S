@@ -28,7 +28,7 @@ func GetDeployments() (*appsv1.DeploymentList, error) {
 	return deployments, err
 }
 
-func CreateDeployment(name string, image string) (*appsv1.Deployment, error) {
+func CreateDeployment(name string, image string, labels map[string]string) (*appsv1.Deployment, error) {
 	// get clientset
 	clientset, err := GetV1ClientSet()
 	if err != nil {
@@ -43,20 +43,16 @@ func CreateDeployment(name string, image string) (*appsv1.Deployment, error) {
 		Spec: appsv1.DeploymentSpec{
 			Replicas: int32Ptr(1),
 			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app": "my-app",
-				},
+				MatchLabels: labels,
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"app": "my-app",
-					},
+					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:  "my-container",
+							Name:  name,
 							Image: image,
 						},
 					},
