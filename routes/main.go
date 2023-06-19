@@ -34,7 +34,8 @@ func HandleRequests(config config.F2SConfiguration) {
 	// retrieve configured f2s functions
 	router.HandleFunc("/functions", returnAllFunctions)
 	router.HandleFunc("/functions/{id}", getFunction)
-	router.HandleFunc("/deployments", getAllDeployments)
+	router.HandleFunc("/deployments", getAllDeployments).Methods(http.MethodGet)
+	router.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 
 	router.HandleFunc("/", root)
 

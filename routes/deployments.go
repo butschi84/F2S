@@ -19,3 +19,17 @@ func getAllDeployments(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(deployments)
 }
+
+// *********************************************************
+// create test deployments
+// *********************************************************
+func createDeployment(w http.ResponseWriter, r *http.Request) {
+	logging.Println("request to get all functions")
+
+	// set response headers
+	w.Header().Set("Content-Type", "application/json")
+
+	deployment, _ := kubernetesservice.CreateDeployment()
+
+	json.NewEncoder(w).Encode(deployment)
+}
