@@ -16,7 +16,7 @@ type FunctionInterface interface {
 	List(opts metav1.ListOptions) (*v1alpha1.FunctionList, error)
 	Get(name string, options metav1.GetOptions) (*v1alpha1.Function, error)
 	Create(*v1alpha1.Function) (*v1alpha1.Function, error)
-	Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error)
+	Watch(opts metav1.ListOptions) (watch.Interface, error)
 	Delete(uid string, opts metav1.DeleteOptions) error
 }
 
@@ -67,7 +67,8 @@ func (c *functionClient) Create(project *v1alpha1.Function) (*v1alpha1.Function,
 	return &result, err
 }
 
-func (c *functionClient) Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error) {
+func (c *functionClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
+	ctx := context.TODO()
 	opts.Watch = true
 	return c.restClient.
 		Get().

@@ -17,8 +17,25 @@ var (
 )
 
 func addKnownTypes(scheme *runtime.Scheme) error {
-	scheme.AddKnownTypes(SchemeGroupVersion,
+	// scheme.AddKnownTypes(SchemeGroupVersion,
+	// 	&FunctionList{},
+	// )
+
+	scheme.AddKnownTypeWithName(
+		schema.GroupVersionKind{
+			Group:   "f2s.opensight.ch",
+			Version: "v1alpha1",
+			Kind:    "Function",
+		},
 		&Function{},
+	)
+
+	scheme.AddKnownTypeWithName(
+		schema.GroupVersionKind{
+			Group:   "f2s.opensight.ch",
+			Version: "v1alpha1",
+			Kind:    "FunctionList",
+		},
 		&FunctionList{},
 	)
 
