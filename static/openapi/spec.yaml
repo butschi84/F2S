@@ -48,3 +48,25 @@ paths:
                     type: integer
                   name:
                     type: string
+
+  /deployments:
+    get:
+      summary: get all current f2s deployments
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                  apiVersion:
+                    type: string
+                  metadata:
+                    type: object
+                  items:
+                    type: array
+                    items:
+                      type: object
