@@ -9,8 +9,28 @@ tags:
     description: Manage F2S Configuration
   - name: Containers
     description: Interact with F2S-Containers K8S Namespace
-
+  - name: Invoke
+    description: Invoke F2S Functions
 paths:
+  /invoke/{target}:
+    get:
+      summary: invoke a f2s function
+      tags:
+        - Invoke
+      parameters:
+        - in: path
+          name: target
+          required: true
+          schema:
+            type: string
+            example: my-endpoint
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /functions:
     get:
       summary: get all configured functions
