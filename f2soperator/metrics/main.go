@@ -45,7 +45,7 @@ func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
 
 	router := mux.NewRouter().StrictSlash(false)
 	router.HandleFunc("/metrics", metricsHandler)
-	http.ListenAndServe("localhost:9090", router)
+	http.ListenAndServe("localhost:8081", router)
 }
 
 func metricsHandler(w http.ResponseWriter, r *http.Request) {

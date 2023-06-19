@@ -21,5 +21,5 @@ spec:
     app: f2s
   type: ClusterIP
   ports:
-    - port: 9090
-      targetPort: 9090
+    - port: 8081
+      targetPort: 8081

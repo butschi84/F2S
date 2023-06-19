@@ -14,7 +14,7 @@ RUN go build -o f2s
 EXPOSE 8080
 
 # expose metrics
-EXPOSE 9090
+EXPOSE 8081
 
 ENV http_proxy      ""
 ENV https_proxy     ""

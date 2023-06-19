@@ -20,5 +20,5 @@ spec:
         - name: f2s
           image: romanhuesler/f2s
           ports:
-            - containerPort: 9090
+            - containerPort: 8081
             - containerPort: 8080

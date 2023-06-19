@@ -4,7 +4,8 @@ metadata:
   name: f2s-service-role
 rules:
   - apiGroups: [""]
-    resources: ["pods", "replicationcontrollers", "persistentvolumeclaims"]
+    resources:
+      ["pods", "replicationcontrollers", "persistentvolumeclaims", "endpoints"]
     verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["services"]
@@ -13,8 +14,11 @@ rules:
     resources: ["deployments"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["apps"]
-    resources: ["statefulsets"]
+    resources: ["statefulsets", "deployments"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["metrics.k8s.io"]
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["f2s.opensight.ch"]
+    resources: ["functions"]
+    verbs: ["get", "list", "watch", "delete", "create", "update"]

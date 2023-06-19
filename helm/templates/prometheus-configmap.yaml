@@ -31,3 +31,17 @@ data:
           - source_labels: [namespace]
             regex: 'f2s-containers'
             action: keep
+      - job_name: 'f2s-metrics'
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - f2s
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            regex: f2s
+            action: keep
+          - source_labels: [__meta_kubernetes_pod_container_port_number]
+            regex: 9090
+            action: keep
+        metrics_path: /metrics
