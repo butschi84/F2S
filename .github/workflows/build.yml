@@ -27,7 +27,7 @@ jobs:
           context: ./f2soperator
           file: ./f2soperator/Dockerfile
           outputs: "type=image,push=false"
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64
           build-args: |
             GIT_COMMIT=${{ github.sha }}
           tags: |
