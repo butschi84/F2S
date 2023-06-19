@@ -5,8 +5,10 @@ import (
 	"os"
 
 	clientV1alpha1 "butschi84/f2s/configuration/api/clientset/v1alpha1"
+	v1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
 
 	k8s "k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -40,7 +42,9 @@ func GetV1Alpha1ClientSet() (*clientV1alpha1.V1Alpha1Client, error) {
 		os.Exit(1)
 	}
 
-	clientSet, err := clientV1alpha1.NewForConfig(config)
+	v1alpha1.AddToScheme(scheme.Scheme)
+
+	clientSet, err := clientV1alpha1.NewForConfig(config, scheme.Scheme)
 	if err != nil {
 		panic(err)
 	}

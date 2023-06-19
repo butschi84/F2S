@@ -5,10 +5,13 @@ import (
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/scheme"
 )
 
 func GetCRDs() *typesV1alpha1.FunctionList {
 	logging.Println("querying all crds")
+
+	metav1.AddMetaToScheme(scheme.Scheme)
 
 	clientSet, err := kubernetesservice.GetV1Alpha1ClientSet()
 	if err != nil {

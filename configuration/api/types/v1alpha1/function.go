@@ -36,7 +36,7 @@ type FunctionList struct {
 
 type PrettyFunction struct {
 	Name   string         `json:"name"`
-	UID    string         `json:"uid"`
+	UID    string         `json:"uid,omitempty"`
 	Spec   FunctionSpec   `json:"spec"`
 	Target FunctionTarget `json:"target"`
 }

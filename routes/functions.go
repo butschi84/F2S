@@ -2,8 +2,11 @@ package routes
 
 import (
 	config "butschi84/f2s/configuration"
+	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+	kubernetesservice "butschi84/f2s/services/kubernetes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -48,4 +51,38 @@ func getFunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "{}")
+}
+
+// *********************************************************
+// create a function
+// *********************************************************
+func createFunction(w http.ResponseWriter, r *http.Request) {
+	logging.Println("request to create a new function")
+
+	logging.Println("parsing request body")
+	// Read the request body
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+		return
+	}
+
+	// Define a variable to hold the JSON data
+	var function typesV1alpha1.PrettyFunction
+
+	// Unmarshal the JSON data into the function struct
+	if err := json.Unmarshal(body, &function); err != nil {
+		logging.Println(err)
+		http.Error(w, "Failed to parse JSON data", http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		fmt.Fprintf(w, "{}")
+		return
+	}
+
+	// create f2sfunction crd in k8s
+	result, err := kubernetesservice.CreateF2SFunction(&function)
+
+	json.NewEncoder(w).Encode(result)
 }

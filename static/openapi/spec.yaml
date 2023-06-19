@@ -34,7 +34,54 @@ paths:
                     type: array
                     items:
                       type: object
-
+    post:
+      summary: create a new f2s function
+      tags:
+        - Configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "my-function"
+                spec:
+                  type: object
+                  properties:
+                    endpoint:
+                      type: string
+                      example: "/my-endpoint"
+                    method:
+                      type: string
+                      example: "get"
+                target:
+                  type: object
+                  properties:
+                    containerImage:
+                      type: string
+                      example: nginx
+                    endpoint:
+                      type: string
+                      example: "/"
+                    port:
+                      type: number
+                      example: 80
+                    minReplicas:
+                      type: number
+                      example: 1
+                    maxReplicas:
+                      type: number
+                      example: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /functions/{id}:
     get:
       summary: get specific function

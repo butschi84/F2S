@@ -13,7 +13,7 @@ import (
 type FunctionInterface interface {
 	List(opts metav1.ListOptions) (*v1alpha1.FunctionList, error)
 	Get(ctx context.Context, name string, options metav1.GetOptions) (*v1alpha1.Function, error)
-	Create(context.Context, *v1alpha1.Function) (*v1alpha1.Function, error)
+	Create(*v1alpha1.Function) (*v1alpha1.Function, error)
 	Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error)
 }
 
@@ -50,12 +50,13 @@ func (c *functionClient) Get(ctx context.Context, name string, opts metav1.GetOp
 	return &result, err
 }
 
-func (c *functionClient) Create(ctx context.Context, project *v1alpha1.Function) (*v1alpha1.Function, error) {
+func (c *functionClient) Create(project *v1alpha1.Function) (*v1alpha1.Function, error) {
 	result := v1alpha1.Function{}
+	ctx := context.TODO()
 	req := c.restClient.
 		Post().
 		Namespace(c.ns).
-		Resource("projects").
+		Resource("functions").
 		Body(project)
 
 	err := req.Do(ctx).Into(&result)
