@@ -5,6 +5,7 @@ import (
 	"butschi84/f2s/logger"
 	"log"
 	"net/http"
+	"sync"
 
 	"github.com/gorilla/mux"
 )
@@ -23,7 +24,9 @@ func init() {
 	logging = logger.Initialize("routes")
 }
 
-func HandleRequests(config config.F2SConfiguration) {
+func HandleRequests(config config.F2SConfiguration, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	F2SConfiguration = config
 	router := mux.NewRouter().StrictSlash(true)
 
