@@ -18,7 +18,8 @@ var logging *log.Logger
 var F2SConfiguration config.F2SConfiguration
 
 // metrics
-var metricTotalRequests *prometheus.CounterVec
+var metricTotalIncomingRequests *prometheus.CounterVec
+var metricTotalCompletedRequests *prometheus.CounterVec
 var metricActiveRequests *prometheus.GaugeVec
 var metricLastRequestCompletion *prometheus.GaugeVec
 var metricRequestDuration *prometheus.HistogramVec
@@ -27,11 +28,20 @@ func init() {
 	// initialize logging
 	logging = logger.Initialize("metrics")
 
-	// metric - total requests
-	metricTotalRequests = prometheus.NewCounterVec(
+	// metric - total incoming requests
+	metricTotalIncomingRequests = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "f2s_requests_total",
-			Help: "Total number of requests",
+			Name: "f2s_requests_incoming_total",
+			Help: "Total number of incoming requests",
+		},
+		[]string{"target", "functionuid", "functionname"},
+	)
+
+	// metric - total completed requests
+	metricTotalIncomingRequests = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "f2s_requests_completed_total",
+			Help: "Total number of completed requests",
 		},
 		[]string{"target", "functionuid", "functionname"},
 	)
@@ -64,7 +74,8 @@ func init() {
 		[]string{"target", "functionuid", "functionname"},
 	)
 
-	prometheus.MustRegister(metricTotalRequests)
+	prometheus.MustRegister(metricTotalIncomingRequests)
+	prometheus.MustRegister(metricTotalCompletedRequests)
 	prometheus.MustRegister(metricActiveRequests)
 	prometheus.MustRegister(metricLastRequestCompletion)
 	prometheus.MustRegister(metricRequestDuration)
