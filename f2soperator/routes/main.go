@@ -49,5 +49,5 @@ func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
 
 	router.HandleFunc("/", root)
 
-	http.ListenAndServe("0.0.0.0:8000", router)
+	http.ListenAndServe("0.0.0.0:8080", router)
 }
