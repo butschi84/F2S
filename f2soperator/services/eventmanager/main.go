@@ -1,17 +1,24 @@
 package eventmanager
 
+import (
+	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+)
+
 // possible event types
 type EventType string
 
 const (
-	Event_FunctionInvoked      EventType = "function invoked"
-	Event_ConfigurationChanged EventType = "configuration changed"
+	Event_FunctionInvoked         EventType = "function invoked"
+	Event_FunctionInvokationEnded EventType = "function invokation ended"
+	Event_ConfigurationChanged    EventType = "configuration changed"
 )
 
 type Event struct {
 	// Data is the payload of the event
 	Data interface{}
 	Type EventType
+	// container for a f2sfunction object
+	Function typesV1alpha1.Function
 }
 
 type EventHandler func(event Event)

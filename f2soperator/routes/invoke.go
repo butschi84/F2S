@@ -55,12 +55,6 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := "/" + vars["target"]
 
-	// send 'function invoked' event
-	F2SConfiguration.EventManager.Publish(eventmanager.Event{
-		Data: key,
-		Type: eventmanager.Event_FunctionInvoked,
-	})
-
 	// find relevant function for this target
 	f, err := findF2SFunctionForTarget(key)
 	if err != nil {
@@ -68,6 +62,13 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed - function not found for endpoint %s", key)})
 		return
 	}
+
+	// send 'function invoked' event
+	F2SConfiguration.EventManager.Publish(eventmanager.Event{
+		Data:     key,
+		Function: *f,
+		Type:     eventmanager.Event_FunctionInvoked,
+	})
 
 	// invoke
 	url := fmt.Sprintf("http://%s.f2s-containers:%v%s", f.Name, f.Target.Port, f.Target.Endpoint)
@@ -77,6 +78,13 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("error during invocation: %s", err)})
 		return
 	}
+
+	// send invocation end event
+	F2SConfiguration.EventManager.Publish(eventmanager.Event{
+		Data:     key,
+		Function: *f,
+		Type:     eventmanager.Event_FunctionInvokationEnded,
+	})
 
 	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
 }

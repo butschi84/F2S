@@ -18,17 +18,29 @@ var logging *log.Logger
 var F2SConfiguration config.F2SConfiguration
 
 // metrics
-var metricTotalRequests prometheus.Counter
+var metricTotalRequests *prometheus.CounterVec
+var metricActiveRequests *prometheus.GaugeVec
 
 func init() {
 	// initialize logging
 	logging = logger.Initialize("metrics")
 
-	metricTotalRequests = prometheus.NewCounter(
+	// metric - total requests
+	metricTotalRequests = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "f2s_requests_total",
 			Help: "Total number of requests",
 		},
+		[]string{"target", "functionuid", "functionname"},
+	)
+
+	// metric - active requests
+	metricActiveRequests = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "f2s_active_requests_total",
+			Help: "Total number of currently active requests",
+		},
+		[]string{"target", "functionuid", "functionname"},
 	)
 
 	prometheus.MustRegister(metricTotalRequests)
