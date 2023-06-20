@@ -31,6 +31,12 @@ data:
           - source_labels: [namespace]
             regex: 'f2s-containers'
             action: keep
+          - source_labels: [__name__, deployment]
+            separator: ";"
+            regex: '(kube_deployment_status_replicas_available);(.*)'
+            target_label: 'functionname'
+            replacement: '${2}'
+            action: replace
       - job_name: 'f2s-metrics'
         kubernetes_sd_configs:
           - role: endpoints

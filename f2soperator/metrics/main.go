@@ -20,6 +20,7 @@ var F2SConfiguration config.F2SConfiguration
 // metrics
 var metricTotalRequests *prometheus.CounterVec
 var metricActiveRequests *prometheus.GaugeVec
+var metricLastRequestCompletion *prometheus.GaugeVec
 var metricRequestDuration *prometheus.HistogramVec
 
 func init() {
@@ -54,8 +55,18 @@ func init() {
 		[]string{"target", "functionuid", "functionname"},
 	)
 
+	// metric - timestamp of last request completion
+	metricLastRequestCompletion = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "f2s_last_request_timestamp",
+			Help: "Timestamp of the last request",
+		},
+		[]string{"target", "functionuid", "functionname"},
+	)
+
 	prometheus.MustRegister(metricTotalRequests)
 	prometheus.MustRegister(metricActiveRequests)
+	prometheus.MustRegister(metricLastRequestCompletion)
 	prometheus.MustRegister(metricRequestDuration)
 }
 

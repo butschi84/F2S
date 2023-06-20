@@ -27,6 +27,10 @@ func handleEvent(event eventmanager.Event) {
 		durationInSeconds := float64(duration) / 1000.0
 		metricRequestDuration.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(durationInSeconds)
 
+		// update last request completion metric
+		logging.Println(fmt.Sprintf("function %s finished. set timestamp of metric lastRequestCompletion", event.Data))
+		metricLastRequestCompletion.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Set(float64(time.Now().Unix()))
+
 	default:
 		logging.Println("no action defined for", event.Type)
 	}
