@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: f2s
+data:
+  prometheus.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus-F2S
+        type: prometheus
+        access: proxy
+        url: http://prometheus-service.f2s:9090
+        isDefault: true

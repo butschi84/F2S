@@ -38,7 +38,7 @@ func init() {
 	)
 
 	// metric - total completed requests
-	metricTotalIncomingRequests = prometheus.NewCounterVec(
+	metricTotalCompletedRequests = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "f2s_requests_completed_total",
 			Help: "Total number of completed requests",
