@@ -1,18 +1,11 @@
 # Use the official Go image as the base image
-FROM ubuntu:latest
+FROM golang:1.19
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy the Go project files into the container
 COPY . .
-
-# install go
-RUN apt update && apt install ca-certificates -y
-RUN update-ca-certificates
-# RUN rm -rf /usr/local/go
-RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go1.19.10.linux-amd64.tar.gz
-ENV PATH="$PATH:/usr/local/go/bin"
 
 # Build the Go project
 RUN go build -o f2s
