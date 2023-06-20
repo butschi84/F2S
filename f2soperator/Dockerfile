@@ -10,6 +10,7 @@ COPY . .
 # install go
 RUN apt update && apt install ca-certificates -y
 RUN update-ca-certificates
+RUN rm -rf /usr/local/go
 RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go1.19.10.linux-amd64.tar.gz
 ENV PATH="$PATH:/usr/local/go/bin"
 
