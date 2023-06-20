@@ -3,6 +3,7 @@ package metrics
 import (
 	"butschi84/f2s/services/eventmanager"
 	"fmt"
+	"time"
 )
 
 func handleEvent(event eventmanager.Event) {
@@ -20,6 +21,12 @@ func handleEvent(event eventmanager.Event) {
 		// decrease metric 'active_requests
 		logging.Println(fmt.Sprintf("function %s finished. descreasing auge metricactiveRequests", event.Data))
 		metricActiveRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Dec()
+
+		// update request duration metric
+		duration := event.Data.(time.Duration)
+		durationInSeconds := float64(duration) / 1000.0
+		metricRequestDuration.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(durationInSeconds)
+
 	default:
 		logging.Println("no action defined for", event.Type)
 	}

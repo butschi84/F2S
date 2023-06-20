@@ -20,6 +20,7 @@ var F2SConfiguration config.F2SConfiguration
 // metrics
 var metricTotalRequests *prometheus.CounterVec
 var metricActiveRequests *prometheus.GaugeVec
+var metricRequestDuration *prometheus.HistogramVec
 
 func init() {
 	// initialize logging
@@ -43,7 +44,19 @@ func init() {
 		[]string{"target", "functionuid", "functionname"},
 	)
 
+	// metric - request duration
+	metricRequestDuration = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "f2s_request_duration_seconds",
+			Help:    "Histogram of request duration",
+			Buckets: prometheus.LinearBuckets(0.1, 0.1, 10),
+		},
+		[]string{"target", "functionuid", "functionname"},
+	)
+
 	prometheus.MustRegister(metricTotalRequests)
+	prometheus.MustRegister(metricActiveRequests)
+	prometheus.MustRegister(metricRequestDuration)
 }
 
 func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {

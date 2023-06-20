@@ -16,6 +16,7 @@ const (
 type Event struct {
 	// Data is the payload of the event
 	Data interface{}
+	// event type
 	Type EventType
 	// container for a f2sfunction object
 	Function typesV1alpha1.Function

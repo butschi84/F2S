@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -70,6 +71,9 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		Type:     eventmanager.Event_FunctionInvoked,
 	})
 
+	// start time measurement
+	start := time.Now()
+
 	// invoke
 	url := fmt.Sprintf("http://%s.f2s-containers:%v%s", f.Name, f.Target.Port, f.Target.Endpoint)
 	result, err := httpGet(url)
@@ -79,9 +83,13 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// measure time elapsed
+	elapsed := time.Since(start)
+	logging.Printf("Function execution time: %s\n", elapsed)
+
 	// send invocation end event
 	F2SConfiguration.EventManager.Publish(eventmanager.Event{
-		Data:     key,
+		Data:     elapsed,
 		Function: *f,
 		Type:     eventmanager.Event_FunctionInvokationEnded,
 	})
