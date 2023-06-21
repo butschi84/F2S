@@ -60,7 +60,7 @@ func init() {
 		prometheus.HistogramOpts{
 			Name:    "f2s_request_duration_seconds",
 			Help:    "Histogram of request duration",
-			Buckets: prometheus.LinearBuckets(0.1, 0.1, 10),
+			Buckets: prometheus.LinearBuckets(0.1, 0.2, 20),
 		},
 		[]string{"target", "functionuid", "functionname"},
 	)
