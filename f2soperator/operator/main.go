@@ -79,7 +79,7 @@ func addMissingDeployments() {
 		}
 		if !deploymentExisting {
 			logging.Println(fmt.Sprintf("deployment for function %s (%s) has to be created", f.Name, f.UID))
-			kubernetesservice.CreateDeployment(f.Name, f.Target.ContainerImage, map[string]string{"f2sfunction": f.Name})
+			kubernetesservice.CreateDeployment(f.Name, f.Target.ContainerImage, map[string]string{"f2sfunction": f.Name}, f.Target.Port)
 			kubernetesservice.CreateService(f.Name, f.Target.Port, map[string]string{"f2sfunction": f.Name})
 		}
 	}

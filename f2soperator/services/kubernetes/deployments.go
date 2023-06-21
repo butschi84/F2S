@@ -28,7 +28,7 @@ func GetDeployments() (*appsv1.DeploymentList, error) {
 	return deployments, err
 }
 
-func CreateDeployment(name string, image string, labels map[string]string) (*appsv1.Deployment, error) {
+func CreateDeployment(name string, image string, labels map[string]string, port int) (*appsv1.Deployment, error) {
 	// get clientset
 	clientset, err := GetV1ClientSet()
 	if err != nil {
@@ -54,6 +54,11 @@ func CreateDeployment(name string, image string, labels map[string]string) (*app
 						{
 							Name:  name,
 							Image: image,
+							Ports: []corev1.ContainerPort{
+								{
+									ContainerPort: int32(port),
+								},
+							},
 						},
 					},
 				},

@@ -8,6 +8,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 func CreateService(name string, port int, labels map[string]string) (*corev1.Service, error) {
@@ -27,7 +28,8 @@ func CreateService(name string, port int, labels map[string]string) (*corev1.Ser
 			Selector: labels,
 			Ports: []corev1.ServicePort{
 				{
-					Port: 80,
+					Port:       80,
+					TargetPort: intstr.FromInt(port),
 				},
 			},
 		},
