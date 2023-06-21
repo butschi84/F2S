@@ -12,3 +12,33 @@ target:
   port: 80
   minReplicas: 1
   maxReplicas: 1
+---
+apiVersion: "f2s.opensight.ch/v1alpha1"
+kind: "Function"
+metadata:
+  name: "test-function-nonblocking"
+  namespace: "f2s"
+spec:
+  endpoint: "/testnonblocking"
+  method: "GET"
+target:
+  containerImage: "romanhuesler/testcontainer"
+  endpoint: "/"
+  port: 3000
+  minReplicas: 1
+  maxReplicas: 1
+---
+apiVersion: "f2s.opensight.ch/v1alpha1"
+kind: "Function"
+metadata:
+  name: "test-function-blocking"
+  namespace: "f2s"
+spec:
+  endpoint: "/testblocking"
+  method: "GET"
+target:
+  containerImage: "romanhuesler/testcontainer"
+  endpoint: "/blocking"
+  port: 3000
+  minReplicas: 1
+  maxReplicas: 1
