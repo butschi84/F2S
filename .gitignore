@@ -1,2 +1,5 @@
 .DS_Store
 .testenv.sh
+
+# test containers
+node_modules
