@@ -56,12 +56,15 @@ func init() {
 	)
 
 	// metric - request duration
-	// buckets for response time from 0.05s to 60s ¯\_(ツ)_/¯
+	// buckets specification for measuring response time
+	// from 10ms to 60s ¯\_(ツ)_/¯
+	// 10ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s, 10s, 30s, 1m, 2m, 5m
+	buckets := []float64{0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0, 120.0, 300.0}
 	metricRequestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Name:    "f2s_request_duration_seconds",
 			Help:    "Histogram of request duration",
-			Buckets: prometheus.ExponentialBuckets(0.05, 1.45232, 20),
+			Buckets: buckets,
 		},
 		[]string{"target", "functionuid", "functionname"},
 	)
