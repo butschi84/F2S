@@ -1,4 +1,5 @@
 const http = require('http');
+const url = require('url');
 
 // get a random delay from 200ms to 5000ms
 function getRandomDelay() {
@@ -6,11 +7,14 @@ function getRandomDelay() {
 }
 
 const server = http.createServer((req, res) => {
+  const parsedUrl = url.parse(req.url, true); // Parse the URL including query parameters
+  const { pathname, query } = parsedUrl;
+
+  const delay = query.delay ? parseInt(query.delay) : getRandomDelay();
+
   // non-blocking simulation
   // => container can serve other requests during delay
-  if (req.url === '/') {
-    const delay = getRandomDelay();
-
+  if (pathname === '/') {
     // Simulating delay before responding
     setTimeout(() => {
       res.statusCode = 200;
@@ -20,9 +24,7 @@ const server = http.createServer((req, res) => {
 
   // blocking simulation
   // => container CAN NOT serve other requests during delay
-  }else if(req.url === '/blocking') {
-    const delay = getRandomDelay();
-
+  } else if (pathname === '/blocking') {
     // Blocking delay using a loop
     const start = Date.now();
     while (Date.now() - start < delay) {
