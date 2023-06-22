@@ -28,7 +28,7 @@ func CreateService(name string, port int, labels map[string]string) (*corev1.Ser
 			Selector: labels,
 			Ports: []corev1.ServicePort{
 				{
-					Port:       80,
+					Port:       int32(port),
 					TargetPort: intstr.FromInt(port),
 				},
 			},
