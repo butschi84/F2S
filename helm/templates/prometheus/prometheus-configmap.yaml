@@ -13,16 +13,30 @@ data:
         # number of requests/sec completed by all available function-containers
         - record: f2sscaling_function_requests_completed_rate
           expr: sum(rate(f2s_requests_completed_total[15s])) by (functionname)
+
         # number of available function containers
         - record: f2sscaling_function_deployment_available_replicas
           expr: sum(kube_deployment_status_replicas_available) by (functionname)
+
         # how many req/s can one function container perform
         - record: f2sscaling_function_completion_performance_per_container_request_rate
           expr: f2sscaling_function_requests_completed_rate / f2sscaling_function_deployment_available_replicas
+
         # calculated number of containers needed to perform the incoming requests
         - record: f2sscaling_function_containers_required_total
-          expr: sum(rate(f2s_requests_incoming_total[15s])) by (functionname) / sum(f2sscaling_function_completion_performance_per_container_request_rate) by (functionname)
+          expr: sum(f2sscaling_function_request_pressure_rate) by (functionname) / sum(f2sscaling_function_completion_performance_per_container_request_rate) by (functionname)
 
+        # Incoming Request Rate for Function
+        - record: f2sscaling_function_incoming_request_rate
+          expr: sum by(functionname) (rate(f2s_requests_incoming_total[15s]))
+
+        # Requests Backlog Growth for Function
+        - record: f2sscaling_function_requests_backlog_growth_rate
+          expr: (sum by(functionname) (delta(f2s_active_requests_total[15s]))) > 0 / 15
+
+        # Request Pressure for Function (incoming req/s + req backlog growth)
+        - record: f2sscaling_function_request_pressure_rate
+          expr: f2sscaling_function_incoming_request_rate + f2sscaling_function_requests_backlog_growth_rate
   prometheus.yml: |-
     global:
       scrape_interval: 5s
