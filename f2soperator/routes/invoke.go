@@ -77,11 +77,6 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	// invoke
 	url := fmt.Sprintf("http://%s.f2s-containers:%v%s", f.Name, f.Target.Port, f.Target.Endpoint)
 	result, err := httpGet(url)
-	if err != nil {
-		logging.Println("error during invocation", err)
-		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("error during invocation: %s", err)})
-		return
-	}
 
 	// measure time elapsed
 	elapsed := time.Since(start)
@@ -94,5 +89,12 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		Type:     eventmanager.Event_FunctionInvokationEnded,
 	})
 
-	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
+	// send results
+	if err != nil {
+		logging.Println("error during invocation", err)
+		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("error during invocation: %s", err)})
+	} else {
+		logging.Println(fmt.Sprintf("invocation of function %s completed in %v ms", *&f.Name, elapsed.Milliseconds()))
+		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
+	}
 }
