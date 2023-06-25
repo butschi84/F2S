@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type PrometheusResponse struct {
@@ -18,36 +19,11 @@ type PrometheusResponse struct {
 	} `json:"data"`
 }
 
-// read current value of a prometheus metric
-func ReadPrometheusMetric(metricName string, functionName string) (float64, error) {
-	client := http.DefaultClient
+func ReadPrometheusMetricValue(metricName string, labels map[string]string) (float64, error) {
 
-	// Prepare the request URL with label selector
-	requestURL := fmt.Sprintf("%s?query=%s{%s=\"%s\"}", "http://prometheus-service.f2s:9090/api/v1/query", "{__name__}", "functionname", functionName)
-	// requestURL := fmt.Sprintf("%s?query=%s{%s=\"%s\"}", "http://192.168.2.40:32412/api/v1/query", metricName, "functionname", functionName)
-
-	// Send GET request to Prometheus
-	resp, err := client.Get(requestURL)
+	promResponse, err := ReadPrometheusMetric(metricName, labels)
 	if err != nil {
 		return 0, err
-	}
-	defer resp.Body.Close()
-
-	// Read the response body
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return 0, err
-	}
-
-	// Parse the JSON response
-	var promResponse PrometheusResponse
-	if err := json.Unmarshal(body, &promResponse); err != nil {
-		return 0, err
-	}
-
-	// Check if any metric result exists
-	if len(promResponse.Data.Result) == 0 {
-		return 0, fmt.Errorf("metric not found")
 	}
 
 	// Extract the metric value
@@ -60,4 +36,47 @@ func ReadPrometheusMetric(metricName string, functionName string) (float64, erro
 	}
 
 	return metricValue, nil
+}
+
+// read current value of a prometheus metric
+func ReadPrometheusMetric(metricName string, labels map[string]string) (PrometheusResponse, error) {
+	client := http.DefaultClient
+
+	// Prepare the label selector
+	var labelSelectors []string
+	for key, value := range labels {
+		labelSelectors = append(labelSelectors, fmt.Sprintf("%s=\"%s\"", key, value))
+	}
+	labelSelector := strings.Join(labelSelectors, ",")
+
+	// Prepare the request URL with label selector
+	requestURL := fmt.Sprintf("http://prometheus-service.f2s:9090/api/v1/query?query=%s{%s}", metricName, labelSelector)
+	// requestURL := fmt.Sprintf("http://192.168.2.40:32412/api/v1/query?query=%s{%s}", metricName, labelSelector)
+	// requestURL := fmt.Sprintf("%s?query=%s{%s=\"%s\"}", "http://192.168.2.40:32412/api/v1/query", metricName, "functionname", functionName)
+
+	// Send GET request to Prometheus
+	resp, err := client.Get(requestURL)
+	if err != nil {
+		return PrometheusResponse{}, err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return PrometheusResponse{}, err
+	}
+
+	// Parse the JSON response
+	var promResponse PrometheusResponse
+	if err := json.Unmarshal(body, &promResponse); err != nil {
+		return PrometheusResponse{}, err
+	}
+
+	// Check if any metric result exists
+	if len(promResponse.Data.Result) == 0 {
+		return PrometheusResponse{}, fmt.Errorf("metric not found")
+	}
+
+	return promResponse, nil
 }

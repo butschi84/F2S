@@ -19,7 +19,7 @@ func getPrometheusMetric(w http.ResponseWriter, r *http.Request) {
 	functionName := vars["functionname"]
 	metricName := vars["metricname"]
 
-	result, err := prometheus.ReadPrometheusMetric(metricName, functionName)
+	result, err := prometheus.ReadPrometheusMetric(metricName, map[string]string{"functionname": functionName})
 	if err != nil {
 		logging.Println(fmt.Sprintf("could not read prometheus metric %s", err))
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("could not read prometheus metric %s", err)})

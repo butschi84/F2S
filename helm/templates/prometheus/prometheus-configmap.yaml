@@ -44,6 +44,10 @@ data:
         # - can be "12" for scaling up 12 replicase for example
         - record: f2sscaling_function_scaling_decision_replicas_difference
           expr: (f2sscaling_function_containers_required_total - on(functionname) kube_deployment_status_replicas_available) or on() kube_deployment_status_replicas_available{functionname="$functionname"} * -1
+
+        # track ready replicas of f2s in order to decice who is master (lowest alphabetical guid)
+        - record: f2s_master_election_ready_pods
+          expr: kube_pod_status_ready{pod=~"f2s-operator.+"} == 1
   prometheus.yml: |-
     global:
       scrape_interval: 5s
@@ -62,10 +66,10 @@ data:
           - targets: ['kube-state-metrics.kube-system:8080']
         metric_relabel_configs:
           - source_labels: [__name__]
-            regex: 'kube_deployment_status_replicas_.*'
+            regex: 'kube_deployment_status_replicas_.*|kube_pod_status_ready'
             action: keep
           - source_labels: [namespace]
-            regex: 'f2s-containers'
+            regex: 'f2s|f2s-containers'
             action: keep
           - source_labels: [__name__, deployment]
             separator: ";"
