@@ -46,6 +46,7 @@ func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
 	router.HandleFunc("/deployments", getAllDeployments).Methods(http.MethodGet)
 	router.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 	router.HandleFunc("/invoke/{target}", invokeFunction)
+	router.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)
 
 	router.HandleFunc("/", root)
 

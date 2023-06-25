@@ -3,6 +3,7 @@ package kubernetesservice
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -103,4 +104,31 @@ func DeleteDeployment(uid string) error {
 	}
 
 	return errors.New("deployment with this uid not found")
+}
+
+func ScaleDeployment(deploymentName string, replicas int32) error {
+	logging.Println("request to scale a K8S deployment:", deploymentName)
+
+	// Initialize clientset
+	logging.Println("initializing K8S clientset")
+	clientset, err := GetV1ClientSet()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	deployment, err := clientset.AppsV1().Deployments("f2s-containers").Get(context.Background(), deploymentName, metav1.GetOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to retrieve deployment: %w", err)
+	}
+
+	// Update the replicas value
+	deployment.Spec.Replicas = &replicas
+
+	// Apply the scaling changes
+	_, err = clientset.AppsV1().Deployments("f2s-containers").Update(context.Background(), deployment, metav1.UpdateOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to update deployment: %w", err)
+	}
+
+	return nil
 }
