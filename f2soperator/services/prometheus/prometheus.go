@@ -26,6 +26,10 @@ func ReadPrometheusMetricValue(metricName string, labels map[string]string) (flo
 		return 0, err
 	}
 
+	if len(promResponse.Data.Result) == 0 {
+		return 0.0, fmt.Errorf("could not read metric value. metric not found")
+	}
+
 	// Extract the metric value
 	value := promResponse.Data.Result[0].Value[1]
 

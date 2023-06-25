@@ -22,10 +22,6 @@ data:
         - record: f2sscaling_function_completion_performance_per_container_request_rate
           expr: f2sscaling_function_requests_completed_rate / f2sscaling_function_deployment_available_replicas
 
-        # calculated number of containers needed to perform the incoming requests
-        - record: f2sscaling_function_containers_required_total
-          expr: (sum(f2sscaling_function_request_pressure_rate) by (functionname) / sum(f2sscaling_function_completion_performance_per_container_request_rate) by (functionname)) unless(sum(f2sscaling_function_completion_performance_per_container_request_rate) by (functionname) == 0) or sum(f2sscaling_function_completion_performance_per_container_request_rate) by (functionname)
-
         # Incoming Request Rate for Function
         - record: f2sscaling_function_incoming_request_rate
           expr: sum by(functionname) (rate(f2s_requests_incoming_total[15s]))
@@ -34,10 +30,6 @@ data:
         - record: f2sscaling_function_requests_backlog_growth_rate
           # expr: ((sum by(functionname) (delta(f2s_active_requests_total[15s]))) > 0 / 15) or on() vector(0)
           expr: (sum (clamp_min(delta(f2s_active_requests_total[15s]),0)) by (functionname)) / 15
-
-        # Request Pressure for Function (incoming req/s + req backlog growth)
-        - record: f2sscaling_function_request_pressure_rate
-          expr: (f2sscaling_function_incoming_request_rate + f2sscaling_function_requests_backlog_growth_rate) or on() vector(0)
 
         # Current Scaling Decision based on available replicas and (incoming requests + backlog growth)
         # - can be "-1" for scaling down 1 replica for example
@@ -51,6 +43,13 @@ data:
 
         - record: job:function_duration_average:sec
           expr: avg(f2s_request_duration_seconds_sum / f2s_request_duration_seconds_count) by(functionname)
+
+        - record: job:function_capacity_average:reqpersec
+          expr: histogram_quantile(0.5, sum(rate(f2s_function_capacity_requests_per_second_bucket[8h])) by (le, functionname))
+
+        # calculated number of containers needed to perform the incoming requests
+        - record: job:function_containers_required:containers
+          expr: sum(f2sscaling_function_incoming_request_rate) by (functionname) / sum(job:function_capacity_average:reqpersec) by (functionname)
   prometheus.yml: |-
     global:
       scrape_interval: 5s
