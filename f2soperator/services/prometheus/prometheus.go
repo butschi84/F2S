@@ -1,6 +1,7 @@
 package prometheus
 
 import (
+	"butschi84/f2s/configuration"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -19,9 +20,9 @@ type PrometheusResponse struct {
 	} `json:"data"`
 }
 
-func ReadPrometheusMetricValue(metricName string, labels map[string]string) (float64, error) {
+func ReadPrometheusMetricValue(config *configuration.F2SConfiguration, metricName string, labels map[string]string) (float64, error) {
 
-	promResponse, err := ReadPrometheusMetric(metricName, labels)
+	promResponse, err := ReadPrometheusMetric(config, metricName, labels)
 	if err != nil {
 		return 0, err
 	}
@@ -43,7 +44,7 @@ func ReadPrometheusMetricValue(metricName string, labels map[string]string) (flo
 }
 
 // read current value of a prometheus metric
-func ReadPrometheusMetric(metricName string, labels map[string]string) (PrometheusResponse, error) {
+func ReadPrometheusMetric(config *configuration.F2SConfiguration, metricName string, labels map[string]string) (PrometheusResponse, error) {
 	client := http.DefaultClient
 
 	// Prepare the label selector
@@ -54,9 +55,7 @@ func ReadPrometheusMetric(metricName string, labels map[string]string) (Promethe
 	labelSelector := strings.Join(labelSelectors, ",")
 
 	// Prepare the request URL with label selector
-	requestURL := fmt.Sprintf("http://prometheus-service.f2s:9090/api/v1/query?query=%s{%s}", metricName, labelSelector)
-	// requestURL := fmt.Sprintf("http://192.168.2.40:32412/api/v1/query?query=%s{%s}", metricName, labelSelector)
-	// requestURL := fmt.Sprintf("%s?query=%s{%s=\"%s\"}", "http://192.168.2.40:32412/api/v1/query", metricName, "functionname", functionName)
+	requestURL := fmt.Sprintf("http://%s/api/v1/query?query=%s{%s}", config.Config.Prometheus.URL, metricName, labelSelector)
 
 	// Send GET request to Prometheus
 	resp, err := client.Get(requestURL)

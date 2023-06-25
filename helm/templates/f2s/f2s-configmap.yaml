@@ -8,3 +8,6 @@ metadata:
 data:
   config.yaml: |-
     debug: true
+
+    prometheus:
+      url: prometheus-service.f2s:9090

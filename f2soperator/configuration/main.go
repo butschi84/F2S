@@ -1,7 +1,6 @@
 package configuration
 
 import (
-	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
 	"butschi84/f2s/logger"
 	"butschi84/f2s/services/eventmanager"
 	kubernetesservice "butschi84/f2s/services/kubernetes"
@@ -13,16 +12,6 @@ import (
 )
 
 var logging *log.Logger
-
-type F2SConfigMap struct {
-	Debug bool `yaml:"debug"`
-}
-
-type F2SConfiguration struct {
-	Config       F2SConfigMap
-	Functions    *typesV1alpha1.FunctionList
-	EventManager *eventmanager.EventManager
-}
 
 var ActiveConfiguration F2SConfiguration
 

@@ -49,7 +49,7 @@ func RunOperator(config *configuration.F2SConfiguration, wg *sync.WaitGroup) {
 }
 
 func CheckMaster() (bool, error) {
-	result, err := prometheus.ReadPrometheusMetric("f2s_master_election_ready_pods", map[string]string{})
+	result, err := prometheus.ReadPrometheusMetric(&configuration.ActiveConfiguration, "f2s_master_election_ready_pods", map[string]string{})
 	if err != nil {
 		logging.Println(err)
 	}

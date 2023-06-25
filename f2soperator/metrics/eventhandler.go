@@ -28,7 +28,7 @@ func handleEvent(event eventmanager.Event) {
 		metricTotalCompletedRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
 
 		logging.Println(fmt.Sprintf("function %s finished. recalculating capacity", event.Data))
-		numbercontainers, err := prometheus.ReadPrometheusMetricValue("f2sscaling_function_deployment_available_replicas", map[string]string{"functionname": event.Function.Name})
+		numbercontainers, err := prometheus.ReadPrometheusMetricValue(&F2SConfiguration, "f2sscaling_function_deployment_available_replicas", map[string]string{"functionname": event.Function.Name})
 		if err != nil {
 			logging.Println("Error when trying to read prometheus metric f2sscaling_function_deployment_available_replicas", err)
 		} else {

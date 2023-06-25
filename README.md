@@ -78,4 +78,7 @@ Initial Datamodel is for testing and will certainly change
 ```
 # enable debug output
 debug: true
+
+prometheus:
+  url: prometheus-service.f2s:9090
 ```
