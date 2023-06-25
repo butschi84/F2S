@@ -56,6 +56,10 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := "/" + vars["target"]
 
+	// also grab the query parameters
+	queryParameters := r.URL.Query()
+	queryString := queryParameters.Encode()
+
 	// find relevant function for this target
 	f, err := findF2SFunctionForTarget(key)
 	if err != nil {
@@ -75,7 +79,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
 	// invoke
-	url := fmt.Sprintf("http://%s.f2s-containers:%v%s", f.Name, f.Target.Port, f.Target.Endpoint)
+	url := fmt.Sprintf("http://%s.f2s-containers:%v%s?%s", f.Name, f.Target.Port, f.Target.Endpoint, queryString)
 	result, err := httpGet(url)
 
 	// measure time elapsed
