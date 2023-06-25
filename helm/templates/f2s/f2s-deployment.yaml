@@ -22,3 +22,12 @@ spec:
           ports:
             - containerPort: 8081
             - containerPort: 8080
+          volumeMounts:
+            - name: f2s-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: f2s-config
+          configMap:
+            defaultMode: 420
+            name: f2s-conf

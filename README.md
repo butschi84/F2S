@@ -16,6 +16,7 @@ Status <font color=red>Early Alpha</font>
   - [Autoscaling](#autoscaling)
 - [Configuration](#configuration)
   - [CRDs functions.f2s.opensight.ch](#crds-functionsf2sopensightch)
+  - [Configmap - config.yaml](#configmap---configyaml)
 # Core Concept
 Personally, I work on the project mainly to learn more Golang and because I have a usecase for a F2S Platform currently.
 
@@ -71,3 +72,10 @@ All Metrics go to the prometheus instance. The plan is to use it with autoscaler
 ## CRDs functions.f2s.opensight.ch
 Initial Datamodel is for testing and will certainly change
 ![](docs/datamodel.png)
+
+## Configmap - config.yaml
+
+```
+# enable debug output
+debug: true
+```

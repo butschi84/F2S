@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: f2s-conf
+  labels:
+    name: f2s-conf
+  namespace: f2s
+data:
+  config.yaml: |-
+    debug: true
