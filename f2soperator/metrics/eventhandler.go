@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"butschi84/f2s/services/eventmanager"
+	"butschi84/f2s/services/prometheus"
 	"fmt"
 	"time"
 )
@@ -17,18 +18,32 @@ func handleEvent(event eventmanager.Event) {
 		// increase metric 'active_requests
 		logging.Println(fmt.Sprintf("function %s was invoked. increasing counter 'metricactiveRequests'", event.Data))
 		metricActiveRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
+		currentInflightRequests += 1
 
 	case eventmanager.Event_FunctionInvokationEnded:
+		duration := event.Data.(time.Duration)
+
 		// increase metric 'total_completed_requests
 		logging.Println(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalCompletedRequests'", event.Data))
 		metricTotalCompletedRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
 
+		logging.Println(fmt.Sprintf("function %s finished. recalculating capacity", event.Data))
+		numbercontainers, err := prometheus.ReadPrometheusMetricValue("f2sscaling_function_deployment_available_replicas", map[string]string{"functionname": event.Function.Name})
+		if err != nil {
+			logging.Println("Error when trying to read prometheus metric f2sscaling_function_deployment_available_replicas", err)
+		} else {
+			inflightRequestsPerContainer := float64(currentInflightRequests) / numbercontainers
+			durationPerInflightRequest := float64(duration.Seconds()) / inflightRequestsPerContainer
+			functionCapacityRequestsPerSecond := 1 / durationPerInflightRequest
+			metricFunctionCapacity.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(functionCapacityRequestsPerSecond)
+		}
+
 		// decrease metric 'active_requests
 		logging.Println(fmt.Sprintf("function %s finished. descreasing auge metricactiveRequests", event.Data))
+		currentInflightRequests -= 1
 		metricActiveRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Dec()
 
 		// update request duration metric
-		duration := event.Data.(time.Duration)
 		logging.Println("observing function duration:", float64(duration.Seconds()))
 		metricRequestDuration.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(float64(duration.Seconds()))
 

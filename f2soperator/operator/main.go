@@ -29,9 +29,6 @@ func RunOperator(config *configuration.F2SConfiguration, wg *sync.WaitGroup) {
 	config.EventManager.Subscribe(handleEvent)
 
 	for {
-		// Perform the desired task
-		logging.Println("rebalancing...")
-
 		// check if this f2s replica is the master
 		masterDecision, _ := CheckMaster()
 		if masterDecision != master {
@@ -41,6 +38,8 @@ func RunOperator(config *configuration.F2SConfiguration, wg *sync.WaitGroup) {
 
 		// rebalance
 		if master {
+			// Perform the desired task
+			logging.Println("rebalancing...")
 			Rebalance()
 		}
 

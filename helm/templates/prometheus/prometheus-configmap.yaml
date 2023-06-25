@@ -48,6 +48,9 @@ data:
         # track ready replicas of f2s in order to decice who is master (lowest alphabetical guid)
         - record: f2s_master_election_ready_pods
           expr: kube_pod_status_ready{pod=~"f2s-operator.+"} == 1
+
+        - record: job:function_duration_average:sec
+          expr: avg(f2s_request_duration_seconds_sum / f2s_request_duration_seconds_count) by(functionname)
   prometheus.yml: |-
     global:
       scrape_interval: 5s

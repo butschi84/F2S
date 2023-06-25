@@ -22,7 +22,11 @@ var metricTotalIncomingRequests *prometheus.CounterVec
 var metricTotalCompletedRequests *prometheus.CounterVec
 var metricActiveRequests *prometheus.GaugeVec
 var metricLastRequestCompletion *prometheus.GaugeVec
+var metricFunctionCapacity *prometheus.HistogramVec
 var metricRequestDuration *prometheus.HistogramVec
+
+// keep track of inflight requests
+var currentInflightRequests int
 
 func init() {
 	// initialize logging
@@ -51,6 +55,19 @@ func init() {
 		prometheus.GaugeOpts{
 			Name: "f2s_active_requests_total",
 			Help: "Total number of currently active requests",
+		},
+		[]string{"target", "functionuid", "functionname"},
+	)
+
+	// metric - capacity
+	// completion duration / current inflight requests
+	// from 0.1 req/s to 10 req/s ¯\_(ツ)_/¯
+	metricFunctionCapacityBuckets := []float64{0.01, 0.02, 0.04, 0.1, 0.2, 0.5, 0.75, 1.0, 2.0, 4.0, 10.0}
+	metricFunctionCapacity = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "f2s_function_capacity_requests_per_second",
+			Help:    "Number of requests that this function can handle per second",
+			Buckets: metricFunctionCapacityBuckets,
 		},
 		[]string{"target", "functionuid", "functionname"},
 	)
