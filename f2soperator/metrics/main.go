@@ -100,6 +100,7 @@ func init() {
 	prometheus.MustRegister(metricActiveRequests)
 	prometheus.MustRegister(metricLastRequestCompletion)
 	prometheus.MustRegister(metricRequestDuration)
+	prometheus.MustRegister(metricFunctionCapacity)
 }
 
 func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
