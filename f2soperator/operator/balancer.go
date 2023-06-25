@@ -92,14 +92,12 @@ func scaleDeployments() {
 	for _, function := range functions.Items {
 		var resultScale int
 		currentAvailableReplicas, err := prometheus.ReadPrometheusMetricValue("kube_deployment_status_replicas_available", map[string]string{"functionname": function.Name})
-		scalingDecision, err := prometheus.ReadPrometheusMetricValue("f2sscaling_function_scaling_decision_replicas_difference", map[string]string{"functionname": function.Name})
+		requiredContainers, err := prometheus.ReadPrometheusMetricValue("job:function_containers_required:containers", map[string]string{"functionname": function.Name})
 		if err != nil {
-			// => metric scaling decision was not found. no invocations. scale to minimum
+			// no invocations / metrics => scale to minimum
 			resultScale = 0
 		} else {
-			// logging.Println(fmt.Sprintf("current scaling decision for function %s => %v", function.Name, scalingDecision))
-			// logging.Println(fmt.Sprintf("current available replicas for function %s => %v", function.Name, currentAvailableReplicas))
-			resultScale = int(math.Ceil(currentAvailableReplicas + scalingDecision))
+			resultScale = int(math.Ceil(requiredContainers))
 		}
 
 		// check minumums and maximums
@@ -111,7 +109,7 @@ func scaleDeployments() {
 		}
 
 		// do the scaling
-		logging.Println(fmt.Sprintf("want for function %s => %v", function.Name, resultScale))
+		logging.Println(fmt.Sprintf("scaling function replicas %s from %v to %v", function.Name, currentAvailableReplicas, resultScale))
 		kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
 	}
 }
