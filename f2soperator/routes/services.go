@@ -10,7 +10,7 @@ import (
 // all services
 // *********************************************************
 func getAllServices(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to get all k8s services")
+	logging.Info("request to get all k8s services")
 
 	// set response headers
 	w.Header().Set("Content-Type", "application/json")

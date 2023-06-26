@@ -3,6 +3,7 @@ package kubernetesservice
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	corev1 "k8s.io/api/core/v1"
@@ -74,11 +75,11 @@ func DeleteService(uid string) error {
 
 	for _, d := range services.Items {
 		if d.UID == types.UID(uid) {
-			logging.Println("deleting f2sfunction in k8s")
+			logging.Info("deleting f2sfunction in k8s")
 			err = clientset.CoreV1().Services("f2s-containers").Delete(context.Background(), d.Name, metav1.DeleteOptions{})
 
 			if err != nil {
-				logging.Println("error during deletion: ", err)
+				logging.Error(fmt.Errorf("error during deletion: %s", err))
 			}
 
 			return nil

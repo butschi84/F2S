@@ -21,7 +21,7 @@ func getInClusterConfig() (*rest.Config, error) {
 
 	kubeconfig = os.Getenv("KUBECONFIG")
 	if kubeconfig == "" {
-		logging.Printf("using in-cluster configuration")
+		logging.Info("using in-cluster configuration")
 		config, err = rest.InClusterConfig()
 	} else {
 		// logging.Printf("using configuration from '%s'", kubeconfig)
@@ -38,7 +38,7 @@ func GetV1Alpha1ClientSet() (*clientV1alpha1.V1Alpha1Client, error) {
 	// Retrieve the in-cluster configuration
 	config, err := getInClusterConfig()
 	if err != nil {
-		logging.Printf("Failed to get in-cluster config: %v\n", err)
+		logging.Error(fmt.Errorf("Failed to get in-cluster config: %s\n", err))
 		os.Exit(1)
 	}
 
@@ -56,7 +56,7 @@ func GetV1ClientSet() (*k8s.Clientset, error) {
 	// Retrieve the in-cluster configuration
 	config, err := getInClusterConfig()
 	if err != nil {
-		logging.Printf("Failed to get in-cluster config: %v\n", err)
+		logging.Error(fmt.Errorf("Failed to get in-cluster config: %s\n", err))
 		os.Exit(1)
 	}
 

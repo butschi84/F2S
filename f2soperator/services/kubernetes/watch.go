@@ -1,6 +1,7 @@
 package kubernetesservice
 
 import (
+	"fmt"
 	"os"
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -22,7 +23,7 @@ func WatchKubernetesResource(resource string, namespace string, callback func(ob
 func runCRDInformer(stopCh <-chan struct{}, s cache.SharedIndexInformer, callback func(obj interface{})) {
 	handlers := cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			logging.Println("A new F2S Function has been added / configured")
+			logging.Info("A new F2S Function has been added / configured")
 
 			// logging.Println("trying to parse event to F2SFunction Obj")
 			// d := &typesV1alpha1.Function{}
@@ -37,7 +38,7 @@ func runCRDInformer(stopCh <-chan struct{}, s cache.SharedIndexInformer, callbac
 			callback(obj)
 		},
 		DeleteFunc: func(obj interface{}) {
-			logging.Println("A F2S Function has been removed")
+			logging.Info("A F2S Function has been removed")
 			callback(obj)
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
@@ -51,7 +52,7 @@ func runCRDInformer(stopCh <-chan struct{}, s cache.SharedIndexInformer, callbac
 func GetDynamicInformer(resource string, namespace string) (informers.GenericInformer, error) {
 	cfg, err := getInClusterConfig()
 	if err != nil {
-		logging.Printf("Failed to get in-cluster config: %v\n", err)
+		logging.Error(fmt.Errorf("Failed to get in-cluster config: %s\n", err.Error()))
 		os.Exit(1)
 	}
 

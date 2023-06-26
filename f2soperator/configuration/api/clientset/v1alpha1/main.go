@@ -2,10 +2,9 @@ package v1alpha1
 
 import (
 	"butschi84/f2s/logger"
-	"log"
 )
 
-var logging *log.Logger
+var logging logger.F2SLogger
 
 func init() {
 	// initialize logging

@@ -2,6 +2,7 @@ package v1alpha1
 
 import (
 	"butschi84/f2s/configuration/api/types/v1alpha1"
+	"fmt"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
@@ -26,7 +27,7 @@ func NewForConfig(c *rest.Config, scheme *runtime.Scheme) (*V1Alpha1Client, erro
 	config.NegotiatedSerializer = serializer.NewCodecFactory(scheme)
 	config.UserAgent = rest.DefaultKubernetesUserAgent()
 
-	logging.Println("Rest Client Group Version:", config.GroupVersion)
+	logging.Info("Rest Client Group Version:", fmt.Sprintf("%s", config.GroupVersion))
 
 	client, err := rest.RESTClientFor(&config)
 	if err != nil {

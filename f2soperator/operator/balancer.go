@@ -41,7 +41,7 @@ func addMissingDeployments() {
 			}
 		}
 		if !deploymentExisting {
-			logging.Println(fmt.Sprintf("deployment for function %s (%s) has to be created", f.Name, f.UID))
+			logging.Info(fmt.Sprintf("deployment for function %s (%s) has to be created", f.Name, f.UID))
 			kubernetesservice.CreateDeployment(f.Name, f.Target.ContainerImage, map[string]string{"f2sfunction": f.Name}, f.Target.Port)
 			kubernetesservice.CreateService(f.Name, f.Target.Port, map[string]string{"f2sfunction": f.Name})
 		}
@@ -67,7 +67,7 @@ func removeSurplusItems() {
 		// logging.Println(fmt.Sprintf("search result for deployment %s %v", d.Name, functionExisting))
 
 		if !functionExisting {
-			logging.Println(fmt.Sprintf("delete surplus deployment %s (%s)", d.Name, d.UID))
+			logging.Info(fmt.Sprintf("delete surplus deployment %s (%s)", d.Name, d.UID))
 			kubernetesservice.DeleteDeployment(string(d.UID))
 		}
 	}
@@ -79,7 +79,7 @@ func removeSurplusItems() {
 		// logging.Println(fmt.Sprintf("search result for service %s %v", s.Name, functionExisting))
 
 		if !functionExisting {
-			logging.Println(fmt.Sprintf("delete surplus service %s (%s)", s.Name, s.UID))
+			logging.Info(fmt.Sprintf("delete surplus service %s (%s)", s.Name, s.UID))
 			kubernetesservice.DeleteService(string(s.UID))
 		}
 	}
@@ -109,7 +109,7 @@ func scaleDeployments() {
 		}
 
 		// do the scaling
-		logging.Println(fmt.Sprintf("scaling function replicas %s from %v to %v", function.Name, currentAvailableReplicas, resultScale))
+		logging.Info(fmt.Sprintf("scaling function replicas %s from %v to %v", function.Name, currentAvailableReplicas, resultScale))
 		kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
 	}
 }

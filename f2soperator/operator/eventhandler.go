@@ -2,15 +2,16 @@ package operator
 
 import (
 	eventmanager "butschi84/f2s/services/eventmanager"
+	"fmt"
 )
 
 func handleEvent(event eventmanager.Event) {
-	logging.Println("processing event", event)
+	logging.Info("processing event", fmt.Sprintf("'%s'", string(event.Type)))
 
 	switch event.Type {
 	case eventmanager.Event_ConfigurationChanged:
 		if master {
-			logging.Println("configuration has changed. rebalance immediately")
+			logging.Info("configuration has changed. rebalance immediately")
 			Rebalance()
 		}
 	}

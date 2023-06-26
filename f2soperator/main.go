@@ -6,12 +6,11 @@ import (
 	"butschi84/f2s/metrics"
 	"butschi84/f2s/operator"
 	"butschi84/f2s/routes"
-	"log"
 	"sync"
 )
 
 var F2SConfiguration configuration.F2SConfiguration
-var logging *log.Logger
+var logging logger.F2SLogger
 
 func init() {
 	// initialize logging
@@ -20,11 +19,11 @@ func init() {
 
 func main() {
 
-	logging.Println(" ")
-	logging.Println("F2S Platform 0.0.1")
-	logging.Println("=====================")
+	logging.Info(" ")
+	logging.Info("F2S Platform 0.0.1")
+	logging.Info("=====================")
 
-	logging.Println("=> initializing config package")
+	logging.Info("=> initializing config package")
 	F2SConfiguration = configuration.ActiveConfiguration
 
 	var wg sync.WaitGroup
@@ -34,17 +33,17 @@ func main() {
 	wg.Add(numWorkers)
 
 	// start api router
-	logging.Println("=> initializng rest api server")
+	logging.Info("=> initializng rest api server")
 	go routes.HandleRequests(&F2SConfiguration, &wg)
 
 	// start operator (manages deployments in f2s-containers namespace)
-	logging.Println("=> initializng f2s-containers namespace operator")
+	logging.Info("=> initializng f2s-containers namespace operator")
 	go operator.RunOperator(&F2SConfiguration, &wg)
 
 	// start metrics
-	logging.Println("=> initializng metrics")
+	logging.Info("=> initializng metrics")
 	go metrics.HandleRequests(&F2SConfiguration, &wg)
 
-	logging.Println("=> done initializing")
+	logging.Info("=> done initializing")
 	wg.Wait()
 }

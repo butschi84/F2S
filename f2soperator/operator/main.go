@@ -8,11 +8,9 @@ import (
 	"sort"
 	"sync"
 	"time"
-
-	"log"
 )
 
-var logging *log.Logger
+var logging logger.F2SLogger
 var master bool
 
 func init() {
@@ -25,21 +23,21 @@ func RunOperator(config *configuration.F2SConfiguration, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// subscribe to configuration changes
-	logging.Println("subscribing to events")
+	logging.Info("subscribing to events")
 	config.EventManager.Subscribe(handleEvent)
 
 	for {
 		// check if this f2s replica is the master
 		masterDecision, _ := CheckMaster()
 		if masterDecision != master {
-			logging.Println("this f2s pod is now master")
+			logging.Info("this f2s pod is now master")
 			master = true
 		}
 
 		// rebalance
 		if master {
 			// Perform the desired task
-			logging.Println("rebalancing...")
+			logging.Info("rebalancing...")
 			Rebalance()
 		}
 
@@ -51,7 +49,7 @@ func RunOperator(config *configuration.F2SConfiguration, wg *sync.WaitGroup) {
 func CheckMaster() (bool, error) {
 	result, err := prometheus.ReadPrometheusMetric(&configuration.ActiveConfiguration, "f2s_master_election_ready_pods", map[string]string{})
 	if err != nil {
-		logging.Println(err)
+		logging.Error(err)
 	}
 
 	// jsonBytes, err := json.MarshalIndent(result, "", "  ")

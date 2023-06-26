@@ -3,7 +3,6 @@ package metrics
 import (
 	config "butschi84/f2s/configuration"
 	"butschi84/f2s/logger"
-	"log"
 	"net/http"
 	"sync"
 
@@ -12,7 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var logging *log.Logger
+var logging logger.F2SLogger
 
 // pointer to F2SConfiguration
 var F2SConfiguration config.F2SConfiguration
@@ -109,7 +108,7 @@ func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
 	F2SConfiguration = *config
 
 	// subscribe to configuration changes
-	logging.Println("subscribing to config package events")
+	logging.Info("subscribing to config package events")
 	config.EventManager.Subscribe(handleEvent)
 
 	router := mux.NewRouter().StrictSlash(false)

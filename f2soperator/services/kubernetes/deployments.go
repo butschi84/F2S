@@ -76,10 +76,10 @@ func CreateDeployment(name string, image string, labels map[string]string, port 
 }
 
 func DeleteDeployment(uid string) error {
-	logging.Println("request to delete a K8S deployment:", uid)
+	logging.Info("request to delete a K8S deployment:", uid)
 
 	// initialize clientset
-	logging.Println("initializing k8s clientset")
+	logging.Info("initializing k8s clientset")
 	clientset, err := GetV1ClientSet()
 	if err != nil {
 		log.Fatal(err)
@@ -92,11 +92,11 @@ func DeleteDeployment(uid string) error {
 
 	for _, d := range deployments.Items {
 		if d.UID == types.UID(uid) {
-			logging.Println("deleting f2sfunction in k8s")
+			logging.Info("deleting f2sfunction in k8s")
 			err = clientset.AppsV1().Deployments("f2s-containers").Delete(context.Background(), d.Name, metav1.DeleteOptions{})
 
 			if err != nil {
-				logging.Println("error during deletion: ", err)
+				logging.Error(fmt.Errorf("error during deletion: %s", err))
 			}
 
 			return nil
@@ -107,10 +107,10 @@ func DeleteDeployment(uid string) error {
 }
 
 func ScaleDeployment(deploymentName string, replicas int32) error {
-	logging.Println("request to scale a K8S deployment:", deploymentName)
+	logging.Info("request to scale a K8S deployment:", deploymentName)
 
 	// Initialize clientset
-	logging.Println("initializing K8S clientset")
+	logging.Info("initializing K8S clientset")
 	clientset, err := GetV1ClientSet()
 	if err != nil {
 		log.Fatal(err)

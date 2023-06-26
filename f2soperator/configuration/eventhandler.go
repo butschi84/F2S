@@ -12,18 +12,18 @@ import (
 
 // will be called when f2sfunction / crd changes in k8s
 func OnF2SFunctionChanged(obj interface{}) {
-	logging.Println("F2S Functions Changes. Reloading Config...")
+	logging.Info("F2S Functions Changes. Reloading Config...")
 
-	logging.Println("read all F2SFunctions from K8S")
+	logging.Info("read all F2SFunctions from K8S")
 	functions, err := kubernetesservice.GetF2SFunctions()
 	if err != nil {
-		logging.Println("Failed to read f2s functions")
+		logging.Info("Failed to read f2s functions")
 		return
 	}
 
 	// update active configuration
 	ActiveConfiguration.Functions = functions
-	logging.Println("number of functions:", len(ActiveConfiguration.Functions.Items))
+	logging.Info("number of functions:", string(len(ActiveConfiguration.Functions.Items)))
 
 	// send config change event
 	ActiveConfiguration.EventManager.Publish(eventmanager.Event{
@@ -33,16 +33,16 @@ func OnF2SFunctionChanged(obj interface{}) {
 }
 
 func OnF2SEndpointsChanged(obj interface{}) {
-	logging.Println("Endpoints have changed")
+	logging.Info("Endpoints have changed")
 
 	// try parse endpoint obj
 	d := &corev1.Endpoints{}
 	err := runtime.DefaultUnstructuredConverter.
 		FromUnstructured(obj.(*unstructured.Unstructured).UnstructuredContent(), d)
 	if err != nil {
-		logging.Println("could not convert event to endpoint")
-		logging.Print(err)
+		logging.Error(fmt.Errorf("could not convert event to endpoint"))
+		logging.Error(err)
 		return
 	}
-	logging.Println(fmt.Sprintf("changed endpoint %s (%s)", d.Name, d.UID))
+	logging.Info(fmt.Sprintf("changed endpoint %s (%s)", d.Name, d.UID))
 }

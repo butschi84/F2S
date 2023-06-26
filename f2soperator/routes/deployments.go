@@ -10,7 +10,7 @@ import (
 // all deployments
 // *********************************************************
 func getAllDeployments(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to get all functions")
+	logging.Info("request to get all functions")
 
 	// set response headers
 	w.Header().Set("Content-Type", "application/json")
@@ -24,7 +24,7 @@ func getAllDeployments(w http.ResponseWriter, r *http.Request) {
 // create test deployments
 // *********************************************************
 func createDeployment(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to get all functions")
+	logging.Info("request to get all functions")
 
 	// set response headers
 	w.Header().Set("Content-Type", "application/json")

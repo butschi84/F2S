@@ -3,14 +3,13 @@ package routes
 import (
 	config "butschi84/f2s/configuration"
 	"butschi84/f2s/logger"
-	"log"
 	"net/http"
 	"sync"
 
 	"github.com/gorilla/mux"
 )
 
-var logging *log.Logger
+var logging logger.F2SLogger
 
 // pointer to F2SConfiguration
 var F2SConfiguration config.F2SConfiguration
@@ -31,7 +30,7 @@ func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
 	router := mux.NewRouter().StrictSlash(false)
 
 	// subscribe to configuration changes
-	logging.Println("subscribing to config package events")
+	logging.Info("subscribing to config package events")
 	config.EventManager.Subscribe(handleEvent)
 
 	// openAPI spec

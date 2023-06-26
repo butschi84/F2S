@@ -13,7 +13,7 @@ import (
 )
 
 func root(w http.ResponseWriter, r *http.Request) {
-	logging.Println("endpoint hit: homepage")
+	logging.Info("endpoint hit: homepage")
 	json.NewEncoder(w).Encode(Status{Status: "up"})
 }
 
@@ -21,7 +21,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 // all functions
 // *********************************************************
 func returnAllFunctions(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to get all functions")
+	logging.Info("request to get all functions")
 
 	// set response headers
 	w.Header().Set("Content-Type", "application/json")
@@ -43,7 +43,7 @@ func getFunction(w http.ResponseWriter, r *http.Request) {
 
 	functions := config.ActiveConfiguration.Functions
 
-	logging.Println("searching for uid: ", key)
+	logging.Info("searching for uid: ", key)
 	for _, function := range functions.Items {
 		if string(function.ObjectMeta.UID) == key {
 			json.NewEncoder(w).Encode(function.Prettify())
@@ -58,9 +58,9 @@ func getFunction(w http.ResponseWriter, r *http.Request) {
 // create a function
 // *********************************************************
 func createFunction(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to create a new function")
+	logging.Info("request to create a new function")
 
-	logging.Println("parsing request body")
+	logging.Info("parsing request body")
 	// Read the request body
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -73,7 +73,7 @@ func createFunction(w http.ResponseWriter, r *http.Request) {
 
 	// Unmarshal the JSON data into the function struct
 	if err := json.Unmarshal(body, &function); err != nil {
-		logging.Println(err)
+		logging.Error(err)
 		http.Error(w, "Failed to parse JSON data", http.StatusBadRequest)
 		return
 	}
@@ -90,10 +90,10 @@ func createFunction(w http.ResponseWriter, r *http.Request) {
 
 // delete a F2SFunction
 func deleteFunction(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to delete a function")
+	logging.Info("request to delete a function")
 
 	// parse uid
-	logging.Println("parsing uid from request")
+	logging.Info("parsing uid from request")
 	vars := mux.Vars(r)
 	key := vars["id"]
 

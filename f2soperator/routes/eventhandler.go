@@ -1,7 +1,10 @@
 package routes
 
-import "butschi84/f2s/services/eventmanager"
+import (
+	"butschi84/f2s/services/eventmanager"
+	"fmt"
+)
 
 func handleEvent(event eventmanager.Event) {
-	logging.Println("processing event", event)
+	logging.Info("processing event", fmt.Sprintf("'%s'", string(event.Type)))
 }

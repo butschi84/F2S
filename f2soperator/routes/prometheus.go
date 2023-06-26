@@ -13,7 +13,7 @@ import (
 // all deployments
 // *********************************************************
 func getPrometheusMetric(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to get a prometheus metric")
+	logging.Info("request to get a prometheus metric")
 
 	vars := mux.Vars(r)
 	functionName := vars["functionname"]
@@ -21,7 +21,7 @@ func getPrometheusMetric(w http.ResponseWriter, r *http.Request) {
 
 	result, err := prometheus.ReadPrometheusMetric(&F2SConfiguration, metricName, map[string]string{"functionname": functionName})
 	if err != nil {
-		logging.Println(fmt.Sprintf("could not read prometheus metric %s", err))
+		logging.Error(fmt.Errorf("could not read prometheus metric %s", err))
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("could not read prometheus metric %s", err)})
 		return
 	}

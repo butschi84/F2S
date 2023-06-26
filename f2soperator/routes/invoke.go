@@ -37,9 +37,9 @@ func httpGet(url string) (string, error) {
 func findF2SFunctionForTarget(target string) (*v1alpha1types.Function, error) {
 	for _, f := range F2SConfiguration.Functions.Items {
 		if string(f.Spec.Endpoint) == string(target) {
-			logging.Println(fmt.Sprintf("found function %s (%s) for target: %s", f.Name, f.UID, target))
+			logging.Info(fmt.Sprintf("found function %s (%s) for target: %s", f.Name, f.UID, target))
 			url := fmt.Sprintf("invoke url: http://%s.f2s-containers:%v%s", f.Name, f.Target.Port, f.Target.Endpoint)
-			logging.Println(url)
+			logging.Info(url)
 
 			return &f, nil
 		}
@@ -49,10 +49,10 @@ func findF2SFunctionForTarget(target string) (*v1alpha1types.Function, error) {
 
 // delete a F2SFunction
 func invokeFunction(w http.ResponseWriter, r *http.Request) {
-	logging.Println("request to invoke a function")
+	logging.Info("request to invoke a function")
 
 	// parse uid
-	logging.Println("parsing target path from request")
+	logging.Info("parsing target path from request")
 	vars := mux.Vars(r)
 	key := "/" + vars["target"]
 
@@ -63,7 +63,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	// find relevant function for this target
 	f, err := findF2SFunctionForTarget(key)
 	if err != nil {
-		logging.Println(fmt.Sprintf("function not found for endpoint %s", key))
+		logging.Info(fmt.Sprintf("function not found for endpoint %s", key))
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed - function not found for endpoint %s", key)})
 		return
 	}
@@ -84,7 +84,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// measure time elapsed
 	elapsed := time.Since(start)
-	logging.Printf("Function execution time: %s\n", elapsed)
+	logging.Info("Function execution time: %s\n", fmt.Sprintf("%s", elapsed))
 
 	// send invocation end event
 	F2SConfiguration.EventManager.Publish(eventmanager.Event{
@@ -95,10 +95,11 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// send results
 	if err != nil {
-		logging.Println("error during invocation", err)
+		logging.Error(fmt.Errorf("error during invocation"))
+		logging.Error(err)
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("error during invocation: %s", err)})
 	} else {
-		logging.Println(fmt.Sprintf("invocation of function %s completed in %v ms", *&f.Name, elapsed.Milliseconds()))
+		logging.Info(fmt.Sprintf("invocation of function %s completed in %v ms", *&f.Name, elapsed.Milliseconds()))
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
 	}
 }

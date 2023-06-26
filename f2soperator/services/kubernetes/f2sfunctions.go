@@ -2,6 +2,7 @@ package kubernetesservice
 
 import (
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+	"fmt"
 	"log"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -9,13 +10,13 @@ import (
 
 // get all f2s functions
 func GetF2SFunctions() (*typesV1alpha1.FunctionList, error) {
-	logging.Println("GetF2SFunctions: request to get all F2SFunctions (crd's in k8s namespace 'f2s')")
+	logging.Info("GetF2SFunctions: request to get all F2SFunctions (crd's in k8s namespace 'f2s')")
 
 	// initialize clientset
-	logging.Println("initializing k8s clientset")
+	logging.Info("initializing k8s clientset")
 	clientSet, err := GetV1Alpha1ClientSet()
 	if err != nil {
-		logging.Println("error during clientset initialisation: ", err)
+		logging.Error(fmt.Errorf("error during clientset initialisation: %s", err))
 		panic(err)
 	}
 
@@ -24,24 +25,24 @@ func GetF2SFunctions() (*typesV1alpha1.FunctionList, error) {
 		panic(err)
 	}
 
-	logging.Printf("number of configured functions: %+v\n", len(functions.Items))
+	logging.Info("number of configured functions: %s\n", string(len(functions.Items)))
 	return functions, err
 }
 
 // create a new f2s function (crd in k8s namespace f2s)
 func CreateF2SFunction(prettyFunction *typesV1alpha1.PrettyFunction) (*typesV1alpha1.Function, error) {
-	logging.Println("CreateF2SFunction: request to create a new F2S Function (crd in k8s namespace 'f2s')")
+	logging.Info("CreateF2SFunction: request to create a new F2S Function (crd in k8s namespace 'f2s')")
 
 	// initialize clientset
-	logging.Println("initializing k8s clientset")
+	logging.Info("initializing k8s clientset")
 	clientSet, err := GetV1Alpha1ClientSet()
 	if err != nil {
-		logging.Println("error during clientset initialisation: ", err)
+		logging.Error(fmt.Errorf("error during clientset initialisation: %s", err))
 		panic(err)
 	}
 
 	// prepare metadata
-	logging.Println("preparing metadata for new f2sfunction creation")
+	logging.Info("preparing metadata for new f2sfunction creation")
 	newFunction := &typesV1alpha1.Function{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: prettyFunction.Name,
@@ -60,10 +61,10 @@ func CreateF2SFunction(prettyFunction *typesV1alpha1.PrettyFunction) (*typesV1al
 	}
 
 	// Create new function CRD Object
-	logging.Println("creating function in k8s")
+	logging.Info("creating function in k8s")
 	function, err := clientSet.Functions("f2s").Create(newFunction)
 	if err != nil {
-		logging.Println("error during function creation: ", err)
+		logging.Error(fmt.Errorf("error during function creation: %s", err))
 		log.Fatal(err)
 	}
 
@@ -72,21 +73,21 @@ func CreateF2SFunction(prettyFunction *typesV1alpha1.PrettyFunction) (*typesV1al
 
 // delete a f2s function (crd in k8s namespace f2s)
 func DeleteF2SFunction(uid string) error {
-	logging.Println("request to delete a F2SFunction in K8S: ", uid)
+	logging.Info("request to delete a F2SFunction in K8S: ", uid)
 
 	// initialize clientset
-	logging.Println("initializing k8s clientset")
+	logging.Info("initializing k8s clientset")
 	clientSet, err := GetV1Alpha1ClientSet()
 	if err != nil {
-		logging.Println("error during clientset initialisation: ", err)
+		logging.Error(fmt.Errorf("error during clientset initialisation: %s", err))
 		panic(err)
 	}
 
-	logging.Println("deleting f2sfunction in k8s")
+	logging.Info("deleting f2sfunction in k8s")
 	err = clientSet.Functions("f2s").Delete(uid, metav1.DeleteOptions{})
 
 	if err != nil {
-		logging.Println("error during deletion: ", err)
+		logging.Error(fmt.Errorf("error during deletion: %s", err))
 	}
 
 	return err
