@@ -33,6 +33,18 @@ paths:
             application/json:
               schema:
                 type: object
+  /config:
+    get:
+      summary: get current f2s configuration
+      tags:
+        - Configuration
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /endpoints:
     get:
       summary: get all current k8s functions endpoints

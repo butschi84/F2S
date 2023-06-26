@@ -7,9 +7,10 @@ import (
 
 // f2s configmap
 type F2SConfiguration struct {
-	Config       F2SConfigMap
-	Functions    *typesV1alpha1.FunctionList
-	EventManager *eventmanager.EventManager
+	Config           F2SConfigMap
+	Functions        *typesV1alpha1.FunctionList
+	EventManager     *eventmanager.EventManager
+	EndpointActivity []EndpointActivity
 }
 
 type F2SConfigMap struct {
@@ -19,4 +20,11 @@ type F2SConfigMap struct {
 
 type F2SConfigMapPrometheus struct {
 	URL string `yaml:"url"`
+}
+
+// keeps track of current inflight requests
+type EndpointActivity struct {
+	EndpointIP       string `yaml:"endpointIP"`
+	Function         typesV1alpha1.PrettyFunction
+	InflightRequests int `yaml:"inflightRequests"`
 }
