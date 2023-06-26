@@ -54,6 +54,11 @@ func init() {
 		logging.Println(fmt.Sprintf("=> debug: %v", true))
 	}
 
+	// watch change events of f2sfunction crd in k8s
 	logging.Println("starting to watch f2sfunctions in k8s")
-	go kubernetesservice.WatchF2SFunctions(OnF2SFunctionChanged)
+	go kubernetesservice.WatchKubernetesResource("functions.v1alpha1.f2s.opensight.ch", "f2s", OnF2SFunctionChanged)
+
+	// watch change events of endpoints in k8s (namespace f2s-containers)
+	logging.Println("starting to watch endpoints in k8s")
+	go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
 }

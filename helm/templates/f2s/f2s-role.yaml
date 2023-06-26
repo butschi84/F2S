@@ -7,6 +7,9 @@ rules:
     resources:
       ["pods", "replicationcontrollers", "persistentvolumeclaims", "endpoints"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["core"]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["services"]
     verbs: ["get", "list", "watch", "create", "update", "delete"]

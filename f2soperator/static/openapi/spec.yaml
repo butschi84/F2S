@@ -7,6 +7,8 @@ info:
 tags:
   - name: Configuration
     description: Manage F2S Configuration
+  - name: K8S
+    description: Get Information about F2S Kubernetes Items
   - name: Containers
     description: Interact with F2S-Containers K8S Namespace
   - name: Invoke
@@ -31,6 +33,29 @@ paths:
             application/json:
               schema:
                 type: object
+  /endpoints:
+    get:
+      summary: get all current k8s functions endpoints
+      tags:
+        - K8S
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                  apiVersion:
+                    type: string
+                  metadata:
+                    type: object
+                  items:
+                    type: array
+                    items:
+                      type: object
   /functions:
     get:
       summary: get all configured functions
