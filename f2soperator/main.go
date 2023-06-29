@@ -2,10 +2,10 @@ package main
 
 import (
 	"butschi84/f2s/configuration"
-	"butschi84/f2s/logger"
 	"butschi84/f2s/metrics"
 	"butschi84/f2s/operator"
 	"butschi84/f2s/routes"
+	"butschi84/f2s/services/logger"
 	"sync"
 )
 

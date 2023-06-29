@@ -1,7 +1,7 @@
 package kubernetesservice
 
 import (
-	"butschi84/f2s/logger"
+	"butschi84/f2s/services/logger"
 )
 
 var logging logger.F2SLogger

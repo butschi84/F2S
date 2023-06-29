@@ -2,7 +2,7 @@ package operator
 
 import (
 	"butschi84/f2s/configuration"
-	"butschi84/f2s/logger"
+	"butschi84/f2s/services/logger"
 	"butschi84/f2s/services/prometheus"
 	"os"
 	"sort"

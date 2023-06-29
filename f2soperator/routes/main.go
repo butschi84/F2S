@@ -2,7 +2,7 @@ package routes
 
 import (
 	config "butschi84/f2s/configuration"
-	"butschi84/f2s/logger"
+	"butschi84/f2s/services/logger"
 	"net/http"
 	"sync"
 
