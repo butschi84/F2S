@@ -35,7 +35,7 @@ func httpGet(url string) (string, error) {
 
 // search k8s crd's (f2sfunction) for matching target
 func findF2SFunctionForTarget(target string) (*v1alpha1types.Function, error) {
-	for _, f := range F2SConfiguration.Functions.Items {
+	for _, f := range F2SHub.F2SConfiguration.Functions.Items {
 		if string(f.Spec.Endpoint) == string(target) {
 			logging.Info(fmt.Sprintf("found function %s (%s) for target: %s", f.Name, f.UID, target))
 			url := fmt.Sprintf("invoke url: http://%s.f2s-containers:%v%s", f.Name, f.Target.Port, f.Target.Endpoint)
@@ -69,8 +69,8 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// send 'function invoked' event
-	F2SConfiguration.EventManager.Publish(eventmanager.Event{
-		UID:      F2SConfiguration.EventManager.GenerateUUID(),
+	F2SHub.F2SConfiguration.EventManager.Publish(eventmanager.Event{
+		UID:      F2SHub.F2SConfiguration.EventManager.GenerateUUID(),
 		Data:     key,
 		Function: *f,
 		Type:     eventmanager.Event_FunctionInvoked,
@@ -88,8 +88,8 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	logging.Info("Function execution time: %s\n", fmt.Sprintf("%s", elapsed))
 
 	// send invocation end event
-	F2SConfiguration.EventManager.Publish(eventmanager.Event{
-		UID:      F2SConfiguration.EventManager.GenerateUUID(),
+	F2SHub.F2SConfiguration.EventManager.Publish(eventmanager.Event{
+		UID:      F2SHub.F2SConfiguration.EventManager.GenerateUUID(),
 		Data:     elapsed,
 		Function: *f,
 		Type:     eventmanager.Event_FunctionInvokationEnded,

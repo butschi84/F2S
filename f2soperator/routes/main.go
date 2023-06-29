@@ -1,7 +1,7 @@
 package routes
 
 import (
-	config "butschi84/f2s/configuration"
+	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"net/http"
 	"sync"
@@ -12,7 +12,7 @@ import (
 var logging logger.F2SLogger
 
 // pointer to F2SConfiguration
-var F2SConfiguration config.F2SConfiguration
+var F2SHub hub.F2SHub
 
 type Status struct {
 	Status string `json:"status"`
@@ -23,15 +23,15 @@ func init() {
 	logging = logger.Initialize("routes")
 }
 
-func HandleRequests(config *config.F2SConfiguration, wg *sync.WaitGroup) {
+func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	F2SConfiguration = *config
+	F2SHub = *hub
 	router := mux.NewRouter().StrictSlash(false)
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")
-	config.EventManager.Subscribe(handleEvent)
+	F2SHub.F2SConfiguration.EventManager.Subscribe(handleEvent)
 
 	// openAPI spec
 	openAPIHandler := http.FileServer(http.Dir("./static/openapi"))

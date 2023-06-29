@@ -2,6 +2,7 @@ package operator
 
 import (
 	"butschi84/f2s/configuration"
+	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/services/prometheus"
 	"os"
@@ -19,12 +20,12 @@ func init() {
 	master = false
 }
 
-func RunOperator(config *configuration.F2SConfiguration, wg *sync.WaitGroup) {
+func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to events")
-	config.EventManager.Subscribe(handleEvent)
+	hub.F2SConfiguration.EventManager.Subscribe(handleEvent)
 
 	for {
 		// check if this f2s replica is the master

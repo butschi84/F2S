@@ -1,8 +1,8 @@
 package dispatcher
 
 import (
-	"butschi84/f2s/configuration"
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+	"butschi84/f2s/hub"
 	"sync"
 )
 
@@ -14,7 +14,7 @@ type F2SRequest struct {
 }
 
 type F2SDispatcher struct {
-	Config    *configuration.F2SConfiguration
+	Hub       *hub.F2SHub
 	WaitGroup *sync.WaitGroup
 
 	FunctionTargets []FunctionTarget

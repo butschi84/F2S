@@ -14,7 +14,7 @@ func getConfiguration(w http.ResponseWriter, r *http.Request) {
 	// set response headers
 	w.Header().Set("Content-Type", "application/json")
 
-	jsonBytes, err := json.MarshalIndent(F2SConfiguration, "", "  ")
+	jsonBytes, err := json.MarshalIndent(F2SHub.F2SConfiguration, "", "  ")
 	if err != nil {
 		return
 	}
