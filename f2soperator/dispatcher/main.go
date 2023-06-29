@@ -1,21 +1,10 @@
 package dispatcher
 
 import (
-	"butschi84/f2s/configuration"
 	"butschi84/f2s/services/logger"
-	"sync"
 )
 
 var logging logger.F2SLogger
-
-type F2SDispatcher struct {
-	Config    *configuration.F2SConfiguration
-	WaitGroup *sync.WaitGroup
-}
-
-type IF2SDispatcher interface {
-	HandleRequests()
-}
 
 func init() {
 	// initialize logging

@@ -61,4 +61,5 @@ func init() {
 	// watch change events of endpoints in k8s (namespace f2s-containers)
 	logging.Info("starting to watch endpoints in k8s")
 	go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
+
 }
