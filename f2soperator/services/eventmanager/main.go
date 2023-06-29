@@ -2,6 +2,8 @@ package eventmanager
 
 import (
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+
+	"github.com/google/uuid"
 )
 
 // possible event types
@@ -15,6 +17,8 @@ const (
 )
 
 type Event struct {
+	// generate a random id (uid) for each event
+	UID string
 	// Data is the payload of the event
 	Data interface{}
 	// event type
@@ -36,14 +40,25 @@ func NewEventManager() *EventManager {
 	}
 }
 
+// function to publish a new event on eventmanager
 func (em *EventManager) Publish(event Event) {
 	em.eventChannel <- event
 }
 
+// function to generate a random uuid
+func (em *EventManager) GenerateUUID() string {
+	// Generate a new random UUID
+	uuid := uuid.New()
+
+	return uuid.String()
+}
+
+// function to subscribe to events from eventmanager
 func (em *EventManager) Subscribe(handler EventHandler) {
 	em.eventHandlers = append(em.eventHandlers, handler)
 }
 
+// start event manager
 func (em *EventManager) Start() {
 	go func() {
 		for {

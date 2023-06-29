@@ -27,6 +27,7 @@ func OnF2SFunctionChanged(obj interface{}) {
 
 	// send config change event
 	ActiveConfiguration.EventManager.Publish(eventmanager.Event{
+		UID:  ActiveConfiguration.EventManager.GenerateUUID(),
 		Data: "F2SFunctions Changed in K8S",
 		Type: eventmanager.Event_ConfigurationChanged,
 	})

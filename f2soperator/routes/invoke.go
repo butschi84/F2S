@@ -70,6 +70,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// send 'function invoked' event
 	F2SConfiguration.EventManager.Publish(eventmanager.Event{
+		UID:      F2SConfiguration.EventManager.GenerateUUID(),
 		Data:     key,
 		Function: *f,
 		Type:     eventmanager.Event_FunctionInvoked,
@@ -88,6 +89,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// send invocation end event
 	F2SConfiguration.EventManager.Publish(eventmanager.Event{
+		UID:      F2SConfiguration.EventManager.GenerateUUID(),
 		Data:     elapsed,
 		Function: *f,
 		Type:     eventmanager.Event_FunctionInvokationEnded,
