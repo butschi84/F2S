@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	"butschi84/f2s/services/eventmanager"
+	"butschi84/f2s/eventmanager"
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 	"butschi84/f2s/services/logger"
 	"fmt"

@@ -2,7 +2,7 @@ package configuration
 
 import (
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
-	"butschi84/f2s/services/eventmanager"
+	"butschi84/f2s/eventmanager"
 )
 
 // f2s configmap

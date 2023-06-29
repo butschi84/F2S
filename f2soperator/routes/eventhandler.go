@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"butschi84/f2s/services/eventmanager"
+	"butschi84/f2s/eventmanager"
 	"fmt"
 )
 

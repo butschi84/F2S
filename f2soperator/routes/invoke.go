@@ -2,7 +2,7 @@ package routes
 
 import (
 	v1alpha1types "butschi84/f2s/configuration/api/types/v1alpha1"
-	"butschi84/f2s/services/eventmanager"
+	"butschi84/f2s/eventmanager"
 	"encoding/json"
 	"errors"
 	"fmt"
