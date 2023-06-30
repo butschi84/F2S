@@ -19,7 +19,9 @@ func handleRequests(req queue.F2SRequest) {
 	// search function target
 }
 
-// get FunctionTarget for Request
+// get FunctionTarget for F2SRequest
 func getFunctionTarget(req queue.F2SRequest) {
-	// for _, traget := range
+	for _, target := range functionTargets {
+		fmt.Println(target)
+	}
 }

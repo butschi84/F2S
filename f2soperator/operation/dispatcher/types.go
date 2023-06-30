@@ -3,10 +3,12 @@ package dispatcher
 import (
 	typesV1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
 	"butschi84/f2s/state/queue"
+
+	corev1 "k8s.io/api/core/v1"
 )
 
 type FunctionServingPod struct {
-	IP               string
+	Address          corev1.EndpointAddress
 	InflightRequests []queue.F2SRequest
 }
 

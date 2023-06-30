@@ -50,6 +50,6 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	router.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)
 
 	router.HandleFunc("/", root)
-
+	logging.Info("listening on http://0.0.0.0:8080")
 	http.ListenAndServe("0.0.0.0:8080", router)
 }
