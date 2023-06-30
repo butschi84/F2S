@@ -1,25 +1,29 @@
 package dispatcher
 
 import (
+	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
+	"sync"
 )
 
 var logging logger.F2SLogger
+var f2shub *hub.F2SHub
+var functionTargets []FunctionTarget
 
-func init() {
+func Initialize(hub *hub.F2SHub, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	// consume variables
+	f2shub = hub
+
 	// initialize logging
 	logging = logger.Initialize("dispatcher")
-}
-
-// main dispatcher function
-func (F2SDispatcher *F2SDispatcher) HandleRequests() {
-	defer F2SDispatcher.WaitGroup.Done()
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")
-	F2SDispatcher.Hub.F2SEventManager.Subscribe(handleEvents)
+	hub.F2SEventManager.Subscribe(handleEvents)
 
 	// subscribe to new requests
 	logging.Info("subscribing to incoming requests")
-	F2SDispatcher.Hub.F2SQueue.Subscribe(handleRequests)
+	hub.F2SQueue.Subscribe(handleRequests)
 }

@@ -57,11 +57,7 @@ func main() {
 
 	// start dispatcher
 	logging.Info("=> initializng request dispatcher")
-	dispatcher := dispatcher.F2SDispatcher{
-		Hub:       &F2SHub,
-		WaitGroup: &wg,
-	}
-	go dispatcher.HandleRequests()
+	go dispatcher.Initialize(&F2SHub, &wg)
 
 	logging.Info("=> done initializing")
 	wg.Wait()
