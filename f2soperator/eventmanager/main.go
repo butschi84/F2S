@@ -35,9 +35,11 @@ type EventManager struct {
 }
 
 func NewEventManager() *EventManager {
-	return &EventManager{
+	eventmanager := &EventManager{
 		eventChannel: make(chan Event),
 	}
+	eventmanager.Start()
+	return eventmanager
 }
 
 // function to publish a new event on eventmanager

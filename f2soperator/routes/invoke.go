@@ -69,8 +69,8 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// send 'function invoked' event
-	F2SHub.F2SConfiguration.EventManager.Publish(eventmanager.Event{
-		UID:      F2SHub.F2SConfiguration.EventManager.GenerateUUID(),
+	F2SHub.F2SEventManager.Publish(eventmanager.Event{
+		UID:      F2SHub.F2SEventManager.GenerateUUID(),
 		Data:     key,
 		Function: *f,
 		Type:     eventmanager.Event_FunctionInvoked,
@@ -88,8 +88,8 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	logging.Info("Function execution time: %s\n", fmt.Sprintf("%s", elapsed))
 
 	// send invocation end event
-	F2SHub.F2SConfiguration.EventManager.Publish(eventmanager.Event{
-		UID:      F2SHub.F2SConfiguration.EventManager.GenerateUUID(),
+	F2SHub.F2SEventManager.Publish(eventmanager.Event{
+		UID:      F2SHub.F2SEventManager.GenerateUUID(),
 		Data:     elapsed,
 		Function: *f,
 		Type:     eventmanager.Event_FunctionInvokationEnded,

@@ -1,7 +1,6 @@
 package configuration
 
 import (
-	"butschi84/f2s/eventmanager"
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 	"butschi84/f2s/services/logger"
 	"fmt"
@@ -15,7 +14,7 @@ var logging logger.F2SLogger
 
 var ActiveConfiguration F2SConfiguration
 
-func init() {
+func Initialize() F2SConfiguration {
 	// initialize logging
 	logging = logger.Initialize("configuration")
 
@@ -23,12 +22,8 @@ func init() {
 	functions, err := kubernetesservice.GetF2SFunctions()
 	if err != nil {
 		logging.Info("Failed to read f2s functions")
-		return
+		return F2SConfiguration{}
 	}
-
-	// start eventmanager (other packages will subscribe to this)
-	eventManager := eventmanager.NewEventManager()
-	eventManager.Start()
 
 	// read f2sconfigmap
 	// Read YAML file
@@ -43,9 +38,8 @@ func init() {
 
 	logging.Info("initializing config")
 	ActiveConfiguration = F2SConfiguration{
-		Functions:    functions,
-		EventManager: eventManager,
-		Config:       config,
+		Functions: functions,
+		Config:    config,
 	}
 
 	// debug output configmap
@@ -55,11 +49,12 @@ func init() {
 	}
 
 	// watch change events of f2sfunction crd in k8s
-	logging.Info("starting to watch f2sfunctions in k8s")
-	go kubernetesservice.WatchKubernetesResource("functions.v1alpha1.f2s.opensight.ch", "f2s", OnF2SFunctionChanged)
+	// logging.Info("starting to watch f2sfunctions in k8s")
+	// go kubernetesservice.WatchKubernetesResource("functions.v1alpha1.f2s.opensight.ch", "f2s", OnF2SFunctionChanged)
 
-	// watch change events of endpoints in k8s (namespace f2s-containers)
-	logging.Info("starting to watch endpoints in k8s")
-	go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
+	// // watch change events of endpoints in k8s (namespace f2s-containers)
+	// logging.Info("starting to watch endpoints in k8s")
+	// go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
 
+	return ActiveConfiguration
 }

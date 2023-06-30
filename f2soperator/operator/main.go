@@ -9,10 +9,13 @@ import (
 	"sort"
 	"sync"
 	"time"
+
+	kubernetesservice "butschi84/f2s/services/kubernetes"
 )
 
 var logging logger.F2SLogger
 var master bool
+var F2SHub *hub.F2SHub
 
 func init() {
 	// initialize logging
@@ -23,9 +26,19 @@ func init() {
 func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	defer wg.Done()
 
+	F2SHub = hub
+
 	// subscribe to configuration changes
 	logging.Info("subscribing to events")
-	hub.F2SConfiguration.EventManager.Subscribe(handleEvent)
+	hub.F2SEventManager.Subscribe(handleEvent)
+
+	// watch change events of f2sfunction crd in k8s
+	logging.Info("starting to watch f2sfunctions in k8s")
+	go kubernetesservice.WatchKubernetesResource("functions.v1alpha1.f2s.opensight.ch", "f2s", OnF2SFunctionChanged)
+
+	// // watch change events of endpoints in k8s (namespace f2s-containers)
+	logging.Info("starting to watch endpoints in k8s")
+	go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
 
 	for {
 		// check if this f2s replica is the master

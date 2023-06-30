@@ -11,7 +11,6 @@ import (
 
 var logging logger.F2SLogger
 
-// pointer to F2SConfiguration
 var F2SHub hub.F2SHub
 
 type Status struct {
@@ -31,7 +30,7 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")
-	F2SHub.F2SConfiguration.EventManager.Subscribe(handleEvent)
+	F2SHub.F2SEventManager.Subscribe(handleEvent)
 
 	// openAPI spec
 	openAPIHandler := http.FileServer(http.Dir("./static/openapi"))

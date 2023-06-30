@@ -2,14 +2,12 @@ package configuration
 
 import (
 	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
-	"butschi84/f2s/eventmanager"
 )
 
 // f2s configmap
 type F2SConfiguration struct {
-	Config       F2SConfigMap
-	Functions    *typesV1alpha1.FunctionList
-	EventManager *eventmanager.EventManager
+	Config    F2SConfigMap
+	Functions *typesV1alpha1.FunctionList
 }
 
 type F2SConfigMap struct {

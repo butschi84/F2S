@@ -109,7 +109,7 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")
-	hub.F2SConfiguration.EventManager.Subscribe(handleEvent)
+	hub.F2SEventManager.Subscribe(handleEvent)
 
 	router := mux.NewRouter().StrictSlash(false)
 	router.HandleFunc("/metrics", metricsHandler)

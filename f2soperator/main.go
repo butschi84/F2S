@@ -3,6 +3,7 @@ package main
 import (
 	"butschi84/f2s/configuration"
 	"butschi84/f2s/dispatcher"
+	"butschi84/f2s/eventmanager"
 	"butschi84/f2s/hub"
 	"butschi84/f2s/metrics"
 	"butschi84/f2s/operator"
@@ -29,7 +30,8 @@ func main() {
 
 	logging.Info("=> initializing config package")
 	F2SHub = hub.F2SHub{
-		F2SConfiguration: configuration.ActiveConfiguration,
+		F2SEventManager:  eventmanager.NewEventManager(),
+		F2SConfiguration: configuration.Initialize(),
 	}
 
 	var wg sync.WaitGroup
