@@ -1,14 +1,15 @@
 package main
 
 import (
-	"butschi84/f2s/configuration"
-	"butschi84/f2s/dispatcher"
-	"butschi84/f2s/eventmanager"
 	"butschi84/f2s/hub"
-	"butschi84/f2s/metrics"
-	"butschi84/f2s/operator"
-	"butschi84/f2s/routes"
+	"butschi84/f2s/operation/dispatcher"
+	"butschi84/f2s/operation/metrics"
+	"butschi84/f2s/operation/operator"
+	"butschi84/f2s/operation/routes"
 	"butschi84/f2s/services/logger"
+	"butschi84/f2s/state/configuration"
+	"butschi84/f2s/state/eventmanager"
+
 	"sync"
 )
 

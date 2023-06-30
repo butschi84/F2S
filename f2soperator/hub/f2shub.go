@@ -1,8 +1,8 @@
 package hub
 
 import (
-	"butschi84/f2s/configuration"
-	"butschi84/f2s/eventmanager"
+	"butschi84/f2s/state/configuration"
+	"butschi84/f2s/state/eventmanager"
 )
 
 type F2SHub struct {

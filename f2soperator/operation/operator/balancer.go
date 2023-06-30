@@ -1,9 +1,9 @@
 package operator
 
 import (
-	"butschi84/f2s/configuration"
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 	"butschi84/f2s/services/prometheus"
+	"butschi84/f2s/state/configuration"
 	"fmt"
 	"log"
 	"math"

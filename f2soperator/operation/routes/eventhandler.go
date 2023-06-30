@@ -1,11 +1,10 @@
-package dispatcher
+package routes
 
 import (
-	"butschi84/f2s/eventmanager"
+	"butschi84/f2s/state/eventmanager"
 	"fmt"
 )
 
-func handleEvents(event eventmanager.Event) {
+func handleEvent(event eventmanager.Event) {
 	logging.Info("processing event", fmt.Sprintf("'%s'", string(event.Type)))
-
 }

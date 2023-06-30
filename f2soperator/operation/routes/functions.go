@@ -1,9 +1,9 @@
 package routes
 
 import (
-	config "butschi84/f2s/configuration"
-	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
 	kubernetesservice "butschi84/f2s/services/kubernetes"
+	config "butschi84/f2s/state/configuration"
+	typesV1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

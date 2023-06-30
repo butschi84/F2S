@@ -1,10 +1,10 @@
 package operator
 
 import (
-	"butschi84/f2s/configuration"
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/services/prometheus"
+	"butschi84/f2s/state/configuration"
 	"os"
 	"sort"
 	"sync"

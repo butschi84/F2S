@@ -1,7 +1,7 @@
 package operator
 
 import (
-	"butschi84/f2s/eventmanager"
+	"butschi84/f2s/state/eventmanager"
 	"fmt"
 
 	corev1 "k8s.io/api/core/v1"

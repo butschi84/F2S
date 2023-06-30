@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+	typesV1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
 )
 
 // f2s configmap

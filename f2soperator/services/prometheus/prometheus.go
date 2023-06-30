@@ -1,7 +1,7 @@
 package prometheus
 
 import (
-	"butschi84/f2s/configuration"
+	"butschi84/f2s/state/configuration"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
