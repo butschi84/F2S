@@ -18,4 +18,8 @@ func (F2SDispatcher *F2SDispatcher) HandleRequests() {
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")
 	F2SDispatcher.Hub.F2SEventManager.Subscribe(handleEvents)
+
+	// subscribe to new requests
+	logging.Info("subscribing to incoming requests")
+	F2SDispatcher.Hub.F2SQueue.Subscribe(handleRequests)
 }

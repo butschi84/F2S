@@ -1,7 +1,11 @@
 package dispatcher
 
+import (
+	"butschi84/f2s/state/queue"
+)
+
 // put new incoming requests into queue
-func (target *FunctionTarget) ServeRequest(request F2SRequest) {
+func (target *FunctionTarget) ServeRequest(request queue.F2SRequest) {
 	// add inflight request to first pod in array
 	target.ServingPods[0].InflightRequests = append(target.ServingPods[0].InflightRequests, request)
 

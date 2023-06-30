@@ -9,6 +9,7 @@ import (
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/state/configuration"
 	"butschi84/f2s/state/eventmanager"
+	"butschi84/f2s/state/queue"
 
 	"sync"
 )
@@ -33,6 +34,7 @@ func main() {
 	F2SHub = hub.F2SHub{
 		F2SEventManager:  eventmanager.NewEventManager(),
 		F2SConfiguration: configuration.Initialize(),
+		F2SQueue:         queue.Queue,
 	}
 
 	var wg sync.WaitGroup
@@ -54,6 +56,7 @@ func main() {
 	go metrics.HandleRequests(&F2SHub, &wg)
 
 	// start dispatcher
+	logging.Info("=> initializng request dispatcher")
 	dispatcher := dispatcher.F2SDispatcher{
 		Hub:       &F2SHub,
 		WaitGroup: &wg,
