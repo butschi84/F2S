@@ -1,17 +1,34 @@
 package queue
 
-var Queue F2SQueue
+import (
+	"butschi84/f2s/services/logger"
+	"fmt"
+)
+
+var logging logger.F2SLogger
 
 func init() {
+	// initialize logging
+	logging = logger.Initialize("queue")
+}
+
+func Initialize() *F2SQueue {
 	f2squeue := F2SQueue{
 		Requests:     make([]F2SRequest, 0),
 		eventChannel: make(chan F2SRequest),
 	}
+	logging.Info("starting queue")
+	f2squeue.Start()
 
+	return &f2squeue
+}
+
+func (f2squeue *F2SQueue) Start() {
 	// start channel
 	go func() {
 		for {
 			event := <-f2squeue.eventChannel
+			logging.Info("processing new event")
 			for _, handler := range f2squeue.eventHandlers {
 				handler(event)
 			}
@@ -26,7 +43,9 @@ func (em *F2SQueue) Subscribe(handler RequestHandler) {
 
 // add a new request to the queue
 func (queue *F2SQueue) AddRequest(req F2SRequest) {
-	Queue.eventChannel <- req
+	logging.Info("adding request to queue")
+	logging.Info(fmt.Sprintf("got %d handlers currently", len(queue.eventHandlers)))
+	queue.eventChannel <- req
 }
 
 // empty the queue

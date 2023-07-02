@@ -9,6 +9,7 @@ import (
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/state/configuration"
 	"butschi84/f2s/state/eventmanager"
+	f2sfunctiontargets "butschi84/f2s/state/functiontargets"
 	"butschi84/f2s/state/queue"
 
 	"sync"
@@ -30,11 +31,12 @@ func main() {
 	logging.Info("F2S Platform 0.0.1")
 	logging.Info("=====================")
 
-	logging.Info("=> initializing config package")
+	logging.Info("=> initializing f2shub")
 	F2SHub = hub.F2SHub{
 		F2SEventManager:  eventmanager.NewEventManager(),
 		F2SConfiguration: configuration.Initialize(),
-		F2SQueue:         queue.Queue,
+		F2SQueue:         queue.Initialize(),
+		F2STargets:       f2sfunctiontargets.Initialize(),
 	}
 
 	var wg sync.WaitGroup

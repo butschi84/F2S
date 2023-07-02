@@ -17,11 +17,8 @@ func handleRequests(req queue.F2SRequest) {
 	logging.Info("processing new function invocation request")
 
 	// search function target
-}
+	functionTarget, _ := f2shub.F2STargets.GetFunctionTargetByEndpoint(req.Path)
+	functionTarget.ServeRequest(req)
 
-// get FunctionTarget for F2SRequest
-func getFunctionTarget(req queue.F2SRequest) {
-	for _, target := range functionTargets {
-		fmt.Println(target)
-	}
+	DebugOutputDispatcherData()
 }

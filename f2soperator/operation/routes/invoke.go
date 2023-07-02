@@ -2,13 +2,12 @@ package routes
 
 import (
 	v1alpha1types "butschi84/f2s/state/configuration/api/types/v1alpha1"
-	"butschi84/f2s/state/eventmanager"
+	"butschi84/f2s/state/queue"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -56,52 +55,67 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := "/" + vars["target"]
 
+	// make request obj
+	request := queue.F2SRequest{
+		UID:    F2SHub.F2SEventManager.GenerateUUID(),
+		Path:   "/" + vars["target"],
+		Method: "GET",
+	}
+
+	// put it into queue
+	logging.Info("add request to queue")
+	F2SHub.F2SQueue.AddRequest(request)
+
+	// wait for completion
+
+	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", key)})
+
 	// also grab the query parameters
-	queryParameters := r.URL.Query()
-	queryString := queryParameters.Encode()
+	// queryParameters := r.URL.Query()
+	// queryString := queryParameters.Encode()
 
-	// find relevant function for this target
-	f, err := findF2SFunctionForTarget(key)
-	if err != nil {
-		logging.Info(fmt.Sprintf("function not found for endpoint %s", key))
-		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed - function not found for endpoint %s", key)})
-		return
-	}
+	// // find relevant function for this target
+	// f, err := findF2SFunctionForTarget(key)
+	// if err != nil {
+	// 	logging.Info(fmt.Sprintf("function not found for endpoint %s", key))
+	// 	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed - function not found for endpoint %s", key)})
+	// 	return
+	// }
 
-	// send 'function invoked' event
-	F2SHub.F2SEventManager.Publish(eventmanager.Event{
-		UID:      F2SHub.F2SEventManager.GenerateUUID(),
-		Data:     key,
-		Function: *f,
-		Type:     eventmanager.Event_FunctionInvoked,
-	})
+	// // send 'function invoked' event
+	// F2SHub.F2SEventManager.Publish(eventmanager.Event{
+	// 	UID:      F2SHub.F2SEventManager.GenerateUUID(),
+	// 	Data:     key,
+	// 	Function: *f,
+	// 	Type:     eventmanager.Event_FunctionInvoked,
+	// })
 
-	// start time measurement
-	start := time.Now()
+	// // start time measurement
+	// start := time.Now()
 
-	// invoke
-	url := fmt.Sprintf("http://%s.f2s-containers:%v%s?%s", f.Name, f.Target.Port, f.Target.Endpoint, queryString)
-	result, err := httpGet(url)
+	// // invoke
+	// url := fmt.Sprintf("http://%s.f2s-containers:%v%s?%s", f.Name, f.Target.Port, f.Target.Endpoint, queryString)
+	// result, err := httpGet(url)
 
-	// measure time elapsed
-	elapsed := time.Since(start)
-	logging.Info("Function execution time: %s\n", fmt.Sprintf("%s", elapsed))
+	// // measure time elapsed
+	// elapsed := time.Since(start)
+	// logging.Info("Function execution time: %s\n", fmt.Sprintf("%s", elapsed))
 
-	// send invocation end event
-	F2SHub.F2SEventManager.Publish(eventmanager.Event{
-		UID:      F2SHub.F2SEventManager.GenerateUUID(),
-		Data:     elapsed,
-		Function: *f,
-		Type:     eventmanager.Event_FunctionInvokationEnded,
-	})
+	// // send invocation end event
+	// F2SHub.F2SEventManager.Publish(eventmanager.Event{
+	// 	UID:      F2SHub.F2SEventManager.GenerateUUID(),
+	// 	Data:     elapsed,
+	// 	Function: *f,
+	// 	Type:     eventmanager.Event_FunctionInvokationEnded,
+	// })
 
-	// send results
-	if err != nil {
-		logging.Error(fmt.Errorf("error during invocation"))
-		logging.Error(err)
-		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("error during invocation: %s", err)})
-	} else {
-		logging.Info(fmt.Sprintf("invocation of function %s completed in %v ms", *&f.Name, elapsed.Milliseconds()))
-		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
-	}
+	// // send results
+	// if err != nil {
+	// 	logging.Error(fmt.Errorf("error during invocation"))
+	// 	logging.Error(err)
+	// 	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("error during invocation: %s", err)})
+	// } else {
+	// 	logging.Info(fmt.Sprintf("invocation of function %s completed in %v ms", *&f.Name, elapsed.Milliseconds()))
+	// 	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
+	// }
 }
