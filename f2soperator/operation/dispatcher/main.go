@@ -38,22 +38,19 @@ func Initialize(hub *hub.F2SHub, wg *sync.WaitGroup) {
 		endpoint, _ := kubernetesservice.GetEndpointWithName(function.Name)
 
 		// prepare target obj
-		target := f2sfunctiontargets.F2SFunctionTarget{
+		hub.F2STargets.Targets[i] = f2sfunctiontargets.F2SFunctionTarget{
 			Function:    function,
 			ServingPods: make([]f2sfunctiontargets.FunctionServingPod, len(endpoint.Subsets[0].Addresses)),
 		}
 
-		for i, address := range endpoint.Subsets[0].Addresses {
-			fsp := f2sfunctiontargets.FunctionServingPod{
+		for x, address := range endpoint.Subsets[0].Addresses {
+			hub.F2STargets.Targets[i].ServingPods[x] = f2sfunctiontargets.FunctionServingPod{
 				Address:          address,
 				InflightRequests: make([]queue.F2SRequest, 0),
 			}
-			target.ServingPods[i] = fsp
 		}
 
-		logging.Info(fmt.Sprintf("function %s has %v endpoints", function.Name, len(target.ServingPods)))
-
-		hub.F2STargets.Targets[i] = target
+		logging.Info(fmt.Sprintf("function %s has %v endpoints", function.Name, len(hub.F2STargets.Targets[i].ServingPods)))
 	}
 
 	DebugOutputDispatcherData()
@@ -64,7 +61,11 @@ func DebugOutputDispatcherData() {
 	// iterate functions
 	for _, function := range f2shub.F2SConfiguration.Functions.Items {
 		logging.Info(function.Name)
-		target, _ := f2shub.F2STargets.GetFunctionTargetByEndpoint(function.Name)
+
+		// get function target
+		target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
+		logging.Error(err)
+
 		logging.Info(fmt.Sprintf("Endpoints: %d", len(target.ServingPods)))
 		for _, endpoint := range target.ServingPods {
 			logging.Info(fmt.Sprintf("=> %s (inflight requests: %d)", string(endpoint.Address.IP), len(endpoint.InflightRequests)))
