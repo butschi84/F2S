@@ -23,26 +23,26 @@ type F2SFunctionTarget struct {
 type IF2SFunctionTarget interface {
 	ServeRequest(queue.F2SRequest)
 }
-type F2SFunctionTargets struct {
+type F2SDispatcherFunction struct {
 	Targets []F2SFunctionTarget
 }
 
-var functionTargets F2SFunctionTargets
+var functionTargets F2SDispatcherFunction
 
 func init() {
 	// initialize logging
 	logging = logger.Initialize("functiontargets")
 }
 
-func Initialize() *F2SFunctionTargets {
-	functionTargets = F2SFunctionTargets{
+func Initialize() *F2SDispatcherFunction {
+	functionTargets = F2SDispatcherFunction{
 		Targets: []F2SFunctionTarget{},
 	}
 	return &functionTargets
 }
 
 // put new incoming requests into queue
-func (target *F2SFunctionTarget) ServeRequest(request queue.F2SRequest) {
+func (target *F2SFunctionTarget) ServeRequest(request queue.F2SRequest) *FunctionServingPod {
 	// add inflight request to first pod in array
 	target.ServingPods[0].InflightRequests = append(target.ServingPods[0].InflightRequests, request)
 
@@ -55,12 +55,27 @@ func (target *F2SFunctionTarget) ServeRequest(request queue.F2SRequest) {
 		copy(s2, target.ServingPods[1:])
 		s2[len(target.ServingPods)-1] = firstPod
 		copy(target.ServingPods, s2)
+	}
 
+	return &target.ServingPods[len(target.ServingPods)-1]
+}
+
+func (target *F2SFunctionTarget) RemoveRequest(request queue.F2SRequest) {
+	for i, pod := range target.ServingPods {
+		for x, req := range pod.InflightRequests {
+			if req.UID == request.UID {
+				target.ServingPods[i].InflightRequests = append(
+					target.ServingPods[i].InflightRequests[:x],
+					target.ServingPods[i].InflightRequests[x+1:]...,
+				)
+				return
+			}
+		}
 	}
 }
 
 // get target by path
-func (target *F2SFunctionTargets) GetFunctionTargetByEndpoint(endpoint string) (*F2SFunctionTarget, error) {
+func (target *F2SDispatcherFunction) GetFunctionTargetByEndpoint(endpoint string) (*F2SFunctionTarget, error) {
 	logging.Info(fmt.Sprintf("get functiontarget for path %s", endpoint))
 	for _, target := range target.Targets {
 		if target.Function.Spec.Endpoint == endpoint {
@@ -72,7 +87,7 @@ func (target *F2SFunctionTargets) GetFunctionTargetByEndpoint(endpoint string) (
 }
 
 // get target by path
-func (target *F2SFunctionTargets) GetFunctionTargetByFunctionName(name string) (*F2SFunctionTarget, error) {
+func (target *F2SDispatcherFunction) GetFunctionTargetByFunctionName(name string) (*F2SFunctionTarget, error) {
 	logging.Info(fmt.Sprintf("get functiontarget for function name %s", name))
 	for _, target := range target.Targets {
 		if target.Function.Name == name {

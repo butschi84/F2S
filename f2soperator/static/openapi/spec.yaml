@@ -13,6 +13,8 @@ tags:
     description: Interact with F2S-Containers K8S Namespace
   - name: Invoke
     description: Invoke F2S Functions
+  - name: F2S Internal
+    description: Internal F2S API Endpoints for Debugging
 paths:
   /invoke/{target}:
     get:
@@ -50,6 +52,7 @@ paths:
       summary: get all current k8s functions endpoints
       tags:
         - K8S
+        - F2S Internal
       responses:
         "200":
           description: OK
@@ -68,6 +71,15 @@ paths:
                     type: array
                     items:
                       type: object
+  /dispatcher:
+    get:
+      summary: get current dispatcher data
+      tags:
+        - Configuration
+        - F2S Internal
+      responses:
+        "200":
+          description: OK
   /functions:
     get:
       summary: get all configured functions

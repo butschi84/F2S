@@ -44,6 +44,7 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	router.HandleFunc("/deployments", getAllDeployments).Methods(http.MethodGet)
 	router.HandleFunc("/services", getAllServices).Methods(http.MethodGet)
 	router.HandleFunc("/endpoints", getAllEndpoints).Methods(http.MethodGet)
+	router.HandleFunc("/dispatcher", getCurrentDispatcherData).Methods(http.MethodGet)
 	router.HandleFunc("/config", getConfiguration).Methods(http.MethodGet)
 	router.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 	router.HandleFunc("/invoke/{target}", invokeFunction)

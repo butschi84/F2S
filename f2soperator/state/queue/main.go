@@ -48,6 +48,17 @@ func (queue *F2SQueue) AddRequest(req F2SRequest) {
 	queue.eventChannel <- req
 }
 
+// add a new request to the queue
+func (queue *F2SQueue) RequestDone(req F2SRequest) {
+	logging.Info(fmt.Sprintf("request %s has completed", req.UID))
+	for x, request := range queue.Requests {
+		if request.UID == req.UID {
+			queue.Requests = append(queue.Requests[:x], queue.Requests[x+1:]...)
+			return
+		}
+	}
+}
+
 // empty the queue
 func (queue *F2SQueue) Clear(req F2SQueue) {
 

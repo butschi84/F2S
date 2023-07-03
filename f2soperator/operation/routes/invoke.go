@@ -3,11 +3,13 @@ package routes
 import (
 	v1alpha1types "butschi84/f2s/state/configuration/api/types/v1alpha1"
 	"butschi84/f2s/state/queue"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -57,9 +59,10 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// make request obj
 	request := queue.F2SRequest{
-		UID:    F2SHub.F2SEventManager.GenerateUUID(),
-		Path:   "/" + vars["target"],
-		Method: "GET",
+		UID:           F2SHub.F2SEventManager.GenerateUUID(),
+		Path:          "/" + vars["target"],
+		Method:        "GET",
+		ResultChannel: make(chan string),
 	}
 
 	// put it into queue
@@ -67,8 +70,16 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	F2SHub.F2SQueue.AddRequest(request)
 
 	// wait for completion
-
-	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", key)})
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	select {
+	case result := <-request.ResultChannel:
+		fmt.Println("Request completed:", result)
+		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
+	case <-ctx.Done():
+		fmt.Println("Request Timeout reached, cancelling goroutine")
+		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed: %s", key)})
+	}
 
 	// also grab the query parameters
 	// queryParameters := r.URL.Query()

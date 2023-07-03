@@ -1,10 +1,8 @@
 package metrics
 
 import (
-	"butschi84/f2s/services/prometheus"
 	"butschi84/f2s/state/eventmanager"
 	"fmt"
-	"time"
 )
 
 func handleEvent(event eventmanager.Event) {
@@ -21,36 +19,36 @@ func handleEvent(event eventmanager.Event) {
 		currentInflightRequests += 1
 
 	case eventmanager.Event_FunctionInvokationEnded:
-		duration := event.Data.(time.Duration)
+		// duration := event.Data.(time.Duration)
 
-		// increase metric 'total_completed_requests
-		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalCompletedRequests'", event.Data))
-		metricTotalCompletedRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
+		// // increase metric 'total_completed_requests
+		// logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalCompletedRequests'", event.Data))
+		// metricTotalCompletedRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
 
-		logging.Info(fmt.Sprintf("function %s finished. recalculating capacity", event.Data))
-		numbercontainers, err := prometheus.ReadPrometheusMetricValue(&F2SHub.F2SConfiguration, "f2sscaling_function_deployment_available_replicas", map[string]string{"functionname": event.Function.Name})
-		if err != nil {
-			logging.Error(fmt.Errorf("Error when trying to read prometheus metric f2sscaling_function_deployment_available_replicas"))
-			logging.Error(err)
-		} else {
-			inflightRequestsPerContainer := float64(currentInflightRequests) / numbercontainers
-			durationPerInflightRequest := float64(duration.Seconds()) / inflightRequestsPerContainer
-			functionCapacityRequestsPerSecond := 1 / durationPerInflightRequest
-			metricFunctionCapacity.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(functionCapacityRequestsPerSecond)
-		}
+		// logging.Info(fmt.Sprintf("function %s finished. recalculating capacity", event.Data))
+		// numbercontainers, err := prometheus.ReadPrometheusMetricValue(&F2SHub.F2SConfiguration, "f2sscaling_function_deployment_available_replicas", map[string]string{"functionname": event.Function.Name})
+		// if err != nil {
+		// 	logging.Error(fmt.Errorf("Error when trying to read prometheus metric f2sscaling_function_deployment_available_replicas"))
+		// 	logging.Error(err)
+		// } else {
+		// 	inflightRequestsPerContainer := float64(currentInflightRequests) / numbercontainers
+		// 	durationPerInflightRequest := float64(duration.Seconds()) / inflightRequestsPerContainer
+		// 	functionCapacityRequestsPerSecond := 1 / durationPerInflightRequest
+		// 	metricFunctionCapacity.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(functionCapacityRequestsPerSecond)
+		// }
 
-		// decrease metric 'active_requests
-		logging.Info(fmt.Sprintf("function %s finished. descreasing auge metricactiveRequests", event.Data))
-		currentInflightRequests -= 1
-		metricActiveRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Dec()
+		// // decrease metric 'active_requests
+		// logging.Info(fmt.Sprintf("function %s finished. descreasing auge metricactiveRequests", event.Data))
+		// currentInflightRequests -= 1
+		// metricActiveRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Dec()
 
-		// update request duration metric
-		logging.Info("observing function duration:", fmt.Sprintf("%v", float64(duration.Seconds())))
-		metricRequestDuration.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(float64(duration.Seconds()))
+		// // update request duration metric
+		// logging.Info("observing function duration:", fmt.Sprintf("%v", float64(duration.Seconds())))
+		// metricRequestDuration.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Observe(float64(duration.Seconds()))
 
-		// update last request completion metric
-		logging.Info(fmt.Sprintf("function %s finished. set timestamp of metric lastRequestCompletion", event.Data))
-		metricLastRequestCompletion.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Set(float64(time.Now().Unix()))
+		// // update last request completion metric
+		// logging.Info(fmt.Sprintf("function %s finished. set timestamp of metric lastRequestCompletion", event.Data))
+		// metricLastRequestCompletion.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Set(float64(time.Now().Unix()))
 
 	default:
 		logging.Info("no action defined for", fmt.Sprintf("%s", event.Type))

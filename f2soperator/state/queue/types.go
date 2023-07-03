@@ -2,9 +2,10 @@ package queue
 
 // F2SRequest to invoke a function
 type F2SRequest struct {
-	UID    string
-	Path   string
-	Method string
+	UID           string
+	Path          string
+	Method        string
+	ResultChannel chan string
 }
 
 type RequestHandler func(request F2SRequest)

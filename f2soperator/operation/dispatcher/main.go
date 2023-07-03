@@ -52,23 +52,25 @@ func Initialize(hub *hub.F2SHub, wg *sync.WaitGroup) {
 
 		logging.Info(fmt.Sprintf("function %s has %v endpoints", function.Name, len(hub.F2STargets.Targets[i].ServingPods)))
 	}
-
-	DebugOutputDispatcherData()
 }
 
 // debug output for dispatcher troubleshooting
-func DebugOutputDispatcherData() {
+func GetCurrentDispatcherData() string {
+	output := ""
+	output += "Dispatcher Data"
+	output += "==============="
 	// iterate functions
 	for _, function := range f2shub.F2SConfiguration.Functions.Items {
-		logging.Info(function.Name)
+		output += function.Name
 
 		// get function target
 		target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
 		logging.Error(err)
 
-		logging.Info(fmt.Sprintf("Endpoints: %d", len(target.ServingPods)))
+		output += fmt.Sprintf("Endpoints: %d", len(target.ServingPods))
 		for _, endpoint := range target.ServingPods {
-			logging.Info(fmt.Sprintf("=> %s (inflight requests: %d)", string(endpoint.Address.IP), len(endpoint.InflightRequests)))
+			output += fmt.Sprintf("=> %s (inflight requests: %d)", string(endpoint.Address.IP), len(endpoint.InflightRequests))
 		}
 	}
+	return output
 }

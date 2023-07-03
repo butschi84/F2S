@@ -25,7 +25,7 @@ func GetF2SFunctions() (*typesV1alpha1.FunctionList, error) {
 		panic(err)
 	}
 
-	logging.Info("number of configured functions: %s\n", string(len(functions.Items)))
+	logging.Info(fmt.Sprintf("number of configured functions: %d\n", len(functions.Items)))
 	return functions, err
 }
 
