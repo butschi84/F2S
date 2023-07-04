@@ -12,6 +12,9 @@ type F2SRequestResult struct {
 	UID     string
 	Success bool
 	Result  string
+
+	Duration                   float64
+	DurationPerInflightRequest float64
 }
 
 type RequestHandler func(request F2SRequest)

@@ -11,7 +11,7 @@ import (
 
 var logging logger.F2SLogger
 
-var F2SHub hub.F2SHub
+var F2SHub *hub.F2SHub
 
 type Status struct {
 	Status string `json:"status"`
@@ -25,7 +25,7 @@ func init() {
 func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	F2SHub = *hub
+	F2SHub = hub
 	router := mux.NewRouter().StrictSlash(false)
 
 	// subscribe to configuration changes

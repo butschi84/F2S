@@ -4,6 +4,8 @@ import (
 	"butschi84/f2s/state/eventmanager"
 	"fmt"
 
+	v1alpha1types "butschi84/f2s/state/configuration/api/types/v1alpha1"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -12,14 +14,32 @@ import (
 )
 
 func handleEvent(event eventmanager.Event) {
+	if !master {
+		return
+	}
 	logging.Info("processing event", fmt.Sprintf("'%s'", string(event.Type)))
 
 	switch event.Type {
 	case eventmanager.Event_ConfigurationChanged:
-		if master {
-			logging.Info("configuration has changed. rebalance immediately")
-			Rebalance()
-		}
+		logging.Info("configuration has changed. rebalance immediately")
+		Rebalance()
+	case eventmanager.Event_FunctionInvoked:
+		logging.Info("function invoked. checking minimum availability")
+		function := event.Data.(v1alpha1types.PrettyFunction)
+		checkMinimumAvailability(&function)
+	}
+}
+
+// make sure that there is at least a scale of 1 replica available
+func checkMinimumAvailability(function *v1alpha1types.PrettyFunction) {
+	target, err := F2SHub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
+	if err != nil {
+		logging.Error(err)
+		return
+	}
+	if len(target.ServingPods) == 0 {
+		logging.Info(fmt.Sprintf("scaling up deployment %s to 1 replica", function.Name))
+		kubernetesservice.ScaleDeployment(function.Name, 1)
 	}
 }
 
@@ -58,5 +78,13 @@ func OnF2SEndpointsChanged(obj interface{}) {
 		logging.Error(err)
 		return
 	}
-	logging.Info(fmt.Sprintf("changed endpoint %s (%s)", d.Name, d.UID))
+
+	// send change event
+	logging.Info(fmt.Sprintf("send event for changed endpoint %s (%s)", d.Name, d.UID))
+	F2SHub.F2SEventManager.Publish(eventmanager.Event{
+		UID:  F2SHub.F2SEventManager.GenerateUUID(),
+		Data: d,
+		Type: eventmanager.Event_EndpointsChanged,
+	})
+
 }

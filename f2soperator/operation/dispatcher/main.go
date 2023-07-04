@@ -3,12 +3,8 @@ package dispatcher
 import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
-	f2sfunctiontargets "butschi84/f2s/state/functiontargets"
-	"butschi84/f2s/state/queue"
 	"fmt"
 	"sync"
-
-	kubernetesservice "butschi84/f2s/services/kubernetes"
 )
 
 var logging logger.F2SLogger
@@ -31,34 +27,7 @@ func Initialize(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	logging.Info("subscribing to incoming requests")
 	hub.F2SQueue.Subscribe(handleRequests)
 
-	// initialize f2stargets
-	hub.F2STargets.Targets = make([]f2sfunctiontargets.F2SFunctionTarget, len(hub.F2SConfiguration.Functions.Items))
-	for i, function := range hub.F2SConfiguration.Functions.Items {
-		// get endpoint IP's for function
-		endpoint, _ := kubernetesservice.GetEndpointWithName(function.Name)
-
-		// prepare target obj
-		if len(endpoint.Subsets) > 0 {
-			hub.F2STargets.Targets[i] = f2sfunctiontargets.F2SFunctionTarget{
-				Function:    function,
-				ServingPods: make([]f2sfunctiontargets.FunctionServingPod, len(endpoint.Subsets[0].Addresses)),
-			}
-
-			for x, address := range endpoint.Subsets[0].Addresses {
-				hub.F2STargets.Targets[i].ServingPods[x] = f2sfunctiontargets.FunctionServingPod{
-					Address:          address,
-					InflightRequests: make([]queue.F2SRequest, 0),
-				}
-			}
-		} else {
-			hub.F2STargets.Targets[i] = f2sfunctiontargets.F2SFunctionTarget{
-				Function:    function,
-				ServingPods: make([]f2sfunctiontargets.FunctionServingPod, 0),
-			}
-		}
-
-		logging.Info(fmt.Sprintf("function %s has %v endpoints", function.Name, len(hub.F2STargets.Targets[i].ServingPods)))
-	}
+	reloadEndpoints()
 }
 
 // debug output for dispatcher troubleshooting
