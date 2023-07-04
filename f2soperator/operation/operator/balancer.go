@@ -110,6 +110,6 @@ func scaleDeployments() {
 
 		// do the scaling
 		logging.Info(fmt.Sprintf("scaling function replicas %s from %v to %v", function.Name, currentAvailableReplicas, resultScale))
-		kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
+		// kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
 	}
 }

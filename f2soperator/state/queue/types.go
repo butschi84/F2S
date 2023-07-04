@@ -5,7 +5,13 @@ type F2SRequest struct {
 	UID           string
 	Path          string
 	Method        string
-	ResultChannel chan string
+	ResultChannel chan F2SRequestResult
+}
+
+type F2SRequestResult struct {
+	UID     string
+	Success bool
+	Result  string
 }
 
 type RequestHandler func(request F2SRequest)

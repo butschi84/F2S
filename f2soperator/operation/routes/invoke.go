@@ -62,7 +62,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		UID:           F2SHub.F2SEventManager.GenerateUUID(),
 		Path:          "/" + vars["target"],
 		Method:        "GET",
-		ResultChannel: make(chan string),
+		ResultChannel: make(chan queue.F2SRequestResult),
 	}
 
 	// put it into queue
@@ -75,7 +75,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	select {
 	case result := <-request.ResultChannel:
 		fmt.Println("Request completed:", result)
-		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
+		json.NewEncoder(w).Encode(result)
 	case <-ctx.Done():
 		fmt.Println("Request Timeout reached, cancelling goroutine")
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed: %s", key)})

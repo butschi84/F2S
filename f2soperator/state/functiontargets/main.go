@@ -42,7 +42,12 @@ func Initialize() *F2SDispatcherFunction {
 }
 
 // put new incoming requests into queue
-func (target *F2SFunctionTarget) ServeRequest(request queue.F2SRequest) *FunctionServingPod {
+func (target *F2SFunctionTarget) ServeRequest(request queue.F2SRequest) (*FunctionServingPod, error) {
+	// error prevention
+	if len(target.ServingPods) == 0 {
+		return &FunctionServingPod{}, fmt.Errorf("Cannot serve request %s. function %s has 0 pods available", request.UID, request.Path)
+	}
+
 	// add inflight request to first pod in array
 	target.ServingPods[0].InflightRequests = append(target.ServingPods[0].InflightRequests, request)
 
@@ -57,7 +62,7 @@ func (target *F2SFunctionTarget) ServeRequest(request queue.F2SRequest) *Functio
 		copy(target.ServingPods, s2)
 	}
 
-	return &target.ServingPods[len(target.ServingPods)-1]
+	return &target.ServingPods[len(target.ServingPods)-1], nil
 }
 
 func (target *F2SFunctionTarget) RemoveRequest(request queue.F2SRequest) {

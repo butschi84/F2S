@@ -38,15 +38,22 @@ func Initialize(hub *hub.F2SHub, wg *sync.WaitGroup) {
 		endpoint, _ := kubernetesservice.GetEndpointWithName(function.Name)
 
 		// prepare target obj
-		hub.F2STargets.Targets[i] = f2sfunctiontargets.F2SFunctionTarget{
-			Function:    function,
-			ServingPods: make([]f2sfunctiontargets.FunctionServingPod, len(endpoint.Subsets[0].Addresses)),
-		}
+		if len(endpoint.Subsets) > 0 {
+			hub.F2STargets.Targets[i] = f2sfunctiontargets.F2SFunctionTarget{
+				Function:    function,
+				ServingPods: make([]f2sfunctiontargets.FunctionServingPod, len(endpoint.Subsets[0].Addresses)),
+			}
 
-		for x, address := range endpoint.Subsets[0].Addresses {
-			hub.F2STargets.Targets[i].ServingPods[x] = f2sfunctiontargets.FunctionServingPod{
-				Address:          address,
-				InflightRequests: make([]queue.F2SRequest, 0),
+			for x, address := range endpoint.Subsets[0].Addresses {
+				hub.F2STargets.Targets[i].ServingPods[x] = f2sfunctiontargets.FunctionServingPod{
+					Address:          address,
+					InflightRequests: make([]queue.F2SRequest, 0),
+				}
+			}
+		} else {
+			hub.F2STargets.Targets[i] = f2sfunctiontargets.F2SFunctionTarget{
+				Function:    function,
+				ServingPods: make([]f2sfunctiontargets.FunctionServingPod, 0),
 			}
 		}
 

@@ -1,8 +1,6 @@
 package eventmanager
 
 import (
-	typesV1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
-
 	"github.com/google/uuid"
 )
 
@@ -23,8 +21,6 @@ type Event struct {
 	Data interface{}
 	// event type
 	Type EventType
-	// container for a f2sfunction object
-	Function typesV1alpha1.Function
 }
 
 type EventHandler func(event Event)

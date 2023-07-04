@@ -9,14 +9,14 @@ func handleEvent(event eventmanager.Event) {
 	switch event.Type {
 	// function invoked
 	case eventmanager.Event_FunctionInvoked:
-		// increase metric 'total_incoming_requests
-		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalIncomingRequests'", event.Data))
-		metricTotalIncomingRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
+		// // increase metric 'total_incoming_requests
+		// logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalIncomingRequests'", event.Data))
+		// metricTotalIncomingRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
 
-		// increase metric 'active_requests
-		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricactiveRequests'", event.Data))
-		metricActiveRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
-		currentInflightRequests += 1
+		// // increase metric 'active_requests
+		// logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricactiveRequests'", event.Data))
+		// metricActiveRequests.WithLabelValues(event.Function.Spec.Endpoint, string(event.Function.UID), event.Function.Name).Inc()
+		// currentInflightRequests += 1
 
 	case eventmanager.Event_FunctionInvokationEnded:
 		// duration := event.Data.(time.Duration)
