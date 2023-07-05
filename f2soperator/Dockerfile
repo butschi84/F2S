@@ -1,5 +1,5 @@
 # Use the official Go image as the base image
-FROM golang:1.19
+FROM golang:1.19 AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -9,6 +9,9 @@ COPY . .
 
 # Build the Go project
 RUN go build -o f2s
+
+FROM scratch
+COPY --from=builder /app/f2s /f2s
 
 # expose api
 EXPOSE 8080
