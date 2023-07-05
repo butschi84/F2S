@@ -69,18 +69,20 @@ func handleRequests(req queue.F2SRequest) {
 	logging.Info("Function execution time per inflight request: %sms\n", fmt.Sprintf("%v", elapsedPerInflight))
 
 	// send result to channel
-	req.ResultChannel <- queue.F2SRequestResult{
+	invocationResult := queue.F2SRequestResult{
 		Result:                     result,
 		Success:                    true,
 		UID:                        req.UID,
 		Duration:                   float64(elapsed),
 		DurationPerInflightRequest: float64(elapsedPerInflight),
+		Request:                    req,
 	}
+	req.ResultChannel <- invocationResult
 
 	// send request completed event
 	f2shub.F2SEventManager.Publish(eventmanager.Event{
 		UID:  req.UID,
-		Data: req,
+		Data: invocationResult,
 		Type: eventmanager.Event_FunctionInvokationEnded,
 	})
 }

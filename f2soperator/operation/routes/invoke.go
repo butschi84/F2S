@@ -36,7 +36,7 @@ func httpGet(url string) (string, error) {
 
 // search k8s crd's (f2sfunction) for matching target
 func findF2SFunctionForTarget(target string) (*v1alpha1types.Function, error) {
-	for _, f := range F2SHub.F2SConfiguration.Functions.Items {
+	for _, f := range f2shub.F2SConfiguration.Functions.Items {
 		if string(f.Spec.Endpoint) == string(target) {
 			logging.Info(fmt.Sprintf("found function %s (%s) for target: %s", f.Name, f.UID, target))
 			url := fmt.Sprintf("invoke url: http://%s.f2s-containers:%v%s", f.Name, f.Target.Port, f.Target.Endpoint)
@@ -59,7 +59,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// make request obj
 	request := queue.F2SRequest{
-		UID:           F2SHub.F2SEventManager.GenerateUUID(),
+		UID:           f2shub.F2SEventManager.GenerateUUID(),
 		Path:          "/" + vars["target"],
 		Method:        "GET",
 		ResultChannel: make(chan queue.F2SRequestResult),
@@ -67,7 +67,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// put it into queue
 	logging.Info("add request to queue")
-	F2SHub.F2SQueue.AddRequest(request)
+	f2shub.F2SQueue.AddRequest(request)
 
 	// wait for completion
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)

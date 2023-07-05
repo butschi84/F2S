@@ -44,7 +44,6 @@ func (em *F2SQueue) Subscribe(handler RequestHandler) {
 // add a new request to the queue
 func (queue *F2SQueue) AddRequest(req F2SRequest) {
 	logging.Info("adding request to queue")
-	logging.Info(fmt.Sprintf("got %d handlers currently", len(queue.eventHandlers)))
 	queue.eventChannel <- req
 }
 

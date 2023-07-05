@@ -14,7 +14,7 @@ import (
 var logging logger.F2SLogger
 
 // pointer to F2SConfiguration
-var F2SHub hub.F2SHub
+var f2shub hub.F2SHub
 
 // metrics
 var metricTotalIncomingRequests *prometheus.CounterVec
@@ -105,7 +105,7 @@ func init() {
 func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	F2SHub = *hub
+	f2shub = *hub
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")

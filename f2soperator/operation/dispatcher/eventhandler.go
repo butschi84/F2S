@@ -24,10 +24,10 @@ func handleEvents(event eventmanager.Event) {
 	case eventmanager.Event_EndpointsChanged:
 		logging.Info("endpoints have changed")
 		reloadEndpoints()
-		fmt.Println(GetCurrentDispatcherData())
 	}
 }
 
+// reload endpoint information in state when endpoints in k8s change
 func reloadEndpoints() {
 	logging.Info("reloading endpoint information")
 

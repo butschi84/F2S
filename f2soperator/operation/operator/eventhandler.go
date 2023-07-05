@@ -32,7 +32,8 @@ func handleEvent(event eventmanager.Event) {
 
 // make sure that there is at least a scale of 1 replica available
 func checkMinimumAvailability(function *v1alpha1types.PrettyFunction) {
-	target, err := F2SHub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
+	logging.Info("checking minimum availability")
+	target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
 	if err != nil {
 		logging.Error(err)
 		return
@@ -55,12 +56,12 @@ func OnF2SFunctionChanged(obj interface{}) {
 	}
 
 	// update active configuration
-	F2SHub.F2SConfiguration.Functions = functions
-	logging.Info("number of functions:", string(len(F2SHub.F2SConfiguration.Functions.Items)))
+	f2shub.F2SConfiguration.Functions = functions
+	logging.Info("number of functions:", string(len(f2shub.F2SConfiguration.Functions.Items)))
 
 	// send config change event
-	F2SHub.F2SEventManager.Publish(eventmanager.Event{
-		UID:  F2SHub.F2SEventManager.GenerateUUID(),
+	f2shub.F2SEventManager.Publish(eventmanager.Event{
+		UID:  f2shub.F2SEventManager.GenerateUUID(),
 		Data: "F2SFunctions Changed in K8S",
 		Type: eventmanager.Event_ConfigurationChanged,
 	})
@@ -81,8 +82,8 @@ func OnF2SEndpointsChanged(obj interface{}) {
 
 	// send change event
 	logging.Info(fmt.Sprintf("send event for changed endpoint %s (%s)", d.Name, d.UID))
-	F2SHub.F2SEventManager.Publish(eventmanager.Event{
-		UID:  F2SHub.F2SEventManager.GenerateUUID(),
+	f2shub.F2SEventManager.Publish(eventmanager.Event{
+		UID:  f2shub.F2SEventManager.GenerateUUID(),
 		Data: d,
 		Type: eventmanager.Event_EndpointsChanged,
 	})

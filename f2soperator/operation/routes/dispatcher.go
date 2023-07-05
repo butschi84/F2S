@@ -18,11 +18,11 @@ func getCurrentDispatcherData(w http.ResponseWriter, r *http.Request) {
 	output += "Dispatcher Data\n"
 	output += "===============\n"
 	// iterate functions
-	for _, function := range F2SHub.F2SConfiguration.Functions.Items {
+	for _, function := range f2shub.F2SConfiguration.Functions.Items {
 		output += fmt.Sprintf("%s\n", function.Name)
 
 		// get function target
-		target, err := F2SHub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
+		target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
 		logging.Error(err)
 
 		output += fmt.Sprintf("Endpoints: %d\n", len(target.ServingPods))

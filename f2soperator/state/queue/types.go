@@ -13,6 +13,8 @@ type F2SRequestResult struct {
 	Success bool
 	Result  string
 
+	Request F2SRequest
+
 	Duration                   float64
 	DurationPerInflightRequest float64
 }
