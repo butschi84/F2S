@@ -35,7 +35,7 @@ func handleEvent(event eventmanager.Event) {
 		metricTotalCompletedRequests.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Inc()
 
 		logging.Info(fmt.Sprintf("function %s finished. recalculating capacity", functionTarget.Function.Name))
-		functionCapacityRequestsPerSecond := 1 / result.DurationPerInflightRequest
+		functionCapacityRequestsPerSecond := 1000 / result.DurationPerInflightRequest
 		metricFunctionCapacity.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Observe(functionCapacityRequestsPerSecond)
 
 		// decrease metric 'active_requests
