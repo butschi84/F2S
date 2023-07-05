@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"time"
 )
 
 // manage k8s deployments in namespace f2s-containers
@@ -111,6 +112,12 @@ func scaleDeployments() {
 		if numInflightRequests > 0 && resultScale == 0 {
 			logging.Info(fmt.Sprintf("dont scale function %s to zero because there are %d inflight requests. scale to 1", function.Name, numInflightRequests))
 			resultScale = 1
+		}
+
+		// check if last scaling of the function was less than 15 seconds ago
+		fifteenSecondsAgo := time.Now().Add(-15 * time.Second)
+		if target.LastScaling.After(fifteenSecondsAgo) {
+			logging.Info(fmt.Sprintf("last scaling of function %s was less than 15 seconds ago. skipping", function.Name))
 		}
 
 		// check minumums and maximums

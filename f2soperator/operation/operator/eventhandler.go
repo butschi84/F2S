@@ -3,6 +3,7 @@ package operator
 import (
 	"butschi84/f2s/state/eventmanager"
 	"fmt"
+	"time"
 
 	v1alpha1types "butschi84/f2s/state/configuration/api/types/v1alpha1"
 
@@ -41,6 +42,7 @@ func checkMinimumAvailability(function *v1alpha1types.PrettyFunction) {
 	if len(target.ServingPods) == 0 {
 		logging.Info(fmt.Sprintf("scaling up deployment %s to 1 replica", function.Name))
 		kubernetesservice.ScaleDeployment(function.Name, 1)
+		target.LastScaling = time.Now()
 	}
 }
 

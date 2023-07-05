@@ -4,6 +4,7 @@ import (
 	"butschi84/f2s/services/logger"
 	typesV1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
 	"butschi84/f2s/state/queue"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -18,6 +19,8 @@ type FunctionServingPod struct {
 type F2SDispatcherFunctionTarget struct {
 	Function    typesV1alpha1.Function
 	ServingPods []FunctionServingPod
+
+	LastScaling time.Time
 }
 type IF2SDispatcherFunctionTarget interface {
 	ServeRequest(queue.F2SRequest)
