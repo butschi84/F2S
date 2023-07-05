@@ -1,7 +1,7 @@
 package kubernetesservice
 
 import (
-	typesV1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+	typesV1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
 	"fmt"
 	"log"
 
@@ -25,7 +25,7 @@ func GetF2SFunctions() (*typesV1alpha1.FunctionList, error) {
 		panic(err)
 	}
 
-	logging.Info("number of configured functions: %s\n", string(len(functions.Items)))
+	logging.Info(fmt.Sprintf("number of configured functions: %d\n", len(functions.Items)))
 	return functions, err
 }
 

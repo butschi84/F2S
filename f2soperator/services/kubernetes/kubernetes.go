@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	clientV1alpha1 "butschi84/f2s/configuration/api/clientset/v1alpha1"
-	v1alpha1 "butschi84/f2s/configuration/api/types/v1alpha1"
+	clientV1alpha1 "butschi84/f2s/state/configuration/api/clientset/v1alpha1"
+	v1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
 
 	k8s "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
