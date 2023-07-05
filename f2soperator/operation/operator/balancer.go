@@ -100,6 +100,19 @@ func scaleDeployments() {
 			resultScale = int(math.Ceil(requiredContainers))
 		}
 
+		// get current inflight requests of function
+		target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
+		if err != nil {
+			logging.Error(err)
+			logging.Error(fmt.Errorf("could not get function target for function: %s. skipping scaling of this function...", function.Name))
+			continue
+		}
+		numInflightRequests := target.GetTotalInflightRequests()
+		if numInflightRequests > 0 && resultScale == 0 {
+			logging.Info(fmt.Sprintf("dont scale function %s to zero because there are %d inflight requests. scale to 1", function.Name, numInflightRequests))
+			resultScale = 1
+		}
+
 		// check minumums and maximums
 		if resultScale > function.Target.MaxReplicas {
 			resultScale = function.Target.MaxReplicas
@@ -110,6 +123,6 @@ func scaleDeployments() {
 
 		// do the scaling
 		logging.Info(fmt.Sprintf("scaling function replicas %s from %v to %v", function.Name, currentAvailableReplicas, resultScale))
-		// kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
+		kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
 	}
 }

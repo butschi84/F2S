@@ -31,6 +31,14 @@ func (target *F2SDispatcherFunctionTarget) ServeRequest(request queue.F2SRequest
 	return &target.ServingPods[len(target.ServingPods)-1], nil
 }
 
+func (target *F2SDispatcherFunctionTarget) GetTotalInflightRequests() int {
+	total := 0
+	for _, pod := range target.ServingPods {
+		total += len(pod.InflightRequests)
+	}
+	return total
+}
+
 func (target *F2SDispatcherFunctionTarget) RemoveRequest(request queue.F2SRequest) {
 	for i, pod := range target.ServingPods {
 		for x, req := range pod.InflightRequests {
