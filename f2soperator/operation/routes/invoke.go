@@ -74,59 +74,10 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	select {
 	case result := <-request.ResultChannel:
-		fmt.Println("Request completed:", result)
+		logging.Info(fmt.Sprintf("Request completed: %s", result.Result))
 		json.NewEncoder(w).Encode(result)
 	case <-ctx.Done():
 		fmt.Println("Request Timeout reached, cancelling goroutine")
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed: %s", key)})
 	}
-
-	// also grab the query parameters
-	// queryParameters := r.URL.Query()
-	// queryString := queryParameters.Encode()
-
-	// // find relevant function for this target
-	// f, err := findF2SFunctionForTarget(key)
-	// if err != nil {
-	// 	logging.Info(fmt.Sprintf("function not found for endpoint %s", key))
-	// 	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed - function not found for endpoint %s", key)})
-	// 	return
-	// }
-
-	// // send 'function invoked' event
-	// F2SHub.F2SEventManager.Publish(eventmanager.Event{
-	// 	UID:      F2SHub.F2SEventManager.GenerateUUID(),
-	// 	Data:     key,
-	// 	Function: *f,
-	// 	Type:     eventmanager.Event_FunctionInvoked,
-	// })
-
-	// // start time measurement
-	// start := time.Now()
-
-	// // invoke
-	// url := fmt.Sprintf("http://%s.f2s-containers:%v%s?%s", f.Name, f.Target.Port, f.Target.Endpoint, queryString)
-	// result, err := httpGet(url)
-
-	// // measure time elapsed
-	// elapsed := time.Since(start)
-	// logging.Info("Function execution time: %s\n", fmt.Sprintf("%s", elapsed))
-
-	// // send invocation end event
-	// F2SHub.F2SEventManager.Publish(eventmanager.Event{
-	// 	UID:      F2SHub.F2SEventManager.GenerateUUID(),
-	// 	Data:     elapsed,
-	// 	Function: *f,
-	// 	Type:     eventmanager.Event_FunctionInvokationEnded,
-	// })
-
-	// // send results
-	// if err != nil {
-	// 	logging.Error(fmt.Errorf("error during invocation"))
-	// 	logging.Error(err)
-	// 	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("error during invocation: %s", err)})
-	// } else {
-	// 	logging.Info(fmt.Sprintf("invocation of function %s completed in %v ms", *&f.Name, elapsed.Milliseconds()))
-	// 	json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("success: %s", result)})
-	// }
 }

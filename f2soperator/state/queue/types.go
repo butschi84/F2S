@@ -9,14 +9,14 @@ type F2SRequest struct {
 }
 
 type F2SRequestResult struct {
-	UID     string
-	Success bool
-	Result  string
+	UID     string `json:"uid"`
+	Success bool   `json:"success"`
+	Result  string `json:"result"`
 
-	Request F2SRequest
+	Request F2SRequest `json:"-"`
 
-	Duration                   float64
-	DurationPerInflightRequest float64
+	Duration                   float64 `json:"duration"`
+	DurationPerInflightRequest float64 `json:"duration_per_inflightrequest"`
 }
 
 type RequestHandler func(request F2SRequest)
