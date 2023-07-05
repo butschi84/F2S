@@ -58,7 +58,7 @@ func handleRequests(req queue.F2SRequest) {
 
 	// invoke function
 	url := fmt.Sprintf("http://%s:%v%s", string(pod.Address.IP), functionTarget.Function.Target.Port, functionTarget.Function.Target.Endpoint)
-	url = fmt.Sprintf("http://192.168.2.40:32343%s", functionTarget.Function.Target.Endpoint)
+	// url = fmt.Sprintf("http://192.168.2.40:32343%s", functionTarget.Function.Target.Endpoint)
 	result, err := httpGet(url)
 	logging.Error(err)
 
