@@ -11,7 +11,8 @@ COPY . .
 RUN go build -o f2s
 
 FROM scratch
-COPY --from=builder /app/f2s /f2s
+WORKDIR /app
+COPY --from=builder /app/f2s .
 COPY ./static ./static
 
 # expose api
