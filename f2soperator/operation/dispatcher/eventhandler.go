@@ -17,7 +17,7 @@ func handleEvents(event eventmanager.Event) {
 	switch event.Type {
 	case eventmanager.Event_FunctionInvokationEnded:
 		logging.Info("removing request from targets")
-		req := event.Data.(queue.F2SRequest)
+		req := event.Data.(queue.F2SRequestResult).Request
 		functionTarget, _ := f2shub.F2STargets.GetFunctionTargetByEndpoint(req.Path)
 		functionTarget.RemoveRequest(req)
 		f2shub.F2SQueue.RequestDone(req)

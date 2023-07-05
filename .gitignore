@@ -1,5 +1,6 @@
 .DS_Store
 .testenv.sh
+config_testing.yaml
 
 # test containers
 node_modules
