@@ -10,7 +10,9 @@ COPY . .
 # Build the Go project
 RUN go build -o f2s
 
-FROM scratch
+
+
+FROM alpine
 WORKDIR /app
 COPY --from=builder /app/f2s .
 COPY ./static ./static
@@ -25,4 +27,4 @@ ENV http_proxy      ""
 ENV https_proxy     ""
 
 # Set the command to run when the container starts
-CMD ["./f2s"]
+CMD ["/app/f2s"]
