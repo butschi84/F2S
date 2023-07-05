@@ -30,7 +30,7 @@ func (f2squeue *F2SQueue) Start() {
 			event := <-f2squeue.eventChannel
 			logging.Info("processing new event")
 			for _, handler := range f2squeue.eventHandlers {
-				handler(event)
+				go handler(event)
 			}
 		}
 	}()
