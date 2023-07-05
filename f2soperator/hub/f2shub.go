@@ -8,7 +8,7 @@ import (
 )
 
 type F2SHub struct {
-	F2SConfiguration configuration.F2SConfiguration
+	F2SConfiguration *configuration.F2SConfiguration
 	F2SEventManager  *eventmanager.EventManager
 	F2SQueue         *queue.F2SQueue
 	F2STargets       *f2sfunctiontargets.F2SDispatcherFunction

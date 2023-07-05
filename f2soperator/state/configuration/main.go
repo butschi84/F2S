@@ -14,7 +14,7 @@ var logging logger.F2SLogger
 
 var ActiveConfiguration F2SConfiguration
 
-func Initialize() F2SConfiguration {
+func Initialize() *F2SConfiguration {
 	// initialize logging
 	logging = logger.Initialize("configuration")
 
@@ -22,7 +22,7 @@ func Initialize() F2SConfiguration {
 	functions, err := kubernetesservice.GetF2SFunctions()
 	if err != nil {
 		logging.Info("Failed to read f2s functions")
-		return F2SConfiguration{}
+		return &F2SConfiguration{}
 	}
 
 	// read f2sconfigmap
@@ -56,5 +56,5 @@ func Initialize() F2SConfiguration {
 	// logging.Info("starting to watch endpoints in k8s")
 	// go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
 
-	return ActiveConfiguration
+	return &ActiveConfiguration
 }

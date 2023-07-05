@@ -57,7 +57,7 @@ func OnF2SFunctionChanged(obj interface{}) {
 
 	// update active configuration
 	f2shub.F2SConfiguration.Functions = functions
-	logging.Info("number of functions:", string(len(f2shub.F2SConfiguration.Functions.Items)))
+	logging.Info(fmt.Sprintf("number of functions: %d", len(f2shub.F2SConfiguration.Functions.Items)))
 
 	// send config change event
 	f2shub.F2SEventManager.Publish(eventmanager.Event{
