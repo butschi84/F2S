@@ -14,6 +14,7 @@ function load_functions()
 			functionentry += "<td>"+data[i].uid+"</td>";
 			functionentry += "<td>"+data[i].name+"</td>";
 			functionentry += "<td>"+data[i].spec.endpoint+"</td>";
+			functionentry += "<td>"+data[i].target.containerImage+"</td>";
 			functionentry += "<td><button class='button is-primary'>Invoke</button></td>";
 			functionentry += "</tr>";
 
