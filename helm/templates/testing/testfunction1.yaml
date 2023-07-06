@@ -1,18 +1,5 @@
-apiVersion: "f2s.opensight.ch/v1alpha1"
-kind: "Function"
-metadata:
-  name: "test-function"
-  namespace: "f2s"
-spec:
-  endpoint: "/test"
-  method: "GET"
-target:
-  containerImage: "nginx"
-  endpoint: "/"
-  port: 80
-  minReplicas: 1
-  maxReplicas: 1
----
+{{- if .Values.testfunctions.enabled }}
+
 apiVersion: "f2s.opensight.ch/v1alpha1"
 kind: "Function"
 metadata:
@@ -26,7 +13,7 @@ target:
   endpoint: "/"
   port: 3000
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: 5
 ---
 apiVersion: "f2s.opensight.ch/v1alpha1"
 kind: "Function"
@@ -41,4 +28,6 @@ target:
   endpoint: "/blocking"
   port: 3000
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: 5
+
+{{- end }}

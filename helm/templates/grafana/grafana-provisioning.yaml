@@ -1,3 +1,4 @@
+{{- if .Values.grafana.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -14,3 +15,4 @@ data:
         options:
           path: /var/lib/grafana/provisioning/dashboards
           foldersFromFilesStructure: true
+{{- end }}

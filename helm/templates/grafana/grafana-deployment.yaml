@@ -1,3 +1,4 @@
+{{- if .Values.grafana.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -47,3 +48,4 @@ spec:
             items:
               - key: default.yaml
                 path: default.yaml
+{{- end }}

@@ -1,0 +1,15 @@
+# deploy 2 testfunction CRDs
+testfunctions:
+  enabled: true
+
+# enable promtail to gather logs
+# you need your own loki instance
+promtail:
+  enabled: false
+  loki_url: http://loki-loki-distributed-gateway.loki:80/loki/api/v1/push
+
+# deploy grafana to have insight into metrics
+# - f2s scaling decision dashboard
+# - f2s traffic dashboard
+grafana:
+  enabled: true
