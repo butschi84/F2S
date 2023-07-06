@@ -35,7 +35,7 @@ These will be the core concepts of this F2S Platform
 
 * No "enterprise only" features
 * <font color=orange>TO DO</font> Kafka Message Bus Integration
-* <font color=orange>TO DO</font> Scale to Zero
+* Scale to Zero
 * <font color=orange>TO DO</font> Security (OAuth)
 # Architecture
 This is a first draft of the architecture and can still change.
