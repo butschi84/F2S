@@ -1,0 +1,67 @@
+name: build
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check Tag
+        id: check_tag
+        run: |
+          if [[ ${{ github.ref }} == 'refs/tags/helm'* ]]; then
+            echo "Tag starts with 'helm'. Skipping workflow."
+            exit 0
+          fi
+
+      - name: Get Repo Owner
+        id: get_repo_owner
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" > $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Get TAG
+        id: get_tag
+        run: echo TAG=${GITHUB_REF#refs/tags/} >> $GITHUB_ENV
+
+      - name: Generate Helm Chart Archive
+        run: |
+          helm package ./helm -d ./helm-release
+      - name: Commit Helm Chart Archive and Tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ./helm-release/*.tgz
+          git commit -m "Add Helm chart archive ${{ env.TAG }}"
+          git tag -a helm-${{ env.TAG }} -m "Helm chart version: ${{ env.TAG }}"
+          git push origin --follow-tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHTOKEN }}
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: ./f2soperator
+          file: ./f2soperator/Dockerfile
+          push: true
+          platforms: linux/amd64
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
+          tags: |
+            romanhuesler/f2s:${{ github.sha }}
+            romanhuesler/f2s:${{ env.TAG }}
+            romanhuesler/f2s:latest
