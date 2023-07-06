@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+  namespace: f2s
+data:
+  default.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'Prometheus-F2S'
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 10
+        options:
+          path: /var/lib/grafana/provisioning/dashboards
+          foldersFromFilesStructure: true

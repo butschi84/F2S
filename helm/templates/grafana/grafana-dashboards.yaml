@@ -4,7 +4,7 @@ metadata:
   name: grafana-dashboards
   namespace: f2s
 data:
-  example.json: |
+  scaling.json: |
     {
       "annotations": {
         "list": [
@@ -30,20 +30,240 @@ data:
       },
       "editable": true,
       "fiscalYearStartMonth": 0,
-      "graphTooltip": 0,
-      "id": 41,
+      "graphTooltip": 1,
+      "id": 43,
       "links": [],
-      "liveNow": false,
+      "liveNow": true,
       "panels": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "d3fcGTX4z"
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
           },
+          "id": 14,
+          "panels": [],
+          "title": "Scaling Decision",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus-F2S",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 69,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#e81e61",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "containers"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 0,
+            "y": 1
+          },
+          "id": 7,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus-F2S",
+              "editorMode": "builder",
+              "expr": "job:function_containers_required:containers{functionname=\"$functionname\"}",
+              "instant": false,
+              "legendFormat": "{{functionname}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Containers Needed",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "Prometheus-F2S",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineWidth": 1,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "dashed"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#ffffff",
+                    "value": null
+                  },
+                  {
+                    "color": "#ffffff",
+                    "value": -1
+                  },
+                  {
+                    "color": "#ffffff",
+                    "value": 0
+                  },
+                  {
+                    "color": "#ffffff",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "containers"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 13,
+            "x": 11,
+            "y": 1
+          },
+          "id": 8,
+          "options": {
+            "barRadius": 0,
+            "barWidth": 0.97,
+            "fullHighlight": false,
+            "groupWidth": 0.7,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "orientation": "auto",
+            "showValue": "auto",
+            "stacking": "none",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            },
+            "xTickLabelRotation": 0,
+            "xTickLabelSpacing": 200
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus-F2S",
+              "editorMode": "code",
+              "expr": "f2sscaling_function_scaling_decision_replicas_difference{functionname=\"$functionname\"}",
+              "instant": false,
+              "legendFormat": "{{functionname}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Scaling Decision",
+          "type": "barchart"
+        },
+        {
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 11
+          },
+          "id": 11,
+          "title": "Compute Power",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus-F2S",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineWidth": 1,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
               },
               "mappings": [],
               "thresholds": {
@@ -60,15 +280,79 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 12,
-            "w": 24,
+            "h": 10,
+            "w": 11,
             "x": 0,
-            "y": 0
+            "y": 12
           },
-          "id": 14,
+          "id": 3,
+          "options": {
+            "barRadius": 0,
+            "barWidth": 0.77,
+            "fullHighlight": false,
+            "groupWidth": 0.7,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "orientation": "auto",
+            "showValue": "never",
+            "stacking": "none",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            },
+            "xTickLabelRotation": 90,
+            "xTickLabelSpacing": 100
+          },
+          "pluginVersion": "10.0.0",
+          "targets": [
+            {
+              "datasource": "Prometheus-F2S",
+              "editorMode": "code",
+              "expr": "kube_deployment_status_replicas_available{functionname=\"$functionname\"}",
+              "legendFormat": "{{functionname}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Currently Available Replicas",
+          "type": "barchart"
+        },
+        {
+          "datasource": "Prometheus-F2S",
+          "description": "How many Requests can a replica container of this function serve per second",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#e81e61",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "req/s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 13,
+            "x": 11,
+            "y": 12
+          },
+          "id": 17,
           "options": {
             "colorMode": "value",
-            "graphMode": "none",
+            "graphMode": "area",
             "justifyMode": "auto",
             "orientation": "auto",
             "reduceOptions": {
@@ -78,171 +362,25 @@ data:
               "fields": "",
               "values": false
             },
-            "textMode": "value_and_name"
+            "textMode": "auto"
           },
-          "pluginVersion": "9.3.2",
+          "pluginVersion": "10.0.1",
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "d3fcGTX4z"
-              },
+              "datasource": "Prometheus-F2S",
               "editorMode": "code",
-              "expr": "sum(kube_deployment_status_replicas_available) by (deployment)",
+              "expr": "job:function_capacity_average:reqpersec{functionname=\"$functionname\"}",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Available Replicas",
+          "title": "Function Capacity (req/s)",
           "type": "stat"
         },
         {
-          "collapsed": true,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 12
-          },
-          "id": 10,
-          "panels": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "d3fcGTX4z"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 31,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#e81e61",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "decmbytes"
-                },
-                "overrides": [
-                  {
-                    "__systemRef": "hideSeriesFrom",
-                    "matcher": {
-                      "id": "byNames",
-                      "options": {
-                        "mode": "exclude",
-                        "names": [
-                          "{instance=\"10.44.0.1:8081\", job=\"f2s-metrics\"}"
-                        ],
-                        "prefix": "All except:",
-                        "readOnly": true
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": false,
-                          "tooltip": false,
-                          "viz": true
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              "gridPos": {
-                "h": 9,
-                "w": 12,
-                "x": 0,
-                "y": 19
-              },
-              "id": 12,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "d3fcGTX4z"
-                  },
-                  "editorMode": "code",
-                  "expr": "go_memstats_alloc_bytes / 1024 / 1024",
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "Memory Usage",
-              "type": "timeseries"
-            }
-          ],
-          "title": "Compute",
-          "type": "row"
-        },
-        {
-          "collapsed": false,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 13
-          },
-          "id": 8,
-          "panels": [],
-          "title": "Traffic",
-          "type": "row"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "d3fcGTX4z"
-          },
+          "datasource": "Prometheus-F2S",
+          "description": "Total Completed Requests by all Containers of this function",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -294,11 +432,11 @@ data:
           },
           "gridPos": {
             "h": 8,
-            "w": 12,
+            "w": 11,
             "x": 0,
-            "y": 14
+            "y": 22
           },
-          "id": 2,
+          "id": 4,
           "options": {
             "legend": {
               "calcs": [],
@@ -313,25 +451,19 @@ data:
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "d3fcGTX4z"
-              },
+              "datasource": "Prometheus-F2S",
               "editorMode": "code",
-              "expr": "sum(rate(f2s_requests_total[15s])) by (functionname)",
+              "expr": "sum by(functionname) (rate(f2s_requests_completed_total{functionname=\"$functionname\"}[15s]))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Incoming Requests Rate (req/s)",
+          "title": "Completed Requests Rate (req/s)",
           "type": "timeseries"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "d3fcGTX4z"
-          },
+          "datasource": "Prometheus-F2S",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -344,7 +476,128 @@ data:
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "drawStyle": "line",
-                "fillOpacity": 31,
+                "fillOpacity": 40,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#e81e61",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": [
+              {
+                "__systemRef": "hideSeriesFrom",
+                "matcher": {
+                  "id": "byNames",
+                  "options": {
+                    "mode": "exclude",
+                    "names": [
+                      "test-function-blocking"
+                    ],
+                    "prefix": "All except:",
+                    "readOnly": true
+                  }
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom",
+                    "value": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 13,
+            "x": 11,
+            "y": 22
+          },
+          "id": 16,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": "Prometheus-F2S",
+              "editorMode": "builder",
+              "expr": "job:function_duration_average:sec{functionname=\"$functionname\"}",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Average Duration",
+          "type": "timeseries"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 30
+          },
+          "id": 10,
+          "panels": [],
+          "title": "Incoming Work",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus-F2S",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 40,
                 "gradientMode": "opacity",
                 "hideFrom": {
                   "legend": false,
@@ -383,11 +636,11 @@ data:
           },
           "gridPos": {
             "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 14
+            "w": 11,
+            "x": 0,
+            "y": 31
           },
-          "id": 4,
+          "id": 6,
           "options": {
             "legend": {
               "calcs": [],
@@ -402,25 +655,32 @@ data:
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "d3fcGTX4z"
-              },
+              "datasource": "Prometheus-F2S",
               "editorMode": "code",
-              "expr": "sum(f2s_active_requests_total) by (functionname)",
+              "expr": "f2sscaling_function_incoming_request_rate{functionname=\"$functionname\"}",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Running Requests (total)",
+          "title": "Incoming Requests Rate (req/s)",
           "type": "timeseries"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "d3fcGTX4z"
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 39
           },
+          "id": 15,
+          "panels": [],
+          "title": "Request Backlog",
+          "type": "row"
+        },
+        {
+          "datasource": "Prometheus-F2S",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -431,29 +691,19 @@ data:
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 26,
-                "gradientMode": "opacity",
+                "fillOpacity": 80,
+                "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
                   "tooltip": false,
                   "viz": false
                 },
-                "lineInterpolation": "linear",
                 "lineWidth": 1,
-                "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
                 "thresholdsStyle": {
-                  "mode": "dashed"
+                  "mode": "off"
                 }
               },
               "mappings": [],
@@ -461,65 +711,67 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "#e81e61",
-                    "value": null
-                  },
-                  {
-                    "color": "#ffffff",
-                    "value": 90
+                    "color": "#e81e61"
                   }
                 ]
-              },
-              "unit": "s"
+              }
             },
             "overrides": []
           },
           "gridPos": {
             "h": 8,
-            "w": 12,
+            "w": 11,
             "x": 0,
-            "y": 22
+            "y": 40
           },
-          "id": 16,
+          "id": 9,
           "options": {
+            "barRadius": 0,
+            "barWidth": 0.97,
+            "fullHighlight": false,
+            "groupWidth": 0.7,
             "legend": {
               "calcs": [],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
+            "orientation": "auto",
+            "showValue": "auto",
+            "stacking": "none",
             "tooltip": {
               "mode": "single",
               "sort": "none"
-            }
+            },
+            "xTickLabelRotation": 0,
+            "xTickLabelSpacing": 100
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "d3fcGTX4z"
-              },
-              "editorMode": "code",
-              "expr": "max(time() - f2s_last_request_timestamp) by (functionname)",
-              "legendFormat": "__auto",
+              "datasource": "Prometheus-F2S",
+              "editorMode": "builder",
+              "expr": "f2sscaling_function_requests_backlog_growth_rate{functionname=\"$functionname\"}",
+              "hide": false,
+              "instant": false,
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Time since last Request Completion",
-          "type": "timeseries"
+          "title": "Request Backlog Growth (req/s)",
+          "type": "barchart"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "d3fcGTX4z"
-          },
+          "datasource": "Prometheus-F2S",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
                 "fillOpacity": 80,
                 "gradientMode": "opacity",
                 "hideFrom": {
@@ -527,70 +779,122 @@ data:
                   "tooltip": false,
                   "viz": false
                 },
-                "lineWidth": 1
+                "lineWidth": 1,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "#e81e61",
-                    "value": null
+                    "color": "#e81e61"
                   }
                 ]
               },
-              "unit": "ns"
+              "unit": "req"
             },
             "overrides": []
           },
           "gridPos": {
             "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 22
+            "w": 13,
+            "x": 11,
+            "y": 40
           },
-          "id": 6,
+          "id": 12,
           "options": {
-            "bucketOffset": 0,
+            "barRadius": 0,
+            "barWidth": 0.97,
+            "fullHighlight": false,
+            "groupWidth": 0.7,
             "legend": {
               "calcs": [],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
-            }
+              "showLegend": false
+            },
+            "orientation": "auto",
+            "showValue": "never",
+            "stacking": "none",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            },
+            "xTickLabelRotation": 0,
+            "xTickLabelSpacing": 100
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "d3fcGTX4z"
-              },
-              "editorMode": "code",
-              "expr": "avg(f2s_request_duration_seconds_bucket) by (functionname)",
+              "datasource": "Prometheus-F2S",
+              "editorMode": "builder",
+              "expr": "sum by(functionname) (f2s_active_requests_total{functionname=\"$functionname\"})",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
             }
           ],
-          "title": "Requests - Duration",
-          "type": "histogram"
+          "title": "Request Backlog",
+          "type": "barchart"
         }
       ],
       "refresh": "5s",
-      "schemaVersion": 37,
+      "schemaVersion": 38,
       "style": "dark",
       "tags": [],
       "templating": {
-        "list": []
+        "list": [
+          {
+            "current": {
+              "selected": false,
+              "text": "test-function-blocking",
+              "value": "test-function-blocking"
+            },
+            "datasource": "Prometheus-F2S",
+            "definition": "label_values(functionname)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "function",
+            "multi": false,
+            "name": "functionname",
+            "options": [],
+            "query": {
+              "query": "label_values(functionname)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
       },
       "time": {
-        "from": "now-30m",
+        "from": "now-6h",
         "to": "now"
       },
-      "timepicker": {},
+      "timepicker": {
+        "refresh_intervals": [
+          "5s",
+          "10s",
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
+        ]
+      },
       "timezone": "",
-      "title": "F2S Dashboard",
-      "uid": "jdd3hTuVz",
-      "version": 22,
+      "title": "F2S Scaling",
+      "uid": "e35395c6-f410-4cbe-a002-6afa2d2c5e06",
+      "version": 73,
       "weekStart": ""
     }

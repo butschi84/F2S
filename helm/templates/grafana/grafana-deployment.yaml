@@ -23,11 +23,14 @@ spec:
           volumeMounts:
             - name: grafana-storage
               mountPath: /var/lib/grafana
+            - name: grafana-provisioning
+              mountPath: /etc/grafana/provisioning/dashboards
+              readOnly: true
             - name: grafana-provisioning-datasources
               mountPath: /etc/grafana/provisioning/datasources
               readOnly: true
             - name: grafana-provisioning-dashboards
-              mountPath: /etc/grafana/provisioning/dashboards
+              mountPath: /var/lib/grafana/provisioning/dashboards
               readOnly: true
       volumes:
         - name: grafana-storage
@@ -38,3 +41,9 @@ spec:
         - name: grafana-provisioning-dashboards
           configMap:
             name: grafana-dashboards
+        - name: grafana-provisioning
+          configMap:
+            name: grafana-provisioning
+            items:
+              - key: default.yaml
+                path: default.yaml
