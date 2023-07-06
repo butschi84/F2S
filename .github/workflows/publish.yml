@@ -11,14 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check Tag
-        id: check_tag
-        run: |
-          if [[ ${{ github.ref }} == 'refs/tags/helm'* ]]; then
-            echo "Tag starts with 'helm'. Skipping workflow."
-            exit 0
-          fi
-
       - name: Get Repo Owner
         id: get_repo_owner
         run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" > $GITHUB_ENV
@@ -41,14 +33,16 @@ jobs:
       - name: Generate Helm Chart Archive
         run: |
           helm package ./helm -d ./helm-release
+
       - name: Commit Helm Chart Archive and Tag
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git branch helm-release-${{ env.TAG }}
+          git checkout helm-release-${{ env.TAG }}
           git add ./helm-release/*.tgz
           git commit -m "Add Helm chart archive ${{ env.TAG }}"
-          git tag -a helm-${{ env.TAG }} -m "Helm chart version: ${{ env.TAG }}"
-          git push origin --follow-tags
+          git push origin helm-release-${{ env.TAG }} --follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.GHTOKEN }}
 
