@@ -1,0 +1,24 @@
+.navbar h1 {
+    margin: 22px;
+    font-weight: 700;
+}
+.navbar h2 {
+    margin: 32px;
+    color: #444;
+    font-weight: 300;
+    margin-left: 0;
+}
+
+.navbar {
+    padding-left: 20px;
+    margin-bottom: 60px;
+}
+
+.area_main {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+table.dataTable>tbody>tr {
+    margin-bottom: 5px;
+}
