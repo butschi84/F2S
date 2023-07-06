@@ -3,8 +3,8 @@
 $("#functionstable").delegate( "#invoke", "click", function() {
 	var id = $(this).attr("title");
 	$("#showfunction").val(id);
-	$("#main").load("frontend/view/view_invoke.html", function() {
-		$.getScript("frontend/view/view_invoke.js")
+	$("#main").load("view/view_invoke.html", function() {
+		$.getScript("view/view_invoke.js")
 	});
 
 });

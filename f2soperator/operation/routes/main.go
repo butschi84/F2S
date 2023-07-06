@@ -36,10 +36,6 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	openAPIHandler := http.FileServer(http.Dir("./static/openapi"))
 	router.PathPrefix("/docs/").Handler(http.StripPrefix("/docs/", openAPIHandler))
 
-	// frontend, ui
-	frontendHandler := http.FileServer(http.Dir("./static/frontend"))
-	router.PathPrefix("/frontend").Handler(http.StripPrefix("/frontend", frontendHandler))
-
 	// retrieve configured f2s functions
 	router.HandleFunc("/functions", returnAllFunctions).Methods(http.MethodGet)
 	router.HandleFunc("/functions", createFunction).Methods(http.MethodPost)
@@ -54,7 +50,10 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	router.HandleFunc("/invoke/{target}", invokeFunction)
 	router.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)
 
-	router.HandleFunc("/", root)
+	// frontend, ui
+	frontendHandler := http.FileServer(http.Dir("./static/frontend"))
+	router.PathPrefix("/").Handler(frontendHandler)
+
 	logging.Info("listening on http://0.0.0.0:8080")
 	http.ListenAndServe("0.0.0.0:8080", router)
 }
