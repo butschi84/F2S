@@ -1,4 +1,14 @@
-console.log("loading functions")
+
+//Button: Anclicken eines Mitglieds
+$("#functionstable").delegate( "#invoke", "click", function() {
+	var id = $(this).attr("title");
+	$("#showfunction").val(id);
+	$("#main").load("frontend/view/view_invoke.html", function() {
+		$.getScript("frontend/view/view_invoke.js")
+	});
+
+});
+
 
 function load_functions()
 {
@@ -15,7 +25,7 @@ function load_functions()
 			functionentry += "<td>"+data[i].name+"</td>";
 			functionentry += "<td>"+data[i].spec.endpoint+"</td>";
 			functionentry += "<td>"+data[i].target.containerImage+"</td>";
-			functionentry += "<td><button class='button is-primary'>Invoke</button></td>";
+			functionentry += "<td><button class='button is-primary' id=invoke title="+data[i].uid+">Invoke</button></td>";
 			functionentry += "</tr>";
 
 			//Eintrag ausgeben

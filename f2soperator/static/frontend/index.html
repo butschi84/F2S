@@ -1,7 +1,9 @@
 <html>
 <head>
-    <script src="frontend/include/jquery-3.7.0.min.js" type="text/javascript"></script>
+    <script src="frontend/include/jquery/jquery-3.7.0.min.js" type="text/javascript"></script>
     <script src="frontend/include/datatables/datatables.min.js" type="text/javascript"></script>
+    <script src="frontend/include/lodash/lodash-4.17.20.min.js" type="text/JavaScript"></script>
+
     <link rel="stylesheet" href="frontend/include/bulma.min.css">
     <link rel="stylesheet" href="frontend/include/datatables/datatables.min.css">
     <link rel="stylesheet" href="frontend/include/style.css">
@@ -19,11 +21,18 @@
                 $.getScript("frontend/view/view_functions.js")
             });
 
+            $("#mnu_functions").click(function () {
+                $("#main").load("frontend/view/view_functions.html", function () {
+                  $.getScript("frontend/view/view_functions.js")
+              });
+            });
+
         });
 
     </script>
 </head>
 <body>
+    <input type=hidden id=showfunction>
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <img src="frontend/include/logo.svg" width="60px"/>
         <h1 class="title">F2S</h1>
@@ -31,7 +40,7 @@
       
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
-            <a class="navbar-item">
+            <a class="navbar-item" id="mnu_functions">
               Functions
             </a>
             </div>
