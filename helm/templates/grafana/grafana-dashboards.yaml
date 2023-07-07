@@ -125,7 +125,7 @@ data:
               "editorMode": "builder",
               "expr": "job:function_containers_required:containers{functionname=\"$functionname\"}",
               "instant": false,
-              "legendFormat": {{"{{functionname}}"}},
+              "legendFormat": {{"{{"}}functionname{{"}}"}},
               "range": true,
               "refId": "A"
             }
@@ -220,7 +220,7 @@ data:
               "editorMode": "code",
               "expr": "f2sscaling_function_scaling_decision_replicas_difference{functionname=\"$functionname\"}",
               "instant": false,
-              "legendFormat": {{"{{functionname}}"}},
+              "legendFormat": {{"{{"}}functionname{{"}}"}},
               "range": true,
               "refId": "A"
             }
@@ -314,7 +314,7 @@ data:
               "datasource": "Prometheus-F2S",
               "editorMode": "code",
               "expr": "kube_deployment_status_replicas_available{functionname=\"$functionname\"}",
-              "legendFormat": {{"{{functionname}}"}},
+              "legendFormat": {{"{{"}}functionname{{"}}"}},
               "range": true,
               "refId": "A"
             }
