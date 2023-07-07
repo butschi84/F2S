@@ -51,7 +51,7 @@ def addHelmChartToIndex():
             f'https://github.com/butschi84/f2s/helm-release/f2s-{version}.tgz'
         ]
     }
-    data['entries'].append(new_entry)
+    data['entries']['f2s'].append(new_entry)
 
     writeYamlFile('helm-release/index.yaml', data)
 
