@@ -30,9 +30,10 @@ jobs:
         id: get_tag
         run: echo TAG=${GITHUB_REF#refs/tags/} >> $GITHUB_ENV
 
-      - name: Generate Helm Chart Archive
+      - name: Generate new Release
         run: |
-          helm package ./helm -d ./helm-release
+          python3 -m pip install ./utility/requirements.txt
+          python3 ./utility/create_release.py ${{ env.TAG }}
 
       - name: Commit Helm Chart Archive and Tag
         run: |
@@ -41,6 +42,8 @@ jobs:
           git branch helm-release-${{ env.TAG }}
           git checkout helm-release-${{ env.TAG }}
           git add ./helm-release/*.tgz
+          git add ./helm-release/index.yaml
+          git add ./helm/Chart.yaml
           git commit -m "Add Helm chart archive ${{ env.TAG }}"
           git push origin helm-release-${{ env.TAG }} --follow-tags
         env:
