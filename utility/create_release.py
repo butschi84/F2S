@@ -48,7 +48,7 @@ def addHelmChartToIndex():
         'version': version,
         'description': 'f2s deployment',
         'urls': [
-            f'https://github.com/butschi84/f2s/helm-release/f2s-{version}.tgz'
+            f'https://butschi84.github.io/F2S/helm-release/f2s-{version}.tgz'
         ]
     }
     data['entries']['f2s'].append(new_entry)
