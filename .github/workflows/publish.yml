@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate new Release
         run: |
-          python3 -m pip install ./utility/requirements.txt
+          python3 -m pip install -r ./utility/requirements.txt
           python3 ./utility/create_release.py ${{ env.TAG }}
 
       - name: Commit Helm Chart Archive and Tag
