@@ -6,6 +6,7 @@ Status <font color=red>Early Alpha</font>
 # Content
 - [F2S](#f2s)
 - [Content](#content)
+- [Quick Start Guide](#quick-start-guide)
 - [Core Concept](#core-concept)
   - [KISS - Simple and Stupid](#kiss---simple-and-stupid)
   - [All Features included](#all-features-included)
@@ -17,6 +18,27 @@ Status <font color=red>Early Alpha</font>
 - [Configuration](#configuration)
   - [CRDs functions.f2s.opensight.ch](#crds-functionsf2sopensightch)
   - [Configmap - config.yaml](#configmap---configyaml)
+
+# Quick Start Guide
+This will install f2s on your kubernetes cluster. 
+
+* "Functions" CRD
+* Namespaces "f2s", "f2s-containers"
+* ClusterRoles and Bindings
+* Deployments for F2S, Grafana, Prometheus
+* Services
+
+```
+helm repo add f2s https://butschi84.github.io/F2S/helm-release
+helm repo update
+
+# install crds
+kubectl apply -f https://butschi84.github.io/F2S/helm-release/crds/crds.yaml
+
+# install f2s
+helm install f2s f2s/f2s
+```
+
 # Core Concept
 Personally, I work on the project mainly to learn more Golang and because I have a usecase for a F2S Platform currently.
 
