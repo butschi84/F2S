@@ -19,6 +19,7 @@ var f2shub hub.F2SHub
 // metrics
 var metricTotalIncomingRequests *prometheus.CounterVec
 var metricTotalCompletedRequests *prometheus.CounterVec
+var metricTotalFailedRequests *prometheus.CounterVec
 var metricActiveRequests *prometheus.GaugeVec
 var metricLastRequestCompletion *prometheus.GaugeVec
 var metricFunctionCapacity *prometheus.HistogramVec
@@ -45,6 +46,15 @@ func init() {
 		prometheus.CounterOpts{
 			Name: "f2s_requests_completed_total",
 			Help: "Total number of completed requests",
+		},
+		[]string{"target", "functionuid", "functionname"},
+	)
+
+	// metric - total failed requests
+	metricTotalFailedRequests = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "f2s_requests_failed_total",
+			Help: "Total number of failed requests",
 		},
 		[]string{"target", "functionuid", "functionname"},
 	)
@@ -96,6 +106,7 @@ func init() {
 
 	prometheus.MustRegister(metricTotalIncomingRequests)
 	prometheus.MustRegister(metricTotalCompletedRequests)
+	prometheus.MustRegister(metricTotalFailedRequests)
 	prometheus.MustRegister(metricActiveRequests)
 	prometheus.MustRegister(metricLastRequestCompletion)
 	prometheus.MustRegister(metricRequestDuration)

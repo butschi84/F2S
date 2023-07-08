@@ -1,4 +1,9 @@
 debug: true
 
 prometheus:
-  url: 192.168.2.40:32412
+  url: 192.168.2.40:32133
+
+f2s:
+  timeouts:
+    request_timeout: 120000
+    http_timeout: 60000

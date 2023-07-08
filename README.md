@@ -103,4 +103,9 @@ debug: true
 
 prometheus:
   url: prometheus-service.f2s:9090
+
+f2s:
+  timeouts:
+    request_timeout: 120000
+    http_timeout: 60000
 ```

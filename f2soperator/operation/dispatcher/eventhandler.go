@@ -70,7 +70,7 @@ func reloadEndpoints() {
 
 // wait until f2s has scaled up the deploment from 0
 func waitForTargetPod(target *f2sfunctiontargets.F2SDispatcherFunctionTarget) error {
-	// Create a context with a timeout of 30 seconds
+	// Create a context with a timeout of 'scaling_timeout'
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 

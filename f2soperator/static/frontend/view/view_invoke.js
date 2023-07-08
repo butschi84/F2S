@@ -21,12 +21,20 @@ $(document).ready(function () {
 
     $("#invokefu").on("click", function() {
         var target = $("#target").html()
+
+        $("#spinner").css("display", "inline");
+        $("#invokefu").prop("disabled", true);
+
+
         $.get(target, function(response) {
             $("#result").html(response)
-            console.log(response)
+            $("#spinner").css("display", "none");
+            $("#invokefu").prop("disabled", false);
         }).fail(function(xhr, status, error) {
             // Handle the error
             console.log(error);
+            $("#spinner").css("display", "none");
+            $("#invokefu").prop("disabled", false);
         });
     })
 })

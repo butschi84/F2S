@@ -25,7 +25,7 @@ func Initialize(h *hub.F2SHub, wg *sync.WaitGroup) {
 
 	// subscribe to new requests
 	logging.Info("subscribing to incoming requests")
-	f2shub.F2SQueue.Subscribe(handleRequests)
+	f2shub.F2SQueue.Subscribe(handleRequestsWithTimeout)
 
 	reloadEndpoints()
 }
