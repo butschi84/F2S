@@ -70,8 +70,10 @@ func reloadEndpoints() {
 
 // wait until f2s has scaled up the deploment from 0
 func waitForTargetPod(target *f2sfunctiontargets.F2SDispatcherFunctionTarget) error {
+	scalingTimeout := f2shub.F2SConfiguration.Config.F2S.Timeouts.ScalingTimeout
+
 	// Create a context with a timeout of 'scaling_timeout'
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(scalingTimeout)*time.Millisecond)
 	defer cancel()
 
 	resultChan := make(chan int)
@@ -89,7 +91,7 @@ func waitForTargetPod(target *f2sfunctiontargets.F2SDispatcherFunctionTarget) er
 		logging.Info(fmt.Sprintf("%d pods are available to serve the function '%s'", result, target.Function.Name))
 		return nil
 	case <-ctx.Done():
-		logging.Warn(fmt.Sprintf("0 pods are available to serve the function '%s'!", target.Function.Name))
-		return fmt.Errorf("0 pods are available to serve the function '%s'!", target.Function.Name)
+		logging.Warn(fmt.Sprintf("scaling_timeout: 0 pods are available to serve the function '%s' after %dms!", target.Function.Name, scalingTimeout))
+		return fmt.Errorf("scaling_timeout: 0 pods are available to serve the function '%s' after %dms!", target.Function.Name, scalingTimeout)
 	}
 }

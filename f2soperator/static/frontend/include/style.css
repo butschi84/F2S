@@ -22,3 +22,15 @@
 table.dataTable>tbody>tr {
     margin-bottom: 5px;
 }
+
+.button.is-primary  {
+    background-color: #e91e61;
+    margin-bottom: 5px;
+}
+.button.is-primary:hover  {
+    background-color: #dd8ca7;
+}
+.button.is-primary[disabled]  {
+    background-color: #dd8ca7;
+    border: 0px
+}

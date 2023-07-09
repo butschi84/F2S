@@ -26,4 +26,5 @@ type F2SConfigMapF2S struct {
 type F2SConfigMapF2STimeouts struct {
 	RequestTimeout int `yaml:"request_timeout"`
 	HttpTimeout    int `yaml:"http_timeout"`
+	ScalingTimeout int `yaml:"scaling_timeout"`
 }

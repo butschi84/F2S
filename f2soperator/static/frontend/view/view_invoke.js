@@ -25,9 +25,13 @@ $(document).ready(function () {
         $("#spinner").css("display", "inline");
         $("#invokefu").prop("disabled", true);
 
+        // reset response view
+        $('#jsonContainer').html("");
 
+        // invoke function
         $.get(target, function(response) {
-            $("#result").html(response)
+            $('#jsonContainer').JSONView(response);
+
             $("#spinner").css("display", "none");
             $("#invokefu").prop("disabled", false);
         }).fail(function(xhr, status, error) {

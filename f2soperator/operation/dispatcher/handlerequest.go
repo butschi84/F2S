@@ -75,10 +75,10 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	if len(functionTarget.ServingPods) == 0 {
 		err := waitForTargetPod(functionTarget)
 		if err != nil {
-			logging.Error(fmt.Errorf("aborting function '%s' invocation because scale up from 0 failed", functionTarget.Function.Name))
+			logging.Error(fmt.Errorf("aborting function '%s'. scale from 0 failed: %s", functionTarget.Function.Name, err.Error()))
 			// send result to channel
 			*result <- queue.F2SRequestResult{
-				Result:  fmt.Sprintf("aborting function '%s' invocation because scale up from 0 failed", functionTarget.Function.Name),
+				Result:  fmt.Sprintf("aborting function '%s'. scale from 0 failed: %s", functionTarget.Function.Name, err.Error()),
 				Success: false,
 				UID:     req.UID,
 			}

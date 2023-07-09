@@ -108,4 +108,5 @@ f2s:
   timeouts:
     request_timeout: 120000
     http_timeout: 60000
+    scaling_timeout: 45000
 ```

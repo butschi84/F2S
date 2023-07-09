@@ -15,8 +15,8 @@ type F2SRequestResult struct {
 
 	Request F2SRequest `json:"-"`
 
-	Duration                   float64 `json:"duration"`
-	DurationPerInflightRequest float64 `json:"duration_per_inflightrequest"`
+	Duration                   float64 `json:"-"`
+	DurationPerInflightRequest float64 `json:"-"`
 }
 
 type RequestHandler func(request F2SRequest)
