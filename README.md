@@ -1,14 +1,13 @@
 # F2S
 An Open Source Function as a Service (FaaS) Platform
 
-Status <font color=red>Early Alpha</font>
+Status <font color=red>Beta</font>
 
 # Content
 - [F2S](#f2s)
 - [Content](#content)
 - [Quick Start Guide](#quick-start-guide)
 - [Core Concept](#core-concept)
-  - [KISS - Simple and Stupid](#kiss---simple-and-stupid)
   - [All Features included](#all-features-included)
 - [Architecture](#architecture)
   - [Namespaces](#namespaces)
@@ -40,10 +39,6 @@ helm install f2s f2s/f2s
 ```
 
 # Core Concept
-Personally, I work on the project mainly to learn more Golang and because I have a usecase for a F2S Platform currently.
-
-These will be the core concepts of this F2S Platform
-## KISS - Simple and Stupid
 
 * Keep it as simple as can be
 * Run out of the box with as few dependencies as possible. <br/>
