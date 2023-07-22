@@ -3,7 +3,8 @@
 [![F2S FunctionsAsAService](https://img.shields.io/badge/f2s-Functions_as_a_Service-blue)](https://opensight.ch/licenses/MIT)
 [![Beta](https://img.shields.io/badge/status-beta-green)](https://opensight.ch/licenses/MIT)
 
-An Open Source Function as a Service (FaaS) Platform
+An Open Source Function as a Service (FaaS) Platform. <br />
+[Get started in 5 Minutes](#quick-start-guide) on your Kubernetes platform.
 
 # Content
 - [F2S](#f2s)
