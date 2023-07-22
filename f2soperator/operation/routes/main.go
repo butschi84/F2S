@@ -51,6 +51,7 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	router.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 	router.HandleFunc("/invoke/{target}", invokeFunction)
 	router.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)
+	router.HandleFunc("/health", checkHealth)
 
 	// frontend, ui
 	frontendHandler := http.FileServer(http.Dir("./static/frontend"))
