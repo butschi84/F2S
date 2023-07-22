@@ -39,11 +39,12 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name ${{ env.REPO_OWNER }}
+          git checkout --track origin/main
           git add ./helm-release/*.tgz
           git add ./helm-release/index.yaml
           git add ./helm/Chart.yaml
           git commit -m "helm-release-${{ env.TAG }}"
-          git push
+          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GHTOKEN }}
 
