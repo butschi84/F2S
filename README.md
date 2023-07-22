@@ -1,7 +1,9 @@
 # F2S
-An Open Source Function as a Service (FaaS) Platform
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![F2S FunctionsAsAService](https://img.shields.io/badge/f2s-Functions_as_a_Service-blue)](https://opensight.ch/licenses/MIT)
+[![Beta](https://img.shields.io/badge/status-beta-green)](https://opensight.ch/licenses/MIT)
 
-Status <font color=red>Beta</font>
+An Open Source Function as a Service (FaaS) Platform
 
 # Content
 - [F2S](#f2s)
