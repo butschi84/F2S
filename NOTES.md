@@ -25,3 +25,5 @@ spec:
         type: Value
         value: 10
 ```
+
+helm install f2s f2s/f2s --set promtail.enabled=true
