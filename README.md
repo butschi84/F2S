@@ -6,8 +6,16 @@
 An Open Source Function as a Service (FaaS) Platform. <br />
 [Get started in 5 Minutes](#quick-start-guide) on your Kubernetes platform.
 
+## Features
+
+* **Gitops**<br/>
+  Define your Functions as K8S CRDs
+* **Scale to Zero**<br/>
+  Can scale Deployments to zero when there is no activity
+
 # Content
 - [F2S](#f2s)
+  - [Features](#features)
 - [Content](#content)
 - [Quick Start Guide](#quick-start-guide)
 - [Core Concept](#core-concept)
