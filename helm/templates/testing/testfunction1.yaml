@@ -8,6 +8,10 @@ metadata:
 spec:
   endpoint: "/testnonblocking"
   method: "GET"
+  description: |
+    Blocking Function
+    * 1 container can handle a many request at once in parallel
+    * one request will take a random time from 200ms up to 5000ms to complete
 target:
   containerImage: "romanhuesler/testcontainer"
   endpoint: "/"
@@ -23,6 +27,10 @@ metadata:
 spec:
   endpoint: "/testblocking"
   method: "GET"
+  description: |
+    Blocking Function
+    * 1 container can only handle a single request at once
+    * one request will take a random time from 200ms up to 5000ms to complete
 target:
   containerImage: "romanhuesler/testcontainer"
   endpoint: "/blocking"

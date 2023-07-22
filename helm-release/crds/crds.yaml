@@ -26,6 +26,8 @@ spec:
                   type: "string"
                 method:
                   type: "string"
+                description:
+                  type: "string"
             target:
               type: object
               required:

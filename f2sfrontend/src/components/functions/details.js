@@ -90,6 +90,13 @@ function F2SFunctionDetails(props) {
                         className="input"
                         readOnly
                         value={f2sfunction.spec.method} />
+                        
+                        {/* Description */}
+                        Description
+                        <input 
+                        className="input"
+                        readOnly
+                        value={f2sfunction.spec.description} />
                     </div>
                 </div>
             </div>

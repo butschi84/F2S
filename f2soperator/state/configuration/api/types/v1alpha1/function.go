@@ -4,8 +4,9 @@ import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 // F2S Spex (for use in F2S Function Model)
 type FunctionSpec struct {
-	Endpoint string `json:"endpoint"`
-	Method   string `json:"method"`
+	Endpoint    string `json:"endpoint"`
+	Method      string `json:"method"`
+	Description string `json:"description"`
 }
 
 // F2S Target (for use in F2S Function Model)
