@@ -5,6 +5,7 @@ import (
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/services/prometheus"
 	"butschi84/f2s/state/configuration"
+	"fmt"
 	"os"
 	"sort"
 	"sync"
@@ -64,6 +65,7 @@ func CheckMaster() (bool, error) {
 	result, err := prometheus.ReadPrometheusMetric(&configuration.ActiveConfiguration, "f2s_master_election_ready_pods", map[string]string{})
 	if err != nil {
 		logging.Error(err)
+		logging.Error(fmt.Errorf("prometheus seems not to be reachable. prometheus URL can also specified by 'export Prometheus_URL=localhost:9090'"))
 	}
 
 	// jsonBytes, err := json.MarshalIndent(result, "", "  ")

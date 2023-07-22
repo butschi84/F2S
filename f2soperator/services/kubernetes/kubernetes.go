@@ -39,6 +39,7 @@ func GetV1Alpha1ClientSet() (*clientV1alpha1.V1Alpha1Client, error) {
 	config, err := getInClusterConfig()
 	if err != nil {
 		logging.Error(fmt.Errorf("Failed to get in-cluster config: %s\n", err))
+		logging.Error(fmt.Errorf("you can use env variable 'export KUBECONFIG=~/.kube/config' to specify a local config file"))
 		os.Exit(1)
 	}
 
@@ -57,6 +58,7 @@ func GetV1ClientSet() (*k8s.Clientset, error) {
 	config, err := getInClusterConfig()
 	if err != nil {
 		logging.Error(fmt.Errorf("Failed to get in-cluster config: %s\n", err))
+		logging.Error(fmt.Errorf("you can use env variable 'export KUBECONFIG=~/.kube/config' to specify a local config file"))
 		os.Exit(1)
 	}
 

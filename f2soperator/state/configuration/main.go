@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -34,6 +35,13 @@ func Initialize() *F2SConfiguration {
 	var config F2SConfigMap
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		log.Fatal(err)
+	}
+
+	// consume environment variables
+	logging.Info("consuming environment variables")
+	prometheusURL := os.Getenv("Prometheus_URL")
+	if prometheusURL != "" {
+		config.Prometheus.URL = prometheusURL
 	}
 
 	logging.Info("initializing config")

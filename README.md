@@ -105,3 +105,10 @@ f2s:
     http_timeout: 60000
     scaling_timeout: 45000
 ```
+
+Environment Variables take precedence over the configmap and are useful for local testing / debugging.
+
+```
+export Prometheus_URL=localhost:9090
+export KUBECONFIG=~/.kube/config
+```
