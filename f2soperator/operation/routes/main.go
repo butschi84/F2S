@@ -28,6 +28,8 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	f2shub = hub
 	router := mux.NewRouter().StrictSlash(false)
 
+	router.Use(setAccessControlHeader)
+
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")
 	f2shub.F2SEventManager.Subscribe(handleEvent)
@@ -49,6 +51,7 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	router.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 	router.HandleFunc("/invoke/{target}", invokeFunction)
 	router.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)
+	router.HandleFunc("/health", checkHealth)
 
 	// frontend, ui
 	frontendHandler := http.FileServer(http.Dir("./static/frontend"))
@@ -56,4 +59,14 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 
 	logging.Info("listening on http://0.0.0.0:8080")
 	http.ListenAndServe("0.0.0.0:8080", router)
+}
+
+// Middleware function to set Access-Control-Allow-Origin header to *
+func setAccessControlHeader(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set the Access-Control-Allow-Origin header to allow all origins (*)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// Call the next handler in the chain
+		next.ServeHTTP(w, r)
+	})
 }
