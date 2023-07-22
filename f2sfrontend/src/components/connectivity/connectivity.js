@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { checkConnectivity} from '../../store/connectivitySlice'
+import { checkConnectivity, setBackendURL} from '../../store/connectivitySlice'
 
 function ConnectivityCheck(props) {
     const dispatch = useDispatch()
+    const [backendUrl, setBackendUrl] = useState(props.apiURL);
 
     useEffect(() => {
         dispatch(checkConnectivity())
@@ -11,18 +12,32 @@ function ConnectivityCheck(props) {
 
     return (
         <React.Fragment>
-            {JSON.stringify(props.connectivity)}
-
-            <div className='container' style={{width: "500px"}}>
-                <div className="field">
-                    <label className="label">F2S API</label>
-                    <div className="control">
-                        <input className="input" type="text" placeholder="Text input" />
+            {
+                !props.connectivity &&
+                <div className='container' style={{width: "500px", marginTop: "300px"}}>
+                    <div className="field">
+                        <label className="label">F2S API Connection</label>
+                        <div className="control">
+                            <input 
+                                className="input" 
+                                type="text" 
+                                placeholder="Text input" 
+                                value={backendUrl} 
+                                onChange={(p) => setBackendUrl(p.target.value)} />
+                        </div>
+                        <p className="help">Please specify address of f2s backend API</p>
                     </div>
-                    <p className="help">Please specify address of f2s backend API</p>
+                    <button className='button is-primary' onClick={()=>dispatch(setBackendURL(backendUrl))}>Save</button>
                 </div>
-                <button className='button is-primary'>Save</button>
-            </div>
+            }
+
+            {
+                props.connectivity && 
+                <React.Fragment>
+                {props.children}
+                <button className='backendUrlButton button' onClick={()=>dispatch(setBackendURL(""))}>Connectivity</button>
+                </React.Fragment>
+            }
         </React.Fragment>
     )
 }
@@ -30,6 +45,7 @@ function ConnectivityCheck(props) {
 function mapStateToProps(state) {
     return { 
         connectivity: state.connectivitySlice.ApiConnectionEstablished,
+        apiURL: state.connectivitySlice.apiURL,
     };
   }
   
