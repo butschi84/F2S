@@ -20,7 +20,7 @@ RUN npm run build
 FROM golang:1.19
 WORKDIR /app
 COPY --from=f2soperator /app/f2s ./f2s
-COPY ./static ./static
+COPY ./f2soperator/static ./static
 COPY --from=f2sfrontend /app/build/ ./static/frontend/
 
 # expose api
