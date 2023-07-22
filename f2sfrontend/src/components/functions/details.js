@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import axios from 'axios';
 import spinner from '../../images/spinner2.gif';
 import yaml from 'js-yaml';
+import ReactMarkdown from 'react-markdown';
 
 function getF2SFunctionYAMLDefinition(f2sfunction) {
     let clone = {...f2sfunction}
@@ -69,6 +70,7 @@ function F2SFunctionDetails(props) {
 
             {/* Specification */}
             {tab == "specification" &&
+            <React.Fragment>
             <div className="card">
                 <div className="card-content">
                     <div class="media">
@@ -90,16 +92,23 @@ function F2SFunctionDetails(props) {
                         className="input"
                         readOnly
                         value={f2sfunction.spec.method} />
-                        
-                        {/* Description */}
-                        Description
-                        <input 
-                        className="input"
-                        readOnly
-                        value={f2sfunction.spec.description} />
                     </div>
                 </div>
             </div>
+            <div className="card">
+                <div className="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">Description</p>
+                        </div>
+                    </div>
+                    <div className="content">
+                        {/* Description */}
+                        <ReactMarkdown>{f2sfunction.spec.description}</ReactMarkdown>
+                    </div>
+                </div>
+            </div>
+            </React.Fragment>
             }
 
             {/* Target */}
