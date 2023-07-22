@@ -11,7 +11,7 @@ function F2SFunctions(props) {
     const columns = [
         {
             name: 'uid',
-            selector: row => row.uid
+            selector: row => <NavLink to={`/functions/${row.uid}`}>{row.uid}</NavLink>
         },
         {
             name: 'name',
