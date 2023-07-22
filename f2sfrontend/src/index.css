@@ -21,3 +21,15 @@ code {
   bottom: 20px;
   right: 20px; 
 }
+
+.navbar-wrap {
+  margin-bottom: 40px;
+  border-bottom: solid 0px;
+  background: linear-gradient(to right, #e91f63, white);
+  max-width: 250px;
+  padding: 3px;
+}
+
+.card {
+  margin-bottom: 40px;
+}

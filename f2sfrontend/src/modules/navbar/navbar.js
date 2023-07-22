@@ -1,5 +1,7 @@
 import React from 'react';
 import logo from '../../images/f2s-logo.png';
+import { NavLink, useParams } from 'react-router-dom';
+import { connect, useDispatch } from 'react-redux';
 
 function Navbar(props) {
     return (
@@ -19,14 +21,24 @@ function Navbar(props) {
 
                 <div id="f2sNavbar" className="navbar-menu">
                     <div className="navbar-start">
-                    <a className="navbar-item">
-                        Functions
-                    </a>
+                        <NavLink to="/functions" className="navbar-item">
+                            Functions
+                        </NavLink>
+                        <NavLink to={`${props.apiURL}/docs/`} className="navbar-item">
+                            API Docs
+                        </NavLink>
                     </div>
                 </div>
             </nav>
+            <div className="navbar-wrap"></div>
         </div>
     );
 }
 
-export default Navbar;
+function mapStateToProps(state) {
+    return { 
+        apiURL: state.connectivitySlice.apiURL,
+    };
+  }
+  
+export default connect(mapStateToProps)(Navbar)

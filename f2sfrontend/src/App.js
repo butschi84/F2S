@@ -5,6 +5,7 @@ import store from './store';
 import {  BrowserRouter as Router,  Routes,  Route} from "react-router-dom";
 import NavBar from './modules/navbar/navbar'
 import F2SFunctions from './components/functions/list';
+import InvokeFunction from './components/functions/invoke';
 import Settings from './components/settings/settings';
 import ConnectivityCheck from './components/connectivity/connectivity'
 
@@ -17,6 +18,7 @@ function App() {
             <NavBar />
             <div className="container">
             <Routes>
+              <Route path="/functions/:id/invoke" element={ <InvokeFunction /> } />
               <Route path="/functions" element={ <F2SFunctions /> } />
 
               <Route path="/" element={ <Settings /> } />

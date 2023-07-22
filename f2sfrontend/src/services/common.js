@@ -5,7 +5,6 @@ axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     if (error.response && 401 === error.response.status) {
-        console.log("interceptor: token expired")
         localStorage.removeItem("token");
         window.location = "/login"; 
     } else {
@@ -14,9 +13,10 @@ axios.interceptors.response.use(function (response) {
 });
 
 export function get(url) {
+    const apiurl = localStorage.getItem("apiurl")
     return new Promise(async (resolve, reject) => {
         try{
-            let {data} = await axios.get(url);
+            let {data} = await axios.get(`${apiurl}${url}`);
             resolve(data);
         }catch(ex) {
             reject(ex)
@@ -25,9 +25,10 @@ export function get(url) {
 }
 
 export function del(url, data=null) {
+    const apiurl = localStorage.getItem("apiurl")
     return new Promise(async (resolve, reject) => {
         try{
-            let {result} = await axios.delete(url, {
+            let {result} = await axios.delete(`${apiurl}${url}`, {
                 data: data ? data : null
             });
             resolve(result);
@@ -38,9 +39,10 @@ export function del(url, data=null) {
 }
 
 export function post(url, postData) {
+    const apiurl = localStorage.getItem("apiurl")
     return new Promise(async (resolve, reject) => {
         try{
-            let {data} = await axios.post(url, postData);
+            let {data} = await axios.post(`${apiurl}${url}`, postData);
             resolve(data);
         }catch(ex) {
             reject(ex)
@@ -49,9 +51,10 @@ export function post(url, postData) {
 }
 
 export function put(url, postData) {
+    const apiurl = localStorage.getItem("apiurl")
     return new Promise(async (resolve, reject) => {
         try{
-            let {data} = await axios.put(url, postData);
+            let {data} = await axios.put(`${apiurl}${url}`, postData);
             resolve(data);
         }catch(ex) {
             reject(ex)
