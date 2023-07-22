@@ -4,10 +4,24 @@ import { connect, useDispatch } from 'react-redux';
 import * as _ from 'lodash';
 import axios from 'axios';
 import spinner from '../../images/spinner2.gif';
+import yaml from 'js-yaml';
+
+function getF2SFunctionYAMLDefinition(f2sfunction) {
+    let clone = {...f2sfunction}
+    clone["metadata"] = {
+        name: clone.name
+    }
+    delete clone.name
+    delete clone.uid
+    clone["kind"] = "Function"
+    clone["apiVersion"] = "f2s.opensight.ch/v1alpha1"
+    return yaml.dump(clone)
+}
 
 function F2SFunctionDetails(props) {
     const routeParams = useParams();
     const [f2sfunction, setF2SFunction] = useState()
+    const [tab, setTab] = useState("metadata")
 
     // set current subscription as state
     useEffect(() => {
@@ -21,6 +35,17 @@ function F2SFunctionDetails(props) {
         <React.Fragment>
             <h1 className='title'>F2S Function Details</h1>
 
+            <div class="tabs">
+                <ul>
+                    <li className={tab=="metadata" ? "is-active" : ""}><a onClick={()=>setTab("metadata")}>Metadata</a></li>
+                    <li className={tab=="specification" ? "is-active" : ""}><a onClick={()=>setTab("specification")}>Specification</a></li>
+                    <li className={tab=="target" ? "is-active" : ""}><a onClick={()=>setTab("target")}>Target</a></li>
+                    <li className={tab=="yaml" ? "is-active" : ""}><a onClick={()=>setTab("yaml")}>YAML Definition</a></li>
+                </ul>
+            </div>
+
+            {/* Metadata */}
+            {tab == "metadata" &&
             <div className="card">
                 <div className="card-content">
                     <div className="content">
@@ -40,8 +65,10 @@ function F2SFunctionDetails(props) {
                     </div>
                 </div>
             </div>
+            }
 
             {/* Specification */}
+            {tab == "specification" &&
             <div className="card">
                 <div className="card-content">
                     <div class="media">
@@ -66,8 +93,10 @@ function F2SFunctionDetails(props) {
                     </div>
                 </div>
             </div>
+            }
 
             {/* Target */}
+            {tab == "target" &&
             <div className="card">
                 <div className="card-content">
                     <div class="media">
@@ -113,6 +142,20 @@ function F2SFunctionDetails(props) {
                     </div>
                 </div>
             </div>
+            }
+
+            {/* YAML definition */}
+            {tab == "yaml" &&
+            <div className="card">
+            <div className="card-content">
+                <div className="content">
+                    <textarea className="input" style={{height: "700px"}}>
+                    {getF2SFunctionYAMLDefinition(f2sfunction)}
+                    </textarea>
+                </div>
+            </div>
+        </div>
+            }
         </React.Fragment>
     )
 }
