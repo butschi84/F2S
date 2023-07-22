@@ -43,7 +43,7 @@ jobs:
           git add ./helm-release/index.yaml
           git add ./helm/Chart.yaml
           git commit -m "helm-release-${{ env.TAG }}"
-          git push origin main --follow-tags
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GHTOKEN }}
 
