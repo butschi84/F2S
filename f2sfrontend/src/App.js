@@ -21,7 +21,8 @@ function App() {
               <Route path="/functions/:id/invoke" element={ <InvokeFunction /> } />
               <Route path="/functions" element={ <F2SFunctions /> } />
 
-              <Route path="/" element={ <Settings /> } />
+              <Route path="/settings" element={ <Settings /> } />
+              <Route path="/" element={ <F2SFunctions /> } />
             </Routes>
             </div>
           </Router>

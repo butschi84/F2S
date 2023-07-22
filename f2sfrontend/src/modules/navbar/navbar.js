@@ -24,9 +24,20 @@ function Navbar(props) {
                         <NavLink to="/functions" className="navbar-item">
                             Functions
                         </NavLink>
-                        <NavLink to={`${props.apiURL}/docs/`} className="navbar-item">
-                            API Docs
-                        </NavLink>
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">
+                            More
+                            </a>
+
+                            <div class="navbar-dropdown">
+                                <NavLink to={`/settings`} className="navbar-item">
+                                    Settings
+                                </NavLink>
+                                <NavLink to={`${props.apiURL}/docs/`} className="navbar-item">
+                                    API Docs
+                                </NavLink>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </nav>
