@@ -31,7 +31,7 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to events")
-	hub.F2SEventManager.Subscribe(handleEvent)
+	f2shub.F2SEventManager.Subscribe(handleEvent)
 
 	// watch change events of f2sfunction crd in k8s
 	logging.Info("starting to watch f2sfunctions in k8s")
@@ -44,9 +44,9 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	for {
 		// check if this f2s replica is the master
 		masterDecision, _ := CheckMaster()
-		if masterDecision != master {
+		master = masterDecision
+		if masterDecision != master && master == true {
 			logging.Info("this f2s pod is now master")
-			master = true
 		}
 
 		// rebalance
