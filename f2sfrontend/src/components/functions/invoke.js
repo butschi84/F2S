@@ -57,11 +57,12 @@ function InvokeFunction(props) {
                         value={`${props.apiURL}/invoke${f2sfunction.spec.endpoint}`} />
                         <br />
                         <br />
-                        {!invocationInProgress &&
-                            <button 
-                            className="button is-primary"
-                            onClick={()=>invoke(f2sfunction, props.apiURL)}>Invoke</button>
-                        }
+                        
+                        <button 
+                        className="button is-primary"
+                        disabled={invocationInProgress}
+                        onClick={()=>invoke(f2sfunction, props.apiURL)}>Invoke</button>
+                        
                     </div>
                 </div>
             </div>
