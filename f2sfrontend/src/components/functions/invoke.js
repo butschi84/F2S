@@ -44,6 +44,18 @@ function InvokeFunction(props) {
                         readOnly
                         value={f2sfunction.name} />
                         <br />
+                        Method
+                        <input 
+                        className="input"
+                        readOnly
+                        value={f2sfunction.spec.method} />
+                        <br />
+                        Endpoint
+                        <input 
+                        className="input"
+                        readOnly
+                        value={`${props.apiURL}/invoke${f2sfunction.spec.endpoint}`} />
+                        <br />
                         <br />
                         {!invocationInProgress &&
                             <button 
