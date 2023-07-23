@@ -44,10 +44,10 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	for {
 		// check if this f2s replica is the master
 		masterDecision, _ := CheckMaster()
-		master = masterDecision
 		if masterDecision != master && master == true {
 			logging.Info("this f2s pod is now master")
 		}
+		master = masterDecision
 
 		// rebalance
 		if master {
