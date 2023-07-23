@@ -10,16 +10,16 @@ function F2SFunctions(props) {
 
     const columns = [
         {
-            name: 'uid',
-            selector: row => <NavLink to={`/functions/${row.uid}`}>{row.uid}</NavLink>
-        },
-        {
             name: 'name',
-            selector: row => row.name
+            selector: row => <NavLink to={`/functions/${row.uid}`}>{row.name}</NavLink>
         },
         {
             name: 'endpoint',
-            selector: row => row.spec.endpoint
+            selector: row => `${props.apiURL}/invoke${row.spec.endpoint}`
+        },
+        {
+            name: 'method',
+            selector: row => row.spec.method
         },
         {
             name: '',
@@ -48,6 +48,7 @@ function F2SFunctions(props) {
 function mapStateToProps(state) {
     return { 
         functions: state.functionsSlice.functions,
+        apiURL: state.connectivitySlice.apiURL
     };
   }
   
