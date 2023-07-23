@@ -66,7 +66,6 @@ helm install f2s f2s/f2s
 * Scale to Zero
 * <font color=orange>TO DO</font> Security (OAuth)
 # Architecture
-This is a first draft of the architecture and can still change.
 
 ![](docs/architecture.png)
 
