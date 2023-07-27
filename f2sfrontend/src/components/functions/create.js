@@ -1,5 +1,6 @@
 import React from 'react';
 import useForm from '../../modules/forms/useForm';
+import Select from '../../modules/forms/select'
 
 function F2SFunctionCreate(props) {
 
@@ -15,6 +16,12 @@ function F2SFunctionCreate(props) {
         target_maxreplicas: '1',
 	});
 
+    const methods = [
+        {id: "GET", name: "GET"},
+        {id: "POST", name: "POST"},
+        {id: "PUT", name: "PUT"},
+        {id: "DELETE", name: "DELETE"}
+    ]
 
 
     return (
@@ -55,12 +62,12 @@ function F2SFunctionCreate(props) {
                         value={form.spec_endpoint} />
 
                         {/* Method */}
-                        Method
-                        <input 
-                        className="input"
-                        id="spec_method"
-                        name="spec_method"
-                        value={form.spec_method} />
+                        <Select
+                            className="input"
+                            id="spec_method"
+                            name="spec_method"
+                            value={form.spec_method}
+                            options={methods} />
 
                         {/* Description */}
                         Description
