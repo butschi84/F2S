@@ -5,7 +5,6 @@ import 'bulma-switch/dist/css/bulma-switch.min.css'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-// require('app-module-path').addPath(process.cwd());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
