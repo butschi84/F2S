@@ -6,6 +6,8 @@
 An Open Source Function as a Service (FaaS) Platform. <br />
 [Get started in 5 Minutes](#quick-start-guide) on your Kubernetes platform.
 
+![](docs/highlights.png)
+
 ## Features
 
 * **Gitops**<br/>
