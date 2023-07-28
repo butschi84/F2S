@@ -8,8 +8,8 @@ import (
 	"butschi84/f2s/operation/routes"
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/state/configuration"
+	"butschi84/f2s/state/dispatcherstate"
 	"butschi84/f2s/state/eventmanager"
-	f2sfunctiontargets "butschi84/f2s/state/functiontargets"
 	"butschi84/f2s/state/queue"
 
 	"sync"
@@ -36,7 +36,7 @@ func main() {
 		F2SEventManager:  eventmanager.NewEventManager(),
 		F2SConfiguration: configuration.Initialize(),
 		F2SQueue:         queue.Initialize(),
-		F2STargets:       f2sfunctiontargets.Initialize(),
+		F2SDispatcherHub: dispatcherstate.Initialize(),
 	}
 
 	var wg sync.WaitGroup

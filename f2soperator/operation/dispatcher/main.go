@@ -40,7 +40,7 @@ func GetCurrentDispatcherData() string {
 		output += function.Name
 
 		// get function target
-		target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
+		target, err := f2shub.F2SDispatcherHub.GetFunctionTargetByFunctionName(function.Name)
 		logging.Error(err)
 
 		output += fmt.Sprintf("Endpoints: %d", len(target.ServingPods))

@@ -102,7 +102,7 @@ func scaleDeployments() {
 		}
 
 		// get current inflight requests of function
-		target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
+		target, err := f2shub.F2SDispatcherHub.GetFunctionTargetByFunctionName(function.Name)
 		if err != nil {
 			logging.Error(err)
 			logging.Error(fmt.Errorf("[scaling] could not get function target for function-name: %s. skipping scaling of this function...", function.Name))

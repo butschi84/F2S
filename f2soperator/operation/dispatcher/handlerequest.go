@@ -57,7 +57,7 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	logging.Info("processing new function invocation request")
 
 	// find function target
-	functionTarget, err := f2shub.F2STargets.GetFunctionTargetByEndpoint(req.Path)
+	functionTarget, err := f2shub.F2SDispatcherHub.GetFunctionTargetByEndpoint(req.Path)
 	if err != nil {
 		logging.Error(fmt.Errorf("cannot serve request %s. function target not found for endpoint %s", req.UID, req.Path))
 		logging.Error(err)

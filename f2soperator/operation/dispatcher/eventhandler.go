@@ -2,8 +2,8 @@ package dispatcher
 
 import (
 	kubernetesservice "butschi84/f2s/services/kubernetes"
+	"butschi84/f2s/state/dispatcherstate"
 	"butschi84/f2s/state/eventmanager"
-	f2sfunctiontargets "butschi84/f2s/state/functiontargets"
 	"butschi84/f2s/state/queue"
 	"context"
 	"fmt"
@@ -18,7 +18,7 @@ func handleEvents(event eventmanager.Event) {
 	case eventmanager.Event_FunctionInvokationEnded:
 		logging.Info("removing request from targets")
 		req := event.Data.(queue.F2SRequestResult).Request
-		functionTarget, _ := f2shub.F2STargets.GetFunctionTargetByEndpoint(req.Path)
+		functionTarget, _ := f2shub.F2SDispatcherHub.GetFunctionTargetByEndpoint(req.Path)
 		functionTarget.RemoveRequest(req)
 		f2shub.F2SQueue.RequestDone(req)
 	case eventmanager.Event_EndpointsChanged:
@@ -37,7 +37,7 @@ func reloadEndpoints() {
 		endpoint, _ := kubernetesservice.GetEndpointWithName(function.Name)
 
 		// prepare target obj
-		target := f2shub.F2STargets.AddDispatcherFunction(&function)
+		target := f2shub.F2SDispatcherHub.AddDispatcherFunction(&function)
 
 		if len(endpoint.Subsets) > 0 {
 			for _, address := range endpoint.Subsets[0].Addresses {
@@ -60,7 +60,7 @@ func reloadEndpoints() {
 			}
 		} else {
 			logging.Info(fmt.Sprintf("function %s is scaled to zero", function.Name))
-			target.ServingPods = make([]f2sfunctiontargets.FunctionServingPod, 0)
+			target.ServingPods = make([]dispatcherstate.DispatcherFunctionTarget, 0)
 		}
 
 		logging.Info(fmt.Sprintf("function %s has %v endpoints", function.Name, len(target.ServingPods)))
@@ -69,7 +69,7 @@ func reloadEndpoints() {
 }
 
 // wait until f2s has scaled up the deploment from 0
-func waitForTargetPod(target *f2sfunctiontargets.F2SDispatcherFunctionTarget) error {
+func waitForTargetPod(dispatcherFunction *dispatcherstate.F2SDispatcherFunction) error {
 	scalingTimeout := f2shub.F2SConfiguration.Config.F2S.Timeouts.ScalingTimeout
 
 	// Create a context with a timeout of 'scaling_timeout'
@@ -80,18 +80,18 @@ func waitForTargetPod(target *f2sfunctiontargets.F2SDispatcherFunctionTarget) er
 
 	// Start the goroutine
 	go func() {
-		for len(target.ServingPods) < 1 {
+		for len(dispatcherFunction.ServingPods) < 1 {
 			time.Sleep(1 * time.Second)
 		}
-		resultChan <- len(target.ServingPods)
+		resultChan <- len(dispatcherFunction.ServingPods)
 	}()
 
 	select {
 	case result := <-resultChan:
-		logging.Info(fmt.Sprintf("%d pods are available to serve the function '%s'", result, target.Function.Name))
+		logging.Info(fmt.Sprintf("%d pods are available to serve the function '%s'", result, dispatcherFunction.Function.Name))
 		return nil
 	case <-ctx.Done():
-		logging.Warn(fmt.Sprintf("scaling_timeout: 0 pods are available to serve the function '%s' after %dms!", target.Function.Name, scalingTimeout))
-		return fmt.Errorf("scaling_timeout: 0 pods are available to serve the function '%s' after %dms!", target.Function.Name, scalingTimeout)
+		logging.Warn(fmt.Sprintf("scaling_timeout: 0 pods are available to serve the function '%s' after %dms!", dispatcherFunction.Function.Name, scalingTimeout))
+		return fmt.Errorf("scaling_timeout: 0 pods are available to serve the function '%s' after %dms!", dispatcherFunction.Function.Name, scalingTimeout)
 	}
 }
