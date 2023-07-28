@@ -63,9 +63,10 @@ func OnF2SFunctionChanged(obj interface{}) {
 
 	// send config change event
 	f2shub.F2SEventManager.Publish(eventmanager.Event{
-		UID:  f2shub.F2SEventManager.GenerateUUID(),
-		Data: "F2SFunctions Changed in K8S",
-		Type: eventmanager.Event_ConfigurationChanged,
+		UID:         f2shub.F2SEventManager.GenerateUUID(),
+		Data:        "F2SFunctions Changed in K8S",
+		Type:        eventmanager.Event_ConfigurationChanged,
+		Description: fmt.Sprintf("functions have changed in k8s"),
 	})
 }
 
@@ -85,9 +86,10 @@ func OnF2SEndpointsChanged(obj interface{}) {
 	// send change event
 	logging.Info(fmt.Sprintf("send event for changed endpoint %s (%s)", d.Name, d.UID))
 	f2shub.F2SEventManager.Publish(eventmanager.Event{
-		UID:  f2shub.F2SEventManager.GenerateUUID(),
-		Data: d,
-		Type: eventmanager.Event_EndpointsChanged,
+		UID:         f2shub.F2SEventManager.GenerateUUID(),
+		Data:        d,
+		Type:        eventmanager.Event_EndpointsChanged,
+		Description: fmt.Sprintf("endpoint %s has changed in k8s", d.Name),
 	})
 
 }

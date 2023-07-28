@@ -13,7 +13,7 @@ function Settings(props) {
     return (
         <React.Fragment>
             <h1 className='title'>Settings</h1>
-            { props.config && props.config.Config.F2S &&
+            { props.config && props.config.Config && props.config.Config.F2S &&
                 <div className="card">
                     <div className="card-content">
                         <div className="content">

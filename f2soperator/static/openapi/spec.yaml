@@ -47,6 +47,18 @@ paths:
             application/json:
               schema:
                 type: object
+  /events:
+    get:
+      summary: get last events
+      tags:
+        - F2S Internal
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /endpoints:
     get:
       summary: get all current k8s functions endpoints

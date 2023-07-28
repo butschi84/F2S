@@ -27,9 +27,10 @@ func handleRequestsWithTimeout(req queue.F2SRequest) {
 
 		// send request completed event
 		f2shub.F2SEventManager.Publish(eventmanager.Event{
-			UID:  req.UID,
-			Data: result,
-			Type: eventmanager.Event_FunctionInvokationEnded,
+			UID:         req.UID,
+			Data:        result,
+			Type:        eventmanager.Event_FunctionInvokationEnded,
+			Description: fmt.Sprintf("%s => function %s completed with result: %v", req.UID, result.Request.Path, result.Success),
 		})
 		return
 	case <-ctx.Done():
@@ -45,9 +46,10 @@ func handleRequestsWithTimeout(req queue.F2SRequest) {
 
 		// send request completed event
 		f2shub.F2SEventManager.Publish(eventmanager.Event{
-			UID:  req.UID,
-			Data: result,
-			Type: eventmanager.Event_FunctionInvokationEnded,
+			UID:         req.UID,
+			Data:        result,
+			Type:        eventmanager.Event_FunctionInvokationEnded,
+			Description: fmt.Sprintf("%s => function call ended with result: %v", req.UID, result.Success),
 		})
 	}
 }
@@ -65,9 +67,10 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 
 	// send 'function invoked' event
 	f2shub.F2SEventManager.Publish(eventmanager.Event{
-		UID:  f2shub.F2SEventManager.GenerateUUID(),
-		Data: functionTarget.Function.Prettify(),
-		Type: eventmanager.Event_FunctionInvoked,
+		UID:         f2shub.F2SEventManager.GenerateUUID(),
+		Data:        functionTarget.Function.Prettify(),
+		Type:        eventmanager.Event_FunctionInvoked,
+		Description: fmt.Sprintf("function %s has been invoked", functionTarget.Function.Name),
 	})
 
 	// wait for function pod to be available
@@ -86,6 +89,7 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		}
 	}
 
+	// get the pod that will actually serve the request
 	pod, err := functionTarget.ServeRequest(req)
 	if err != nil {
 		logging.Error(err)
@@ -97,10 +101,12 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		return
 	}
 
+	// maybe check here if pod is ready ?
+
 	// start time measurement
 	start := time.Now()
 
-	// invoke function
+	// invoke function on target pod
 	url := fmt.Sprintf("http://%s:%v%s", string(pod.Address.IP), functionTarget.Function.Target.Port, functionTarget.Function.Target.Endpoint)
 	httpResult, err := httpGet(url)
 	if err != nil {
