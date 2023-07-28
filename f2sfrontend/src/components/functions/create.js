@@ -37,9 +37,9 @@ function F2SFunctionCreate(props) {
             target: {
                 containerImage: form.target_containerimage,
                 endpoint: form.target_endpoint,
-                port: form.target_port,
-                minReplicas: form.target_minreplicas,
-                axReplicas: form.target_maxreplicas
+                port: parseInt(form.target_port),
+                minReplicas: parseInt(form.target_minreplicas),
+                maxReplicas: parseInt(form.target_maxreplicas)
             }
         }
         dispatch(createNewF2SFunction(f2sfunction))
