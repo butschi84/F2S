@@ -1,8 +1,11 @@
 import React from 'react';
 import useForm from '../../modules/forms/useForm';
 import Select from '../../modules/forms/select'
+import {createNewF2SFunction} from '../../store/functionsSlice';
+import { connect, useDispatch } from 'react-redux';
 
 function F2SFunctionCreate(props) {
+    const dispatch = useDispatch();
 
     const { form, handleChange, resetForm, setForm } = useForm({
 		name: '',
@@ -23,6 +26,24 @@ function F2SFunctionCreate(props) {
         {id: "DELETE", name: "DELETE"}
     ]
 
+    function save() {
+        const f2sfunction = {
+            name: form.name,
+            spec: {
+                endpoint: form.spec_endpoint,
+                method: form.spec_method,
+                description: form.spec_description,
+            },
+            target: {
+                containerImage: form.target_containerimage,
+                endpoint: form.target_endpoint,
+                port: form.target_port,
+                minReplicas: form.target_minreplicas,
+                axReplicas: form.target_maxreplicas
+            }
+        }
+        dispatch(createNewF2SFunction(f2sfunction))
+    }
 
     return (
         <React.Fragment>
@@ -59,6 +80,7 @@ function F2SFunctionCreate(props) {
                         className="input"
                         id="spec_endpoint"
                         name="spec_endpoint"
+                        onChange={handleChange}
                         value={form.spec_endpoint} />
 
                         {/* Method */}
@@ -66,6 +88,7 @@ function F2SFunctionCreate(props) {
                             className="input"
                             id="spec_method"
                             name="spec_method"
+                            onChange={handleChange}
                             value={form.spec_method}
                             options={methods} />
 
@@ -75,6 +98,7 @@ function F2SFunctionCreate(props) {
                         className="input"
                         id="spec_description"
                         name="spec_description"
+                        onChange={handleChange}
                         value={form.spec_description} />
                     </div>
                 </div>
@@ -95,6 +119,7 @@ function F2SFunctionCreate(props) {
                         className="input"
                         id="target_containerimage"
                         name="target_containerimage"
+                        onChange={handleChange}
                         value={form.target_containerimage} />
 
                         {/* Endpoint */}
@@ -103,6 +128,7 @@ function F2SFunctionCreate(props) {
                         className="input"
                         id="target_endpoint"
                         name="target_endpoint"
+                        onChange={handleChange}
                         value={form.target_endpoint} />
 
                         {/* Port */}
@@ -111,6 +137,7 @@ function F2SFunctionCreate(props) {
                         className="input"
                         id="target_port"
                         name="target_port"
+                        onChange={handleChange}
                         value={form.target_port} />
 
                         {/* Maximum Replicas */}
@@ -119,6 +146,7 @@ function F2SFunctionCreate(props) {
                         className="input"
                         id="target_maxreplicas"
                         name="target_maxreplicas"
+                        onChange={handleChange}
                         value={form.target_maxreplicas} />
 
                         {/* Minimum Replicas */}
@@ -127,10 +155,15 @@ function F2SFunctionCreate(props) {
                         className="input"
                         id="target_minreplicas"
                         name="target_minreplicas"
+                        onChange={handleChange}
                         value={form.target_minreplicas} />
                     </div>
                 </div>
             </div>
+
+            <button 
+                className='button is-primary'
+                onClick={save}>Save</button>
         </React.Fragment>
     )
 }

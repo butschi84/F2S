@@ -19,10 +19,10 @@ function App() {
             <NavBar />
             <div className="container">
             <Routes>
-              <Route path="/functions/create" element={ <F2SFunctionCreate /> } />
-              <Route path="/functions/:id/invoke" element={ <InvokeFunction /> } />
-              <Route path="/functions/:id" element={ <F2SFunctionDetails /> } />
-              <Route path="/functions" element={ <F2SFunctions /> } />
+              <Route path="/f2sfunctions/create" element={ <F2SFunctionCreate /> } />
+              <Route path="/f2sfunctions/:id/invoke" element={ <InvokeFunction /> } />
+              <Route path="/f2sfunctions/:id" element={ <F2SFunctionDetails /> } />
+              <Route path="/f2sfunctions" element={ <F2SFunctions /> } />
 
               <Route path="/settings" element={ <Settings /> } />
               <Route path="/" element={ <F2SFunctions /> } />

@@ -21,7 +21,7 @@ function Navbar(props) {
 
                 <div id="f2sNavbar" className="navbar-menu">
                     <div className="navbar-start">
-                        <NavLink to="/functions" className="navbar-item">
+                        <NavLink to="/f2sfunctions" className="navbar-item">
                             Functions
                         </NavLink>
                         <div class="navbar-item has-dropdown is-hoverable">
