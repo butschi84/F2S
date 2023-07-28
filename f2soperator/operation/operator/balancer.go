@@ -105,19 +105,19 @@ func scaleDeployments() {
 		target, err := f2shub.F2STargets.GetFunctionTargetByFunctionName(function.Name)
 		if err != nil {
 			logging.Error(err)
-			logging.Error(fmt.Errorf("could not get function target for function: %s. skipping scaling of this function...", function.Name))
+			logging.Error(fmt.Errorf("[scaling] could not get function target for function-name: %s. skipping scaling of this function...", function.Name))
 			continue
 		}
 		numInflightRequests := target.GetTotalInflightRequests()
 		if numInflightRequests > 0 && resultScale == 0 {
-			logging.Info(fmt.Sprintf("dont scale function %s to zero because there are %d inflight requests. scale to 1", function.Name, numInflightRequests))
+			logging.Info(fmt.Sprintf("[scaling] dont scale function %s to zero because there are %d inflight requests. scale to 1", function.Name, numInflightRequests))
 			resultScale = 1
 		}
 
 		// check if last scaling of the function was less than 15 seconds ago
 		fifteenSecondsAgo := time.Now().Add(-15 * time.Second)
 		if target.LastScaling.After(fifteenSecondsAgo) {
-			logging.Info(fmt.Sprintf("last scaling of function %s was less than 15 seconds ago. skipping", function.Name))
+			logging.Info(fmt.Sprintf("[scaling] last scaling of function %s was less than 15 seconds ago. skipping", function.Name))
 		}
 
 		// check minumums and maximums
@@ -129,7 +129,9 @@ func scaleDeployments() {
 		}
 
 		// do the scaling
-		logging.Info(fmt.Sprintf("scaling function replicas %s from %v to %v", function.Name, currentAvailableReplicas, resultScale))
-		kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
+		if currentAvailableReplicas != float64(resultScale) {
+			logging.Info(fmt.Sprintf("[scaling] scaling %s: before=>%v after=>%v", function.Name, currentAvailableReplicas, resultScale))
+			kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
+		}
 	}
 }

@@ -21,7 +21,7 @@ func getInClusterConfig() (*rest.Config, error) {
 
 	kubeconfig = os.Getenv("KUBECONFIG")
 	if kubeconfig == "" {
-		logging.Info("using in-cluster configuration")
+		logging.Debug("using in-cluster configuration")
 		config, err = rest.InClusterConfig()
 	} else {
 		// logging.Printf("using configuration from '%s'", kubeconfig)

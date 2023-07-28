@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// add a dispatcherfunction if not already present
 func (dispatcherfunction *F2SDispatcherFunction) AddDispatcherFunction(function *typesV1alpha1.Function) *F2SDispatcherFunctionTarget {
 	for i, fuc := range dispatcherfunction.Targets {
 		if fuc.Function.UID == function.UID {
@@ -28,17 +29,17 @@ func (target *F2SDispatcherFunction) GetFunctionTargetByEndpoint(endpoint string
 		}
 	}
 
-	return &F2SDispatcherFunctionTarget{}, fmt.Errorf("functiontarget not found")
+	return &F2SDispatcherFunctionTarget{}, fmt.Errorf("functiontarget not found for endpoint: %s", endpoint)
 }
 
 // get target by path
-func (target *F2SDispatcherFunction) GetFunctionTargetByFunctionName(name string) (*F2SDispatcherFunctionTarget, error) {
-	logging.Debug(fmt.Sprintf("get functiontarget for function name %s", name))
+func (target *F2SDispatcherFunction) GetFunctionTargetByFunctionName(functionName string) (*F2SDispatcherFunctionTarget, error) {
+	logging.Debug(fmt.Sprintf("get functiontarget for function name %s", functionName))
 	for i, t := range target.Targets {
-		if t.Function.Name == name {
+		if t.Function.Name == functionName {
 			return &target.Targets[i], nil
 		}
 	}
 
-	return &F2SDispatcherFunctionTarget{}, fmt.Errorf("functiontarget not found")
+	return &F2SDispatcherFunctionTarget{}, fmt.Errorf("functiontarget not found for function: %s", functionName)
 }
