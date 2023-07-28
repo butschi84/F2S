@@ -31,6 +31,7 @@ function InvokeFunction(props) {
         })
     }
 
+    if(!f2sfunction || !f2sfunction.spec) return ""
     return (
         <React.Fragment>
             <h1 className='title'>Invoke Function</h1>

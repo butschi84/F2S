@@ -1,9 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import {
-	getFunctions as serviceGetFunctions
+	getFunctions as serviceGetFunctions,
+	createFunction as serviceCreateFunction
 } from '../services/functions'
 
+// create a new f2s function
+export const createNewF2SFunction = (func) => async dispatch => {
+	await serviceCreateFunction(func)
+	dispatch(getAllFunctions())
+}
 
 // get all f2s functions
 export const getAllFunctions = () => async dispatch => {
