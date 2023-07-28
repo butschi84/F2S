@@ -66,6 +66,7 @@ func setAccessControlHeader(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set the Access-Control-Allow-Origin header to allow all origins (*)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
 		// Call the next handler in the chain
 		next.ServeHTTP(w, r)
 	})
