@@ -28,7 +28,7 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	f2shub = hub
 	router := mux.NewRouter().StrictSlash(false)
 
-	router.Use(setAccessControlHeader)
+	router.Use(corsMiddleware)
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to config package events")
@@ -62,11 +62,18 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 }
 
 // Middleware function to set Access-Control-Allow-Origin header to *
-func setAccessControlHeader(next http.Handler) http.Handler {
+func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set the Access-Control-Allow-Origin header to allow all origins (*)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Handle preflight requests (OPTIONS).
+		if r.Method == http.MethodOptions {
+			return
+		}
+
 		// Call the next handler in the chain
 		next.ServeHTTP(w, r)
 	})
