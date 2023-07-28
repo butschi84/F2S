@@ -1,40 +1,21 @@
 package eventmanager
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
-
-// possible event types
-type EventType string
-
-const (
-	Event_FunctionInvoked         EventType = "function invoked"
-	Event_FunctionInvokationEnded EventType = "function invokation ended"
-	Event_ConfigurationChanged    EventType = "configuration changed"
-	Event_EndpointsChanged        EventType = "endpoints changed"
-)
-
-type Event struct {
-	// generate a random id (uid) for each event
-	UID string
-	// Data is the payload of the event
-	Data interface{}
-	// event type
-	Type EventType
-}
-
-type EventHandler func(event Event)
-
-type EventManager struct {
-	eventChannel  chan Event
-	eventHandlers []EventHandler
-}
 
 func NewEventManager() *EventManager {
 	eventmanager := &EventManager{
 		eventChannel: make(chan Event),
+		LastEvents:   make([]PrettyEvent, 0, 100),
 	}
 	eventmanager.Start()
+
+	// add internal handler for buffer / cache
+	eventmanager.Subscribe(eventmanager.bufferAddEvent)
+
 	return eventmanager
 }
 
@@ -66,4 +47,26 @@ func (em *EventManager) Start() {
 			}
 		}
 	}()
+}
+
+func (e *EventManager) bufferAddEvent(event Event) {
+	prettyEvent := PrettyEvent{
+		UID:         event.UID,
+		Type:        event.Type,
+		Description: event.Description,
+		Timestamp:   time.Now(),
+	}
+
+	// Shift existing events to the right
+	n := len(e.LastEvents)
+	if n < 100 {
+		// If the array is not full, increase its size
+		e.LastEvents = append(e.LastEvents, PrettyEvent{})
+		copy(e.LastEvents[1:], e.LastEvents[:n])
+	} else {
+		// If the array is already full, drop the last event
+		copy(e.LastEvents[1:], e.LastEvents[:n-1])
+	}
+	// Add the new event at the beginning
+	e.LastEvents[0] = prettyEvent
 }

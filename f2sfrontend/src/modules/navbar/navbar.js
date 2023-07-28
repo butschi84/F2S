@@ -45,9 +45,9 @@ function Navbar(props) {
                                 <NavLink to={`/settings`} className="navbar-item">
                                     Settings
                                 </NavLink>
-                                <NavLink to={`${props.apiURL}/docs/`} className="navbar-item">
+                                <a href={`${props.apiURL}/docs/`} className="navbar-item">
                                     API Docs
-                                </NavLink>
+                                </a>
                             </div>
                         </div>
                     </div>

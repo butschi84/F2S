@@ -48,6 +48,7 @@ func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	router.HandleFunc("/endpoints", getAllEndpoints).Methods(http.MethodGet)
 	router.HandleFunc("/dispatcher", getCurrentDispatcherData).Methods(http.MethodGet)
 	router.HandleFunc("/config", getConfiguration).Methods(http.MethodGet)
+	router.HandleFunc("/events", getLatestEvents).Methods(http.MethodGet)
 	router.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 	router.HandleFunc("/invoke/{target}", invokeFunction)
 	router.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)
