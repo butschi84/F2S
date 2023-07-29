@@ -56,14 +56,16 @@ func handleRequestsWithTimeout(req queue.F2SRequest) {
 
 // handle function invocations
 func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
-	logging.Info("processing new function invocation request")
+	logging.Info(fmt.Sprintf("processing invocation request: %s (%s)", req.UID, req.Path))
 
 	// find function target
+	logging.Debug(fmt.Sprintf("search function target for endpoint: %s", req.Path))
 	functionTarget, err := f2shub.F2SDispatcherHub.GetFunctionTargetByEndpoint(req.Path)
 	if err != nil {
 		logging.Error(fmt.Errorf("cannot serve request %s. function target not found for endpoint %s", req.UID, req.Path))
 		logging.Error(err)
 	}
+	logging.Debug(fmt.Sprintf("function target is: %s", functionTarget.Function.Name))
 
 	// send 'function invoked' event
 	f2shub.F2SEventManager.Publish(eventmanager.Event{
@@ -107,9 +109,23 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	start := time.Now()
 
 	// invoke function on target pod
+	var httpResult string
+	var requestErr error
 	url := fmt.Sprintf("http://%s:%v%s", string(pod.Address.IP), functionTarget.Function.Target.Port, functionTarget.Function.Target.Endpoint)
-	httpResult, err := httpGet(url)
-	if err != nil {
+	switch req.Method {
+	case "GET":
+		httpResult, requestErr = httpGet(url)
+	case "POST":
+		httpResult, requestErr = httpPost(url, req.Payload)
+	case "PUT":
+		httpResult, requestErr = httpPut(url, req.Payload)
+	case "DELETE":
+		httpResult, requestErr = httpDelete(url)
+	default:
+		httpResult, requestErr = httpGet(url)
+	}
+
+	if requestErr != nil {
 		logging.Error(err)
 		// send result to channel
 		*result <- queue.F2SRequestResult{

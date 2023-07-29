@@ -5,6 +5,7 @@ type F2SRequest struct {
 	UID           string
 	Path          string
 	Method        string
+	Payload       string
 	ResultChannel chan F2SRequestResult
 }
 

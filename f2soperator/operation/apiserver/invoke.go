@@ -52,6 +52,9 @@ func findF2SFunctionForTarget(target string) (*v1alpha1types.Function, error) {
 func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	logging.Info("request to invoke a function")
 
+	// get request method
+	method := r.Method
+
 	// parse uid
 	logging.Info("parsing target path from request")
 	vars := mux.Vars(r)
@@ -61,8 +64,21 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	request := queue.F2SRequest{
 		UID:           f2shub.F2SEventManager.GenerateUUID(),
 		Path:          "/" + vars["target"],
-		Method:        "GET",
+		Method:        method,
 		ResultChannel: make(chan queue.F2SRequestResult),
+	}
+
+	// Read the request body.
+	if method == "POST" || method == "PUT" {
+		logging.Debug("reading request body")
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			logging.Error(fmt.Errorf("Failed to read request body"))
+			http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+			return
+		}
+		defer r.Body.Close()
+		request.Payload = string(body)
 	}
 
 	// put it into queue
@@ -77,7 +93,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		logging.Info(fmt.Sprintf("Request completed: %s", result.Result))
 		json.NewEncoder(w).Encode(result)
 	case <-ctx.Done():
-		fmt.Println("Request Timeout reached, cancelling goroutine")
+		logging.Warn("Request Timeout reached, cancelling goroutine")
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed: %s", key)})
 	}
 }
