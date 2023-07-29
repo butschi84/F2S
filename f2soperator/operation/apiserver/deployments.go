@@ -1,4 +1,4 @@
-package routes
+package apiserver
 
 import (
 	kubernetesservice "butschi84/f2s/services/kubernetes"

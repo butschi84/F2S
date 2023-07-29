@@ -1,4 +1,4 @@
-package routes
+package apiserver
 
 import (
 	"encoding/json"

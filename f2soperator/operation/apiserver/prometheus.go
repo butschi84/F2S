@@ -1,4 +1,4 @@
-package routes
+package apiserver
 
 import (
 	"butschi84/f2s/services/prometheus"

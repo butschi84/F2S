@@ -1,4 +1,4 @@
-package routes
+package apiserver
 
 import (
 	v1alpha1types "butschi84/f2s/state/configuration/api/types/v1alpha1"
