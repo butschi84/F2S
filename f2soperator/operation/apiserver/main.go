@@ -1,4 +1,4 @@
-package routes
+package apiserver
 
 import (
 	"butschi84/f2s/hub"
@@ -19,7 +19,7 @@ type Status struct {
 
 func init() {
 	// initialize logging
-	logging = logger.Initialize("routes")
+	logging = logger.Initialize("apiserver")
 }
 
 func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {

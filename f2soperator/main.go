@@ -2,10 +2,10 @@ package main
 
 import (
 	"butschi84/f2s/hub"
+	"butschi84/f2s/operation/apiserver"
 	"butschi84/f2s/operation/dispatcher"
 	"butschi84/f2s/operation/metrics"
 	"butschi84/f2s/operation/operator"
-	"butschi84/f2s/operation/routes"
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/state/configuration"
 	"butschi84/f2s/state/dispatcherstate"
@@ -47,7 +47,7 @@ func main() {
 
 	// start api router
 	logging.Info("=> initializng rest api server")
-	go routes.HandleRequests(&F2SHub, &wg)
+	go apiserver.HandleRequests(&F2SHub, &wg)
 
 	// start operator (manages deployments in f2s-containers namespace)
 	logging.Info("=> initializng f2s-containers namespace operator")
