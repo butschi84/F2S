@@ -5,4 +5,4 @@ WORKDIR /app
 COPY --from=f2sfizzlet /app/f2sfizzlet ./f2sfizzlet
 COPY ./executables/ /
 
-CMD ["f2sfizzlet"]
+CMD ["./f2sfizzlet"]
