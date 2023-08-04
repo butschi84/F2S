@@ -26,7 +26,7 @@ func HandleRequests(wg *sync.WaitGroup) {
 
 	router.Use(corsMiddleware)
 
-	router.HandleFunc("/", returnEmpty)
+	router.HandleFunc("/", handleRequest)
 
 	// frontend, ui
 	frontendHandler := http.FileServer(http.Dir("./static/frontend"))

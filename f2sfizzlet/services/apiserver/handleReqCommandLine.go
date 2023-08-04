@@ -10,22 +10,7 @@ import (
 	"os/exec"
 )
 
-type test struct {
-	Result string
-	Data   string
-}
-
-type Invocation struct {
-	File       string
-	Parameters string
-	Result     string
-}
-
-// *********************************************************
-// all functions
-// *********************************************************
-func returnEmpty(w http.ResponseWriter, r *http.Request) {
-	logging.Info("running request")
+func handleReqCommandLine(w http.ResponseWriter, r *http.Request) {
 
 	// get request method
 	method := r.Method
@@ -43,7 +28,8 @@ func returnEmpty(w http.ResponseWriter, r *http.Request) {
 			logging.Info("reuqest body is in json")
 			var data map[string]interface{}
 			decoder := json.NewDecoder(r.Body)
-			err := decoder.Decode(&data)
+			err :=
+				decoder.Decode(&data)
 			if err != nil {
 				http.Error(w, "Invalid JSON format", http.StatusBadRequest)
 				return
