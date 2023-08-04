@@ -24,4 +24,6 @@ WORKDIR /usr/src/app
 COPY --from=f2sfizzlet /app/f2sfizzlet ./f2sfizzlet
 COPY --from=builder /usr/src/app/build ./
 COPY ./executables/start.sh ./
-CMD ["./f2sfizzlet"]
+
+EXPOSE 80
+CMD ["npm", "start"]
