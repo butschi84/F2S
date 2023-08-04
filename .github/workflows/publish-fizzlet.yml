@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./f2sfizzlet
-          file: ./Dockerfile
+          file: ./f2sfizzlet/Dockerfile
           push: true
           platforms: linux/amd64
           build-args: |
