@@ -3,7 +3,7 @@ name: publish
 on:
   push:
     tags:
-      - "^(?!fizzlet).*$"
+      - "f2s-*"
 
 jobs:
   build:
