@@ -5,12 +5,14 @@
   "main": "main.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "react-scripts build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "http": "^0.0.1-security",
-    "url": "^0.11.1"
+    "url": "^0.11.1",
+    "react-scripts": "5.0.1"
   }
 }
