@@ -3,39 +3,55 @@
 apiVersion: "f2s.opensight.ch/v1alpha1"
 kind: "Function"
 metadata:
-  name: "test-function-nonblocking"
+  name: "test-nodejs-nonblocking"
   namespace: "f2s"
 spec:
-  endpoint: "/testnonblocking"
+  endpoint: "/nodejs-nonblocking"
   method: "GET"
   description: |
-    Blocking Function
+    Non-Blocking Function
     * 1 container can handle a many request at once in parallel
     * one request will take a random time from 200ms up to 5000ms to complete
 target:
-  containerImage: "romanhuesler/testcontainer"
+  containerImage: "romanhuesler/f2snodejstest"
   endpoint: "/"
-  port: 3000
+  port: 80
   minReplicas: 0
   maxReplicas: 5
 ---
 apiVersion: "f2s.opensight.ch/v1alpha1"
 kind: "Function"
 metadata:
-  name: "test-function-blocking"
+  name: "test-nodejs-blocking"
   namespace: "f2s"
 spec:
-  endpoint: "/testblocking"
+  endpoint: "/nodejs-blocking"
   method: "GET"
   description: |
     Blocking Function
     * 1 container can only handle a single request at once
     * one request will take a random time from 200ms up to 5000ms to complete
 target:
-  containerImage: "romanhuesler/testcontainer"
+  containerImage: "romanhuesler/f2snodejstest"
   endpoint: "/blocking"
-  port: 3000
+  port: 80
   minReplicas: 0
   maxReplicas: 5
-
+---
+apiVersion: "f2s.opensight.ch/v1alpha1"
+kind: "Function"
+metadata:
+  name: "test-python"
+  namespace: "f2s"
+spec:
+  endpoint: "/python"
+  method: "GET"
+  description: |
+    Simple Python Demo Container
+target:
+  containerImage: "romanhuesler/f2spythontest"
+  endpoint: "/"
+  port: 80
+  minReplicas: 0
+  maxReplicas: 5
 {{- end }}
