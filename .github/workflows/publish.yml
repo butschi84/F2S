@@ -28,7 +28,7 @@ jobs:
 
       - name: Get TAG
         id: get_tag
-        run: echo TAG=${GITHUB_REF#refs/tags/} >> $GITHUB_ENV
+        run: echo TAG=${GITHUB_REF#refs/tags/} | sed 's/f2s-//' >> $GITHUB_ENV
 
       - name: Generate new Release
         run: |
