@@ -14,33 +14,40 @@ const server = http.createServer((req, res) => {
 
   // non-blocking simulation
   // => container can serve other requests during delay
-  if (pathname === '/') {
-    // Simulating delay before responding
-    setTimeout(() => {
+  switch(pathname) {
+    case "/":
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      res.end('NONBLOCKING REQUEST DONE');
-    }, delay);
+      res.end('DONE');
+      break;
+    case "/blocking":
+       // Blocking delay using a loop
+      const start = Date.now();
+      while (Date.now() - start < delay) {
+        // Do nothing, just wait
+      }
 
-  // blocking simulation
-  // => container CAN NOT serve other requests during delay
-  } else if (pathname === '/blocking') {
-    // Blocking delay using a loop
-    const start = Date.now();
-    while (Date.now() - start < delay) {
-      // Do nothing, just wait
-    }
-
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('BLOCKING REQUEST DONE');
-  } else {
-    res.statusCode = 404;
-    res.end('Not found');
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end('BLOCKING REQUEST DONE');
+      break;
+    case "/nonblocking":
+      // Simulating delay before responding
+      setTimeout(() => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+        res.end('NONBLOCKING REQUEST DONE');
+      }, delay);
+      break;
+    case "/json":
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(req.body ? req.body : {'status': 'done'});  
+      break;
   }
 });
 
-const port = 80;
+const port = 8080;
 server.listen(port, () => {
   console.log(`Server running at http://0.0.0.0:${port}/`);
 });
