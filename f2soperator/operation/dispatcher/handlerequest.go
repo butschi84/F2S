@@ -129,7 +129,7 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		logging.Error(err)
 		// send result to channel
 		*result <- queue.F2SRequestResult{
-			Result:  fmt.Sprintf("error on function http invocation: %s", err.Error()),
+			Result:  fmt.Sprintf("error on function http invocation: %s", requestErr.Error()),
 			Success: false,
 			UID:     req.UID,
 			Request: req,
