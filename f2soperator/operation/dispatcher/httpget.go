@@ -147,7 +147,7 @@ func fetchResponse(response *http.Response) (resp string, err error) {
 	// Read response body
 	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
-		logging.Error(fmt.Errorf("error when reading httpPost function call result body: %s", err))
+		logging.Error(fmt.Errorf("[fetchResponse] error when reading httpPost function call result body: %s", err))
 		return "", err
 	}
 
@@ -156,7 +156,7 @@ func fetchResponse(response *http.Response) (resp string, err error) {
 		logging.Debug("response is in json format")
 		parsedResponse, err := parseJSONRepsonse(string(responseBody))
 		if err != nil {
-			return "", fmt.Errorf("Could not parse json response body: %s", err.Error())
+			return "", fmt.Errorf("[fetchResponse] Could not parse json response body: %s", err.Error())
 		}
 		return parsedResponse, nil
 	} else {
@@ -175,20 +175,20 @@ func fetchResponse(response *http.Response) (resp string, err error) {
 func parseJSONRepsonse(response string) (parsedResponse string, err error) {
 	unescapedResult, err := strconv.Unquote(`"` + response + `"`)
 	if err != nil {
-		return "", fmt.Errorf("Error unescaping JSON: %s", err.Error())
+		return "", fmt.Errorf("[parseJSONRepsonse] Error unescaping JSON: %s. (response was: %s)", err.Error(), response)
 	}
 
 	// Unmarshal the JSON string into a map
 	var dataMap map[string]interface{}
 	err = json.Unmarshal([]byte(unescapedResult), &dataMap)
 	if err != nil {
-		return "", fmt.Errorf("Error encoding JSON: %s", err.Error())
+		return "", fmt.Errorf("[parseJSONRepsonse] Error encoding JSON: %s", err.Error())
 	}
 
 	// Marshal the dataMap into a pretty formatted JSON string
 	prettyJSON, err := json.MarshalIndent(dataMap, "", "  ")
 	if err != nil {
-		return "", fmt.Errorf("Error encoding JSON: %s", err.Error())
+		return "", fmt.Errorf("[parseJSONRepsonse] Error encoding JSON: %s", err.Error())
 	}
 
 	return string(prettyJSON), nil
