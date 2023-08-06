@@ -37,7 +37,8 @@ func handleRequestsWithTimeout(req queue.F2SRequest) {
 		logging.Warn(fmt.Sprintf("request for function call '%s' timed out after %dms!", req.Path, timeout))
 		// send result to channel
 		result := queue.F2SRequestResult{
-			Result:  fmt.Sprintf("function %s: 'request_timeout' after %dms", req.Path, timeout),
+			Result:  map[string]interface{}{},
+			Details: fmt.Sprintf("function %s: 'request_timeout' after %dms", req.Path, timeout),
 			Success: false,
 			UID:     req.UID,
 			Request: req,
@@ -83,7 +84,8 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 			logging.Error(fmt.Errorf("aborting function '%s'. scale from 0 failed: %s", functionTarget.Function.Name, err.Error()))
 			// send result to channel
 			*result <- queue.F2SRequestResult{
-				Result:  fmt.Sprintf("aborting function '%s'. scale from 0 failed: %s", functionTarget.Function.Name, err.Error()),
+				Result:  map[string]interface{}{},
+				Details: fmt.Sprintf("aborting function '%s'. scale from 0 failed: %s", functionTarget.Function.Name, err.Error()),
 				Success: false,
 				UID:     req.UID,
 			}
@@ -96,7 +98,8 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	if err != nil {
 		logging.Error(err)
 		*result <- queue.F2SRequestResult{
-			Result:  fmt.Sprintf("aborting function '%s' invocation because target cannot serve request: %s", functionTarget.Function.Name, err.Error()),
+			Result:  map[string]interface{}{},
+			Details: fmt.Sprintf("aborting function '%s' invocation because target cannot serve request: %s", functionTarget.Function.Name, err.Error()),
 			Success: false,
 			UID:     req.UID,
 		}
@@ -108,32 +111,38 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	// start time measurement
 	start := time.Now()
 
+	// prepare output
+	requestResult := queue.F2SRequestResult{
+		Result:                     map[string]interface{}{},
+		Success:                    false,
+		UID:                        req.UID,
+		Duration:                   0.0,
+		DurationPerInflightRequest: 0.0,
+		Request:                    req,
+	}
+
 	// invoke function on target pod
-	var httpResult string
 	var requestErr error
 	url := fmt.Sprintf("http://%s:%v%s", string(pod.Address.IP), functionTarget.Function.Target.Port, functionTarget.Function.Target.Endpoint)
+	logging.Info(fmt.Sprintf("request url: %s", url))
 	switch req.Method {
 	case "GET":
-		httpResult, requestErr = httpGet(url)
+		requestErr = httpGet(url, &requestResult)
 	case "POST":
-		httpResult, requestErr = httpPost(url, req.Payload)
+		requestErr = httpPost(url, req.Payload, &requestResult)
 	case "PUT":
-		httpResult, requestErr = httpPut(url, req.Payload)
+		requestErr = httpPut(url, req.Payload, &requestResult)
 	case "DELETE":
-		httpResult, requestErr = httpDelete(url)
+		requestErr = httpDelete(url, &requestResult)
 	default:
-		httpResult, requestErr = httpGet(url)
+		requestErr = httpGet(url, &requestResult)
 	}
 
 	if requestErr != nil {
 		logging.Error(err)
 		// send result to channel
-		*result <- queue.F2SRequestResult{
-			Result:  fmt.Sprintf("error on function http invocation: %s", requestErr.Error()),
-			Success: false,
-			UID:     req.UID,
-			Request: req,
-		}
+		requestResult.Details = fmt.Sprintf("error on function http invocation: %s", requestErr.Error())
+		requestResult.Success = false
 	} else {
 		// measure time elapsed
 		elapsed := time.Since(start).Milliseconds()
@@ -141,14 +150,19 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		logging.Info("Function execution time: %s\n", fmt.Sprintf("%vms", elapsed))
 		logging.Info("Function execution time per inflight request: %sms\n", fmt.Sprintf("%v", elapsedPerInflight))
 
+		// prepare output
+		requestResult.Success = true
+		requestResult.Duration = float64(elapsed)
+		requestResult.DurationPerInflightRequest = float64(elapsedPerInflight)
+
+		// try json parsing of the http result
+		// var parsedResult map[string]interface{}
+		// err := json.Unmarshal([]byte(httpResult), &parsedResult)
+		// if err == nil {
+		// 	output.Result = parsedResult
+		// }
+
 		// send result to channel
-		*result <- queue.F2SRequestResult{
-			Result:                     httpResult,
-			Success:                    true,
-			UID:                        req.UID,
-			Duration:                   float64(elapsed),
-			DurationPerInflightRequest: float64(elapsedPerInflight),
-			Request:                    req,
-		}
+		*result <- requestResult
 	}
 }

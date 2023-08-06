@@ -8,6 +8,18 @@ export KUBECONFIG=~/.kube/config
 go run main.go
 ```
 
+# Local Debugging
+
+## F2S
+
+```
+export KUBECONFIG=~/.kube/config
+export Prometheus_URL=localhost:9090
+
+f2s now runs on:
+http://0.0.0.0:8080
+```
+
 # Release
 
 ## F2S

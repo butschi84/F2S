@@ -1,17 +1,17 @@
 package dispatcher
 
 import (
+	"butschi84/f2s/state/queue"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
 
-func httpGet(url string) (string, error) {
+func httpGet(url string, result *queue.F2SRequestResult) error {
 	// Create a new HTTP client with a timeout
 	client := http.Client{
 		Timeout: time.Millisecond * time.Duration(f2shub.F2SConfiguration.Config.F2S.Timeouts.HttpTimeout),
@@ -22,24 +22,24 @@ func httpGet(url string) (string, error) {
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
 			logging.Error(fmt.Errorf("http_timeout: %s", err))
-			return "", fmt.Errorf("http_timeout: %s", err)
+			return fmt.Errorf("http_timeout: %s", err)
 		} else {
 			logging.Error(fmt.Errorf("error during httpGet function Call: %s", err))
-			return "", err
+			return err
 		}
 
 	}
 	defer response.Body.Close()
 
 	// Read response body
-	resp, fetchResponseError := fetchResponse(response)
+	fetchResponseError := fetchResponse(response, result)
 	if fetchResponseError != nil {
-		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
+		return fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
 	}
-	return resp, nil
+	return nil
 }
 
-func httpPost(url, data string) (string, error) {
+func httpPost(url, data string, result *queue.F2SRequestResult) error {
 	// Create a new HTTP client with a timeout
 	client := http.Client{
 		Timeout: time.Millisecond * time.Duration(f2shub.F2SConfiguration.Config.F2S.Timeouts.HttpTimeout),
@@ -53,23 +53,23 @@ func httpPost(url, data string) (string, error) {
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
 			logging.Error(fmt.Errorf("http_timeout: %s", err))
-			return "", fmt.Errorf("http_timeout: %s", err)
+			return fmt.Errorf("http_timeout: %s", err)
 		} else {
 			logging.Error(fmt.Errorf("error during httpPost function Call: %s", err))
-			return "", err
+			return err
 		}
 	}
 	defer response.Body.Close()
 
 	// Read response body
-	resp, fetchResponseError := fetchResponse(response)
+	fetchResponseError := fetchResponse(response, result)
 	if fetchResponseError != nil {
-		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
+		return fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
 	}
-	return resp, nil
+	return nil
 }
 
-func httpPut(url, data string) (string, error) {
+func httpPut(url, data string, result *queue.F2SRequestResult) error {
 	// Create a new HTTP client with a timeout
 	client := http.Client{
 		Timeout: time.Millisecond * time.Duration(f2shub.F2SConfiguration.Config.F2S.Timeouts.HttpTimeout),
@@ -82,7 +82,7 @@ func httpPut(url, data string) (string, error) {
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
 		logging.Error(fmt.Errorf("error creating PUT request: %s", err))
-		return "", err
+		return err
 	}
 	// Set the appropriate content type for the request (e.g., "application/json" for JSON data)
 	req.Header.Set("Content-Type", "application/json")
@@ -92,23 +92,23 @@ func httpPut(url, data string) (string, error) {
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
 			logging.Error(fmt.Errorf("http_timeout: %s", err))
-			return "", fmt.Errorf("http_timeout: %s", err)
+			return fmt.Errorf("http_timeout: %s", err)
 		} else {
 			logging.Error(fmt.Errorf("error during httpPut function Call: %s", err))
-			return "", err
+			return err
 		}
 	}
 	defer response.Body.Close()
 
 	// Read response body
-	resp, fetchResponseError := fetchResponse(response)
+	fetchResponseError := fetchResponse(response, result)
 	if fetchResponseError != nil {
-		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
+		return fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
 	}
-	return resp, nil
+	return nil
 }
 
-func httpDelete(url string) (string, error) {
+func httpDelete(url string, result *queue.F2SRequestResult) error {
 	// Create a new HTTP client with a timeout
 	client := http.Client{
 		Timeout: time.Millisecond * time.Duration(f2shub.F2SConfiguration.Config.F2S.Timeouts.HttpTimeout),
@@ -118,7 +118,7 @@ func httpDelete(url string) (string, error) {
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		logging.Error(fmt.Errorf("error creating DELETE request: %s", err))
-		return "", err
+		return err
 	}
 
 	// Send the request using the client
@@ -126,70 +126,44 @@ func httpDelete(url string) (string, error) {
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
 			logging.Error(fmt.Errorf("http_timeout: %s", err))
-			return "", fmt.Errorf("http_timeout: %s", err)
+			return fmt.Errorf("http_timeout: %s", err)
 		} else {
 			logging.Error(fmt.Errorf("error during httpDelete function Call: %s", err))
-			return "", err
+			return err
 		}
 	}
 	defer response.Body.Close()
 
 	// Read response body
-	resp, fetchResponseError := fetchResponse(response)
+	fetchResponseError := fetchResponse(response, result)
 	if fetchResponseError != nil {
-		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
+		return fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
 	}
-	return resp, nil
+	return nil
 }
 
 // process response from container
-func fetchResponse(response *http.Response) (resp string, err error) {
+func fetchResponse(response *http.Response, result *queue.F2SRequestResult) (err error) {
 	// Read response body
 	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		logging.Error(fmt.Errorf("[fetchResponse] error when reading httpPost function call result body: %s", err))
-		return "", err
+		return err
 	}
+
+	result.Result = map[string]interface{}{"data": string(responseBody)}
+	result.ContentType = "text/plain"
 
 	// Check if the response is application/json
 	if response.Header.Get("Content-Type") == "application/json" {
 		logging.Debug("response is in json format")
-		parsedResponse, err := parseJSONRepsonse(string(responseBody))
+		var parsedResult map[string]interface{}
+		err := json.Unmarshal([]byte(responseBody), &parsedResult)
 		if err != nil {
-			return "", fmt.Errorf("[fetchResponse] Could not parse json response body: %s", err.Error())
+			logging.Warn(fmt.Sprintf("failed to parse request result to json for request: %s", &result.UID))
 		}
-		return parsedResponse, nil
-	} else {
-		// Convert response body to a string and return
-		logging.Debug("response is not in json format")
-		return string(responseBody), nil
+		result.Result = parsedResult
+		result.ContentType = response.Header.Get("Content-Type")
 	}
-}
-
-// convert response from example: `{\"data\":\"hello world\"}`
-// to pretty json string:
-//
-//	{
-//	  "data": "hello world"
-//	}
-func parseJSONRepsonse(response string) (parsedResponse string, err error) {
-	unescapedResult, err := strconv.Unquote(`"` + response + `"`)
-	if err != nil {
-		return "", fmt.Errorf("[parseJSONRepsonse] Error unescaping JSON: %s. (response was: %s)", err.Error(), response)
-	}
-
-	// Unmarshal the JSON string into a map
-	var dataMap map[string]interface{}
-	err = json.Unmarshal([]byte(unescapedResult), &dataMap)
-	if err != nil {
-		return "", fmt.Errorf("[parseJSONRepsonse] Error encoding JSON: %s", err.Error())
-	}
-
-	// Marshal the dataMap into a pretty formatted JSON string
-	prettyJSON, err := json.MarshalIndent(dataMap, "", "  ")
-	if err != nil {
-		return "", fmt.Errorf("[parseJSONRepsonse] Error encoding JSON: %s", err.Error())
-	}
-
-	return string(prettyJSON), nil
+	return nil
 }
