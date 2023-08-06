@@ -12,38 +12,41 @@ const server = http.createServer((req, res) => {
 
   const delay = query.delay ? parseInt(query.delay) : getRandomDelay();
 
-  // non-blocking simulation
-  // => container can serve other requests during delay
-  switch(pathname) {
-    case "/":
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      res.end('DONE');
-      break;
-    case "/blocking":
-       // Blocking delay using a loop
-      const start = Date.now();
-      while (Date.now() - start < delay) {
-        // Do nothing, just wait
-      }
-
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      res.end('BLOCKING REQUEST DONE');
-      break;
-    case "/nonblocking":
-      // Simulating delay before responding
-      setTimeout(() => {
+  try {
+    // non-blocking simulation
+    // => container can serve other requests during delay
+    switch(pathname) {
+      case "/":
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
-        res.end('NONBLOCKING REQUEST DONE');
-      }, delay);
-      break;
-    case "/json":
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.end(req.body ? req.body : {'status': 'done'});  
-      break;
+        res.end('DONE');
+        break;
+      case "/blocking":
+        // Blocking delay using a loop
+        const start = Date.now();
+        while (Date.now() - start < delay) {
+          // Do nothing, just wait
+        }
+
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+        res.end('BLOCKING REQUEST DONE');
+        break;
+      case "/nonblocking":
+        // Simulating delay before responding
+        setTimeout(() => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/plain');
+          res.end('NONBLOCKING REQUEST DONE');
+        }, delay);
+        break;
+      case "/json":
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(req.body ? req.body : JSON.stringify({'status': 'done'})); 
+        break;
+    }
+  }catch(ex){
   }
 });
 
