@@ -41,9 +41,30 @@ const server = http.createServer((req, res) => {
         }, delay);
         break;
       case "/json":
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(req.body ? req.body : JSON.stringify({'status': 'done'})); 
+        if (req.method === 'POST' && req.headers['content-type'] === 'application/json') {
+          let requestBody = '';
+          req.on('data', (chunk) => {
+            requestBody += chunk.toString();
+          });
+      
+          req.on('end', () => {
+            try {
+              const jsonData = JSON.parse(requestBody); // Parse the incoming JSON data
+              // Process the jsonData here if needed
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json'); // Set JSON content type
+              res.end(JSON.stringify(jsonData)); // Send JSON response with the same data
+            } catch (error) {
+              res.statusCode = 400; // Bad Request if JSON parsing fails
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ error: 'Invalid JSON' }));
+            }
+          });
+        }else{
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(req.body ? req.body : JSON.stringify({'status': 'done'})); 
+        }
         break;
     }
   }catch(ex){
