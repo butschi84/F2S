@@ -2,9 +2,11 @@ package dispatcher
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -30,14 +32,11 @@ func httpGet(url string) (string, error) {
 	defer response.Body.Close()
 
 	// Read response body
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		logging.Error(fmt.Errorf("error when reading httpGet functioncall result body: %s", err))
-		return "", err
+	resp, fetchResponseError := fetchResponse(response)
+	if fetchResponseError != nil {
+		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
 	}
-
-	// Print response body
-	return string(body), nil
+	return resp, nil
 }
 
 func httpPost(url, data string) (string, error) {
@@ -63,14 +62,11 @@ func httpPost(url, data string) (string, error) {
 	defer response.Body.Close()
 
 	// Read response body
-	responseBody, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		logging.Error(fmt.Errorf("error when reading httpPost function call result body: %s", err))
-		return "", err
+	resp, fetchResponseError := fetchResponse(response)
+	if fetchResponseError != nil {
+		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
 	}
-
-	// Convert response body to a string and return
-	return string(responseBody), nil
+	return resp, nil
 }
 
 func httpPut(url, data string) (string, error) {
@@ -105,14 +101,11 @@ func httpPut(url, data string) (string, error) {
 	defer response.Body.Close()
 
 	// Read response body
-	responseBody, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		logging.Error(fmt.Errorf("error when reading httpPut function call result body: %s", err))
-		return "", err
+	resp, fetchResponseError := fetchResponse(response)
+	if fetchResponseError != nil {
+		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
 	}
-
-	// Convert response body to a string and return
-	return string(responseBody), nil
+	return resp, nil
 }
 
 func httpDelete(url string) (string, error) {
@@ -142,12 +135,61 @@ func httpDelete(url string) (string, error) {
 	defer response.Body.Close()
 
 	// Read response body
-	responseBody, err := ioutil.ReadAll(response.Body)
+	resp, fetchResponseError := fetchResponse(response)
+	if fetchResponseError != nil {
+		return "", fmt.Errorf("unable to fetch http response from container: %s", fetchResponseError.Error())
+	}
+	return resp, nil
+}
+
+// process response from container
+func fetchResponse(response *http.Response) (resp string, err error) {
+	// Read response body
+	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
-		logging.Error(fmt.Errorf("error when reading httpDelete function call result body: %s", err))
+		logging.Error(fmt.Errorf("error when reading httpPost function call result body: %s", err))
 		return "", err
 	}
 
-	// Convert response body to a string and return
-	return string(responseBody), nil
+	// Check if the response is application/json
+	if response.Header.Get("Content-Type") == "application/json" {
+		logging.Debug("response is in json format")
+		parsedResponse, err := parseJSONRepsonse(string(responseBody))
+		if err != nil {
+			return "", fmt.Errorf("Could not parse json response body: %s", err.Error())
+		}
+		return parsedResponse, nil
+	} else {
+		// Convert response body to a string and return
+		logging.Debug("response is not in json format")
+		return string(responseBody), nil
+	}
+}
+
+// convert response from example: `{\"data\":\"hello world\"}`
+// to pretty json string:
+//
+//	{
+//	  "data": "hello world"
+//	}
+func parseJSONRepsonse(response string) (parsedResponse string, err error) {
+	unescapedResult, err := strconv.Unquote(`"` + response + `"`)
+	if err != nil {
+		return "", fmt.Errorf("Error unescaping JSON: %s", err.Error())
+	}
+
+	// Unmarshal the JSON string into a map
+	var dataMap map[string]interface{}
+	err = json.Unmarshal([]byte(unescapedResult), &dataMap)
+	if err != nil {
+		return "", fmt.Errorf("Error encoding JSON: %s", err.Error())
+	}
+
+	// Marshal the dataMap into a pretty formatted JSON string
+	prettyJSON, err := json.MarshalIndent(dataMap, "", "  ")
+	if err != nil {
+		return "", fmt.Errorf("Error encoding JSON: %s", err.Error())
+	}
+
+	return string(prettyJSON), nil
 }
