@@ -70,10 +70,10 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// Read the request body.
 	if method == "POST" || method == "PUT" {
-		logging.Debug("reading request body")
+		logging.Debug(fmt.Sprintf("[%s] reading request body", request.UID))
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			logging.Error(fmt.Errorf("Failed to read request body"))
+			logging.Error(fmt.Errorf("[%s] Failed to read request body", request.UID))
 			http.Error(w, "Failed to read request body", http.StatusInternalServerError)
 			return
 		}
@@ -82,7 +82,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// put it into queue
-	logging.Info("add request to queue")
+	logging.Info(fmt.Sprintf("[%s] add request to queue", request.UID))
 	f2shub.F2SQueue.AddRequest(request)
 
 	// wait for completion
@@ -90,10 +90,10 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	select {
 	case result := <-request.ResultChannel:
-		logging.Info(fmt.Sprintf("Request completed: %s", result.Result))
+		logging.Info(fmt.Sprintf("[%s] Request completed: %s", request.UID, result.Result))
 		json.NewEncoder(w).Encode(result)
 	case <-ctx.Done():
-		logging.Warn("Request Timeout reached, cancelling goroutine")
+		logging.Warn("[%s] Request Timeout reached, cancelling goroutine", request.UID)
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed: %s", key)})
 	}
 }
