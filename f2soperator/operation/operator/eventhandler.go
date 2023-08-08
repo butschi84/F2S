@@ -15,7 +15,7 @@ import (
 )
 
 func handleEvent(event eventmanager.Event) {
-	if !master {
+	if !f2shub.F2SOperatorState.IsMaster {
 		return
 	}
 	logging.Info("processing event", fmt.Sprintf("'%s'", string(event.Type)))

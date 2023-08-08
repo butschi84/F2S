@@ -5,6 +5,7 @@ import (
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/services/prometheus"
 	"butschi84/f2s/state/configuration"
+	"butschi84/f2s/state/operatorstate"
 	"fmt"
 	"os"
 	"sort"
@@ -15,19 +16,20 @@ import (
 )
 
 var logging logger.F2SLogger
-var master bool
 var f2shub *hub.F2SHub
 
 func init() {
 	// initialize logging
 	logging = logger.Initialize("operator")
-	master = false
 }
 
 func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	f2shub = hub
+
+	// initialize default (no master)
+	f2shub.F2SOperatorState.IsMaster = false
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to events")
@@ -44,13 +46,13 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	for {
 		// check if this f2s replica is the master
 		masterDecision, _ := CheckMaster()
-		if masterDecision != master && master == true {
+		if masterDecision != f2shub.F2SOperatorState.IsMaster && f2shub.F2SOperatorState.IsMaster == true {
 			logging.Info("this f2s pod is now master")
 		}
-		master = masterDecision
+		f2shub.F2SOperatorState.IsMaster = masterDecision
 
 		// rebalance
-		if master {
+		if f2shub.F2SOperatorState.IsMaster {
 			// Perform the desired task
 			logging.Info("rebalancing...")
 			Rebalance()
@@ -62,23 +64,29 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 }
 
 func CheckMaster() (bool, error) {
+	logging.Debug("[check master] reading prometheus metric 'f2s_master_election_ready_pods'")
 	result, err := prometheus.ReadPrometheusMetric(&configuration.ActiveConfiguration, "f2s_master_election_ready_pods", map[string]string{})
 	if err != nil {
 		logging.Error(err)
-		logging.Error(fmt.Errorf("prometheus seems not to be reachable. prometheus URL can also specified by 'export Prometheus_URL=localhost:9090'"))
+		logging.Error(fmt.Errorf("[check master] prometheus seems not to be reachable. prometheus URL can also specified by 'export Prometheus_URL=localhost:9090'"))
 	}
-
-	// jsonBytes, err := json.MarshalIndent(result, "", "  ")
-	// if err != nil {
-	// 	fmt.Println("Error:", err)
-	// 	return false, nil
-	// }
 
 	// get all f2s replica uid's
 	fs2Pods := make(map[string]string, len(result.Data.Result))
 
+	// update state
+	f2shub.F2SOperatorState.KnownOperators = make([]operatorstate.F2SKnownOperator, len(result.Data.Result))
 	for i, _ := range result.Data.Result {
 		fs2Pods[result.Data.Result[i].Metric["uid"]] = result.Data.Result[i].Metric["pod"]
+		f2shub.F2SOperatorState.KnownOperators[i].PodName = result.Data.Result[i].Metric["pod"]
+		f2shub.F2SOperatorState.KnownOperators[i].PodUID = result.Data.Result[i].Metric["uid"]
+
+		// Extract the timestamp from the first result
+		timestamp := result.Data.Result[i].Value[0].(float64)
+		// timestamp, err := strconv.ParseFloat(timestampStr, 64)
+		if err == nil {
+			f2shub.F2SOperatorState.KnownOperators[i].LastContact = time.Unix(int64(timestamp), 0)
+		}
 	}
 
 	// Extract the keys from the map
@@ -91,12 +99,17 @@ func CheckMaster() (bool, error) {
 	sort.Strings(uids)
 
 	masterPod := fs2Pods[uids[0]]
+	logging.Debug(fmt.Sprintf("[check master] master is: %s", masterPod))
 
-	// Print the JSON string to stdout
-	// fmt.Println(fmt.Sprintf("master pod name: %s", masterPod))
+	for i, knownOperator := range f2shub.F2SOperatorState.KnownOperators {
+		if masterPod == knownOperator.PodName {
+			f2shub.F2SOperatorState.KnownOperators[i].IsMaster = true
+		} else {
+			logging.Info(fmt.Sprintf("%s <> %s", masterPod, knownOperator.PodUID))
+		}
+	}
 
 	hostname, err := os.Hostname()
-
 	if hostname == masterPod {
 		return true, nil
 	}
