@@ -4,7 +4,7 @@ import (
 	"butschi84/f2s/state/configuration"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -65,7 +65,7 @@ func ReadPrometheusMetric(config *configuration.F2SConfiguration, metricName str
 	defer resp.Body.Close()
 
 	// Read the response body
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return PrometheusResponse{}, err
 	}
