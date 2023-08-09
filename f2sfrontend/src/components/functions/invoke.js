@@ -4,12 +4,14 @@ import { connect, useDispatch } from 'react-redux';
 import * as _ from 'lodash';
 import axios from 'axios';
 import spinner from '../../images/spinner2.gif';
+import { get, post } from '../../services/common'
 
 function InvokeFunction(props) {
     const routeParams = useParams();
     const [f2sfunction, setF2SFunction] = useState({})
     const [invocationInProgress, setInvocationInProgress] = useState(false)
     const [invocationResult, setInvocationResult] = useState("")
+    const [postData, setPostData] = useState("")
 
     // set current subscription as state
     useEffect(() => {
@@ -22,13 +24,26 @@ function InvokeFunction(props) {
         if(!f2sfunction.spec) return
         setInvocationInProgress(true)
         setInvocationResult("")
-        axios.get(`${apiURL}/invoke${f2sfunction.spec.endpoint}`).then((response) => {
-            setInvocationInProgress(false)
-            setInvocationResult(response.data)
-        }).catch((error) => {
-            console.log(error)
-            setInvocationInProgress(false)
-        })
+        switch(f2sfunction.spec.method){
+            case "GET":
+                get(`/invoke${f2sfunction.spec.endpoint}`).then((response) => {
+                    setInvocationInProgress(false)
+                    setInvocationResult(response)
+                }).catch((error) => {
+                    console.log(error)
+                    setInvocationInProgress(false)
+                })
+                break;
+            case "POST":
+                post(`/invoke${f2sfunction.spec.endpoint}`, postData).then((response) => {
+                    setInvocationInProgress(false)
+                    setInvocationResult(response)
+                }).catch((error) => {
+                    console.log(error)
+                    setInvocationInProgress(false)
+                })
+                break;
+        }
     }
 
     if(!f2sfunction || !f2sfunction.spec) return ""
@@ -58,6 +73,14 @@ function InvokeFunction(props) {
                         value={`${props.apiURL}/invoke${f2sfunction.spec.endpoint}`} />
                         <br />
                         <br />
+
+                        Data
+                        <textarea
+                        className="input"
+                        style={{height:"150px"}}
+                        onChange={(e)=>setPostData(e.target.value)}
+                        value={postData}
+                        rows="10"></textarea>
                         
                         <button 
                         className="button is-primary"

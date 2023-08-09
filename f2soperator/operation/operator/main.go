@@ -33,7 +33,7 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to events")
-	f2shub.F2SEventManager.Subscribe(handleEvent)
+	go f2shub.F2SEventManager.Subscribe(handleEvent)
 
 	// watch change events of f2sfunction crd in k8s
 	logging.Info("starting to watch f2sfunctions in k8s")
@@ -43,6 +43,10 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	logging.Info("starting to watch endpoints in k8s")
 	go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
 
+	go RebalancerLoop()
+}
+
+func RebalancerLoop() {
 	for {
 		// check if this f2s replica is the master
 		masterDecision, _ := CheckMaster()
@@ -104,8 +108,6 @@ func CheckMaster() (bool, error) {
 	for i, knownOperator := range f2shub.F2SOperatorState.KnownOperators {
 		if masterPod == knownOperator.PodName {
 			f2shub.F2SOperatorState.KnownOperators[i].IsMaster = true
-		} else {
-			logging.Info(fmt.Sprintf("%s <> %s", masterPod, knownOperator.PodUID))
 		}
 	}
 

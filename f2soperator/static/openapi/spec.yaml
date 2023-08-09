@@ -47,6 +47,18 @@ paths:
             application/json:
               schema:
                 type: object
+  /operator:
+    get:
+      summary: get current f2s operator state
+      tags:
+        - F2S Internal
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /events:
     get:
       summary: get last events
