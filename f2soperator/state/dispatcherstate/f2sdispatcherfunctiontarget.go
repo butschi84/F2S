@@ -3,6 +3,7 @@ package dispatcherstate
 import (
 	"butschi84/f2s/state/queue"
 	"fmt"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -51,6 +52,10 @@ func (dispatcherFunction *F2SDispatcherFunction) RemoveRequest(request queue.F2S
 			}
 		}
 	}
+}
+
+func (dispatcherFunction *F2SDispatcherFunction) SetLastScaling() {
+	dispatcherFunction.LastScaling = time.Now()
 }
 
 func (dispatcherFunction *F2SDispatcherFunction) AddServingPod(address corev1.EndpointAddress) {

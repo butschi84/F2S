@@ -8,6 +8,7 @@ type EventType string
 const (
 	Event_FunctionInvoked         EventType = "function invoked"
 	Event_FunctionInvokationEnded EventType = "function invokation ended"
+	Event_FunctionScaled          EventType = "function scaling changed"
 	Event_ConfigurationChanged    EventType = "configuration changed"
 	Event_EndpointsChanged        EventType = "endpoints changed"
 )

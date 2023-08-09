@@ -4,6 +4,7 @@ import (
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 	"butschi84/f2s/services/prometheus"
 	"butschi84/f2s/state/configuration"
+	"butschi84/f2s/state/eventmanager"
 	"fmt"
 	"log"
 	"math"
@@ -132,6 +133,21 @@ func scaleDeployments() {
 		if currentAvailableReplicas != float64(resultScale) {
 			logging.Info(fmt.Sprintf("[scaling] scaling %s: before=>%v after=>%v", function.Name, currentAvailableReplicas, resultScale))
 			kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
+
+			// set last-scaling-time in dispatcher state
+			dispatcherFunction, err := f2shub.F2SDispatcherHub.GetFunctionTargetByFunctionName(function.Name)
+			if err != nil {
+				logging.Warn(fmt.Sprintf("[scaling] could not get functiontarget for function: %s. %s", &function.Name, err.Error()))
+			}
+			dispatcherFunction.SetLastScaling()
+
+			// send 'function scaled' event
+			f2shub.F2SEventManager.Publish(eventmanager.Event{
+				UID:         f2shub.F2SEventManager.GenerateUUID(),
+				Data:        function,
+				Type:        eventmanager.Event_FunctionScaled,
+				Description: fmt.Sprintf("F2SFunction %s scaled from %v to %v", function.Name, currentAvailableReplicas, int(resultScale)),
+			})
 		}
 	}
 }

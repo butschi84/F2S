@@ -22,6 +22,10 @@ func handleEvent(event eventmanager.Event) {
 		metricActiveRequests.WithLabelValues(prettyFunction.Spec.Endpoint, string(prettyFunction.UID), prettyFunction.Name).Inc()
 		currentInflightRequests += 1
 
+	case eventmanager.Event_FunctionScaled:
+		function := event.Data.(v1alpha1types.Function)
+		logging.Info(fmt.Sprintf("function %s has just been scaled", function.Name))
+		metricLastRequestCompletion.WithLabelValues(function.Spec.Endpoint, string(function.UID), function.Name).Set(float64(time.Now().Unix()))
 	case eventmanager.Event_FunctionInvokationEnded:
 		result := event.Data.(queue.F2SRequestResult)
 		functionTarget, err := f2shub.F2SDispatcherHub.GetFunctionTargetByEndpoint(result.Request.Path)

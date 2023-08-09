@@ -40,6 +40,7 @@ type F2SDispatcherPrettyFunction struct {
 	Name        string                           `json:"name"`
 	Endpoint    string                           `json:"endpoint"`
 	ServingPods []F2SDispatcherPrettyFunctionPod `json:"endpoints"`
+	LastScaling time.Time                        `json:"last_scaling"`
 }
 type F2SDispatcherPrettyFunctionPod struct {
 	IPAddress        string `json:"ip_address"`
@@ -52,6 +53,7 @@ func (f *F2SDispatcherFunction) Pretty() F2SDispatcherPrettyFunction {
 		Name:        f.Function.Name,
 		Endpoint:    f.Function.Spec.Endpoint,
 		ServingPods: make([]F2SDispatcherPrettyFunctionPod, 0),
+		LastScaling: f.LastScaling,
 	}
 	for _, p := range f.ServingPods {
 		result.ServingPods = append(result.ServingPods, p.Pretty())

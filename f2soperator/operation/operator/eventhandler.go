@@ -15,15 +15,14 @@ import (
 )
 
 func handleEvent(event eventmanager.Event) {
-	if !f2shub.F2SOperatorState.IsMaster {
-		return
-	}
 	logging.Info("processing event", fmt.Sprintf("'%s'", string(event.Type)))
 
 	switch event.Type {
 	case eventmanager.Event_ConfigurationChanged:
-		logging.Info("configuration has changed. rebalance immediately")
-		Rebalance()
+		if f2shub.F2SOperatorState.IsMaster {
+			logging.Info("configuration has changed. rebalance immediately")
+			Rebalance()
+		}
 	case eventmanager.Event_FunctionInvoked:
 		logging.Info("function invoked. checking minimum availability")
 		function := event.Data.(v1alpha1types.PrettyFunction)
@@ -33,16 +32,24 @@ func handleEvent(event eventmanager.Event) {
 
 // make sure that there is at least a scale of 1 replica available
 func checkMinimumAvailability(function *v1alpha1types.PrettyFunction) {
-	logging.Info("checking minimum availability")
+	logging.Info("[checkMinimumAvailability] checking minimum availability")
 	target, err := f2shub.F2SDispatcherHub.GetFunctionTargetByFunctionName(function.Name)
 	if err != nil {
-		logging.Error(err)
+		logging.Error(fmt.Errorf("[checkMinimumAvailability] could not get target for function %s. %s", function.Name, err.Error()))
 		return
 	}
 	if len(target.ServingPods) == 0 {
-		logging.Info(fmt.Sprintf("scaling up deployment %s to 1 replica", function.Name))
+		logging.Info(fmt.Sprintf("[checkMinimumAvailability] scaling up deployment %s to 1 replica", function.Name))
 		kubernetesservice.ScaleDeployment(function.Name, 1)
 		target.LastScaling = time.Now()
+
+		// send 'function scaled' event
+		f2shub.F2SEventManager.Publish(eventmanager.Event{
+			UID:         f2shub.F2SEventManager.GenerateUUID(),
+			Data:        function,
+			Type:        eventmanager.Event_FunctionScaled,
+			Description: fmt.Sprintf("F2SFunction %s scaled from %v to %v", function.Name, 0, 1),
+		})
 	}
 }
 

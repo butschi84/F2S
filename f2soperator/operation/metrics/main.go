@@ -24,6 +24,7 @@ var metricActiveRequests *prometheus.GaugeVec
 var metricLastRequestCompletion *prometheus.GaugeVec
 var metricFunctionCapacity *prometheus.HistogramVec
 var metricRequestDuration *prometheus.HistogramVec
+var metricLastFunctionScaling *prometheus.GaugeVec
 
 // keep track of inflight requests
 var currentInflightRequests int
@@ -64,6 +65,15 @@ func init() {
 		prometheus.GaugeOpts{
 			Name: "f2s_active_requests_total",
 			Help: "Total number of currently active requests",
+		},
+		[]string{"target", "functionuid", "functionname"},
+	)
+
+	// metric - lsat function scaling
+	metricLastFunctionScaling = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "f2s_function_last_scaling_timestamp",
+			Help: "Timestamp of last function scaling",
 		},
 		[]string{"target", "functionuid", "functionname"},
 	)
@@ -111,6 +121,7 @@ func init() {
 	prometheus.MustRegister(metricLastRequestCompletion)
 	prometheus.MustRegister(metricRequestDuration)
 	prometheus.MustRegister(metricFunctionCapacity)
+	prometheus.MustRegister(metricLastFunctionScaling)
 }
 
 func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
