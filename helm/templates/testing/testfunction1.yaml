@@ -15,7 +15,7 @@ spec:
 target:
   containerImage: "romanhuesler/f2snodejstest"
   endpoint: "/"
-  port: 80
+  port: 9092
   minReplicas: 0
   maxReplicas: 5
 ---
@@ -34,7 +34,7 @@ spec:
 target:
   containerImage: "romanhuesler/f2snodejstest"
   endpoint: "/blocking"
-  port: 80
+  port: 9092
   minReplicas: 0
   maxReplicas: 5
 ---
@@ -51,7 +51,24 @@ spec:
 target:
   containerImage: "romanhuesler/f2spythontest"
   endpoint: "/"
-  port: 80
+  port: 9092
   minReplicas: 0
+  maxReplicas: 5
+---
+apiVersion: "f2s.opensight.ch/v1alpha1"
+kind: "Function"
+metadata:
+  name: "test-nodejs-json"
+  namespace: "f2s"
+spec:
+  endpoint: "/nodejs-json"
+  method: "POST"
+  description: |
+    simple json post test function
+target:
+  containerImage: "romanhuesler/f2snodejstest"
+  endpoint: "/json"
+  port: 9092
+  minReplicas: 1
   maxReplicas: 5
 {{- end }}

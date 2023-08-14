@@ -32,8 +32,8 @@ func HandleRequests(wg *sync.WaitGroup) {
 	frontendHandler := http.FileServer(http.Dir("./static/frontend"))
 	router.PathPrefix("/").Handler(frontendHandler)
 
-	logging.Info("listening on http://0.0.0.0:8080")
-	http.ListenAndServe("0.0.0.0:8080", router)
+	logging.Info("listening on http://0.0.0.0:9092")
+	http.ListenAndServe("0.0.0.0:9092", router)
 }
 
 // Middleware function to set Access-Control-Allow-Origin header to *
