@@ -28,7 +28,7 @@ func handleEvent(event eventmanager.Event) {
 		metricLastRequestCompletion.WithLabelValues(function.Spec.Endpoint, string(function.UID), function.Name).Set(float64(time.Now().Unix()))
 	case eventmanager.Event_FunctionInvokationEnded:
 		result := event.Data.(queue.F2SRequestResult)
-		functionTarget, err := f2shub.F2SDispatcherHub.GetFunctionTargetByEndpoint(result.Request.Path)
+		functionTarget, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByEndpoint(result.Request.Path)
 		if err != nil {
 			logging.Error(fmt.Errorf("[%s] cannot calculate metrics for request because: %s", result.Request.UID, err.Error()))
 		}

@@ -21,7 +21,7 @@ func (dispatcherfunction *F2SDispatcherHub) AddDispatcherFunction(function *type
 }
 
 // get target by path
-func (dispatcherhub *F2SDispatcherHub) GetFunctionTargetByEndpoint(endpoint string) (*F2SDispatcherFunction, error) {
+func (dispatcherhub *F2SDispatcherHub) GetDispatcherFunctionByEndpoint(endpoint string) (*F2SDispatcherFunction, error) {
 	logging.Debug(fmt.Sprintf("get functiontarget for path %s", endpoint))
 	for i, t := range dispatcherhub.DispatcherFunctions {
 		if t.Function.Spec.Endpoint == endpoint {
@@ -33,7 +33,7 @@ func (dispatcherhub *F2SDispatcherHub) GetFunctionTargetByEndpoint(endpoint stri
 }
 
 // get target by path
-func (dispatcherhub *F2SDispatcherHub) GetFunctionTargetByFunctionName(functionName string) (*F2SDispatcherFunction, error) {
+func (dispatcherhub *F2SDispatcherHub) GetDispatcherFunctionByName(functionName string) (*F2SDispatcherFunction, error) {
 	logging.Debug(fmt.Sprintf("get functiontarget for function name %s", functionName))
 	for i, t := range dispatcherhub.DispatcherFunctions {
 		if t.Function.Name == functionName {

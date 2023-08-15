@@ -103,7 +103,7 @@ func scaleDeployments() {
 		}
 
 		// get current inflight requests of function
-		target, err := f2shub.F2SDispatcherHub.GetFunctionTargetByFunctionName(function.Name)
+		target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
 		if err != nil {
 			logging.Error(err)
 			logging.Error(fmt.Errorf("[scaling] could not get function target for function-name: %s. skipping scaling of this function...", function.Name))
@@ -135,7 +135,7 @@ func scaleDeployments() {
 			kubernetesservice.ScaleDeployment(function.Name, int32(resultScale))
 
 			// set last-scaling-time in dispatcher state
-			dispatcherFunction, err := f2shub.F2SDispatcherHub.GetFunctionTargetByFunctionName(function.Name)
+			dispatcherFunction, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
 			if err != nil {
 				logging.Warn(fmt.Sprintf("[scaling] could not get functiontarget for function: %s. %s", &function.Name, err.Error()))
 			}

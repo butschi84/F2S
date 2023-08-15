@@ -61,7 +61,7 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 
 	// find function target
 	logging.Debug(fmt.Sprintf("[%s] search function target for endpoint: %s", req.UID, req.Path))
-	functionTarget, err := f2shub.F2SDispatcherHub.GetFunctionTargetByEndpoint(req.Path)
+	functionTarget, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByEndpoint(req.Path)
 	if err != nil {
 		logging.Error(fmt.Errorf("[%s] cannot serve request. function target not found for endpoint %s", req.UID, req.Path))
 		logging.Error(err)

@@ -33,7 +33,7 @@ func handleEvent(event eventmanager.Event) {
 // make sure that there is at least a scale of 1 replica available
 func checkMinimumAvailability(function *v1alpha1types.PrettyFunction) {
 	logging.Info("[checkMinimumAvailability] checking minimum availability")
-	target, err := f2shub.F2SDispatcherHub.GetFunctionTargetByFunctionName(function.Name)
+	target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
 	if err != nil {
 		logging.Error(fmt.Errorf("[checkMinimumAvailability] could not get target for function %s. %s", function.Name, err.Error()))
 		return
