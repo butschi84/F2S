@@ -12,17 +12,28 @@ import (
 	"butschi84/f2s/state/eventmanager"
 	"butschi84/f2s/state/operatorstate"
 	"butschi84/f2s/state/queue"
+	"fmt"
 	"sync"
 )
 
-var F2SConfiguration configuration.F2SConfiguration
-var logging logger.F2SLogger
-
-var F2SHub hub.F2SHub
+var (
+	F2SConfiguration configuration.F2SConfiguration
+	logging          logger.F2SLogger
+	F2SHub           hub.F2SHub
+)
 
 func init() {
 	// initialize logging
 	logging = logger.Initialize("main")
+}
+
+func handleComponent(name string, f func(*hub.F2SHub), wg *sync.WaitGroup) {
+	defer wg.Done()
+	for {
+		logging.Info(fmt.Sprintf("%s: Starting", name))
+		f(&F2SHub)
+		logging.Info(fmt.Sprintf("%s: Exited. Restarting...", name))
+	}
 }
 
 func main() {
@@ -46,21 +57,15 @@ func main() {
 	numWorkers := 4
 	wg.Add(numWorkers)
 
-	// start api router
+	// start all components
 	logging.Info("=> initializng rest api server")
-	go apiserver.HandleRequests(&F2SHub, &wg)
-
-	// start operator (manages deployments in f2s-containers namespace)
-	logging.Info("=> initializng f2s-containers namespace operator")
-	go operator.RunOperator(&F2SHub, &wg)
-
-	// start metrics
+	go handleComponent("api server", apiserver.HandleRequests, &wg)
+	go logging.Info("=> initializing operator")
+	go handleComponent("operator", operator.RunOperator, &wg)
 	logging.Info("=> initializng metrics")
-	go metrics.HandleRequests(&F2SHub, &wg)
-
-	// start dispatcher
+	go handleComponent("metrics", metrics.HandleRequests, &wg)
 	logging.Info("=> initializng request dispatcher")
-	go dispatcher.Initialize(&F2SHub, &wg)
+	go handleComponent("dispatcher", dispatcher.Initialize, &wg)
 
 	logging.Info("=> done initializing")
 	wg.Wait()

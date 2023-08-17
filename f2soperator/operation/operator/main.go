@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"sync"
 	"time"
 
 	kubernetesservice "butschi84/f2s/services/kubernetes"
@@ -23,9 +22,7 @@ func init() {
 	logging = logger.Initialize("operator")
 }
 
-func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
-	defer wg.Done()
-
+func RunOperator(hub *hub.F2SHub) {
 	f2shub = hub
 
 	// initialize default (no master)
@@ -44,6 +41,10 @@ func RunOperator(hub *hub.F2SHub, wg *sync.WaitGroup) {
 	go kubernetesservice.WatchKubernetesResource("endpoints.v1.", "f2s-containers", OnF2SEndpointsChanged)
 
 	go RebalancerLoop()
+
+	for {
+		time.Sleep(time.Second)
+	}
 }
 
 func RebalancerLoop() {

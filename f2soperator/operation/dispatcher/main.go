@@ -4,14 +4,13 @@ import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"fmt"
-	"sync"
+	"time"
 )
 
 var logging logger.F2SLogger
 var f2shub *hub.F2SHub
 
-func Initialize(h *hub.F2SHub, wg *sync.WaitGroup) {
-	defer wg.Done()
+func Initialize(h *hub.F2SHub) {
 
 	// consume variables
 	f2shub = h
@@ -28,6 +27,10 @@ func Initialize(h *hub.F2SHub, wg *sync.WaitGroup) {
 	f2shub.F2SQueue.Subscribe(handleRequestsWithTimeout)
 
 	reloadEndpoints()
+
+	for {
+		time.Sleep(time.Second)
+	}
 }
 
 // debug output for dispatcher troubleshooting

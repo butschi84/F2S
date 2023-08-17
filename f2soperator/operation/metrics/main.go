@@ -4,7 +4,6 @@ import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"net/http"
-	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
@@ -124,8 +123,7 @@ func init() {
 	prometheus.MustRegister(metricLastFunctionScaling)
 }
 
-func HandleRequests(hub *hub.F2SHub, wg *sync.WaitGroup) {
-	defer wg.Done()
+func HandleRequests(hub *hub.F2SHub) {
 
 	f2shub = *hub
 

@@ -90,10 +90,10 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	select {
 	case result := <-request.ResultChannel:
-		logging.Info(fmt.Sprintf("[%s] Request completed: %s", request.UID, result.Result))
+		logging.Info(fmt.Sprintf("[%s] Request completed [success: %v]: %s", request.UID, result.Success, result.Result))
 		json.NewEncoder(w).Encode(result)
 	case <-ctx.Done():
-		logging.Warn("[%s] Request Timeout reached, cancelling goroutine", request.UID)
+		logging.Warn(fmt.Sprintf("[%s] Request Timeout reached, cancelling goroutine", request.UID))
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("failed: %s", key)})
 	}
 }
