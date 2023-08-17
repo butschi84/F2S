@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"strconv"
 	"time"
 )
 
@@ -87,6 +88,41 @@ func removeSurplusItems() {
 	}
 }
 
+func convertMillisToTime(timestampMillis string) (time.Time, error) {
+	timestampMillisInt, err := strconv.ParseInt(timestampMillis, 10, 64)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	timestampSeconds := timestampMillisInt / 1000
+	timestamp := time.Unix(timestampSeconds, 0)
+	return timestamp, nil
+}
+
+func getLastScalingTimestamp(deploymentName string) (time.Time, bool) {
+	// get annotations of k8s deployment
+	annotations, err := kubernetesservice.GetDeploymentAnnotations(deploymentName)
+	if err != nil {
+		logging.Error(fmt.Errorf("could not get annotations of kubernetes deployment: %s", deploymentName))
+		return time.Time{}, false
+	}
+
+	// find annotation 'f2s/last-scaling'
+	timestamp, exists := annotations["f2s/last-scaling"]
+
+	if exists {
+		// convert to time.time
+		tm, err := convertMillisToTime(timestamp)
+		if err != nil {
+			logging.Error(fmt.Errorf("could not convert timestamp %s to time.time", timestamp))
+			return time.Time{}, false
+		}
+		return tm, true
+	} else {
+		return time.Time{}, false
+	}
+}
+
 // scale each function deployment according to prometheus metric
 // f2sscaling_function_scaling_decision_replicas_difference
 func scaleDeployments() {
@@ -117,8 +153,10 @@ func scaleDeployments() {
 
 		// check if last scaling of the function was less than 15 seconds ago
 		fifteenSecondsAgo := time.Now().Add(-15 * time.Second)
-		if target.LastScaling.After(fifteenSecondsAgo) {
-			logging.Info(fmt.Sprintf("[scaling] last scaling of function %s was less than 15 seconds ago. skipping", function.Name))
+		lastScalingTimestamp, exists := getLastScalingTimestamp(function.Name)
+		if exists == true && lastScalingTimestamp.After(fifteenSecondsAgo) {
+			logging.Info(fmt.Sprintf("[scaling] last scaling of function %s was less than 15 seconds ago. skipping regular scaling", function.Name))
+			continue
 		}
 
 		// check minumums and maximums
