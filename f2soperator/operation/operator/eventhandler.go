@@ -43,6 +43,11 @@ func checkMinimumAvailability(function *v1alpha1types.PrettyFunction) {
 		kubernetesservice.ScaleDeployment(function.Name, 1)
 		target.LastScaling = time.Now()
 
+		// annotate deployment with last-scaling timestamp
+		kubernetesservice.AnnotateDeployment(function.Name, map[string]string{
+			"f2s/last-scaling": time.Now().String(),
+		})
+
 		// send 'function scaled' event
 		f2shub.F2SEventManager.Publish(eventmanager.Event{
 			UID:         f2shub.F2SEventManager.GenerateUUID(),

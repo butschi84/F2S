@@ -9,6 +9,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
@@ -27,6 +28,52 @@ func GetDeployments() (*appsv1.DeploymentList, error) {
 	}
 
 	return deployments, err
+}
+
+func GetDeploymentAnnotations(deploymentName string) (annotations map[string]string, err error) {
+	// Get clientset
+	clientset, err := GetV1ClientSet()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the deployment
+	deployment, err := clientset.AppsV1().Deployments("f2s-containers").Get(context.TODO(), deploymentName, v1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	return deployment.ObjectMeta.Annotations, nil
+}
+
+func AnnotateDeployment(deploymentName string, annotations map[string]string) error {
+	// get clientset
+	clientset, err := GetV1ClientSet()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get the deployment
+	deployment, err := clientset.AppsV1().Deployments("f2s-containers").Get(context.TODO(), deploymentName, metav1.GetOptions{})
+	if err != nil {
+		return err
+	}
+
+	// Add or update annotations
+	if deployment.ObjectMeta.Annotations == nil {
+		deployment.ObjectMeta.Annotations = make(map[string]string)
+	}
+	for key, value := range annotations {
+		deployment.ObjectMeta.Annotations[key] = value
+	}
+
+	// Update the deployment with new annotations
+	_, err = clientset.AppsV1().Deployments("f2s-containers").Update(context.TODO(), deployment, v1.UpdateOptions{})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func CreateDeployment(name string, image string, labels map[string]string, port int) (*appsv1.Deployment, error) {
