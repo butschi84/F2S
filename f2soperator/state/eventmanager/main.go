@@ -43,7 +43,7 @@ func (em *EventManager) Start() {
 		for {
 			event := <-em.eventChannel
 			for _, handler := range em.eventHandlers {
-				handler(event)
+				go handler(event)
 			}
 		}
 	}()
