@@ -142,8 +142,9 @@ func scaleDeployments() {
 			dispatcherFunction.SetLastScaling()
 
 			// annotate deployment with last-scaling timestamp
+			timestampMillis := time.Now().UnixNano() / int64(time.Millisecond)
 			kubernetesservice.AnnotateDeployment(function.Name, map[string]string{
-				"f2s/last-scaling": time.Now().String(),
+				"f2s/last-scaling": string(timestampMillis),
 			})
 
 			// send 'function scaled' event
