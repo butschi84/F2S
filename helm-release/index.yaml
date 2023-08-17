@@ -116,3 +116,8 @@ entries:
     urls:
     - https://butschi84.github.io/F2S/helm-release/f2s-0.1.20.tgz
     version: 0.1.20
+  - description: f2s deployment
+    name: f2s
+    urls:
+    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.21.tgz
+    version: 0.1.21
