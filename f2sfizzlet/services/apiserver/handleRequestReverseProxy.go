@@ -8,7 +8,7 @@ import (
 
 func handleRequestRverseProxy(w http.ResponseWriter, r *http.Request) {
 	// Create a new URL for the target (where you want to forward the request)
-	targetURL, err := url.Parse("http://127.0.0.1:80")
+	targetURL, err := url.Parse("http://127.0.0.1:8080")
 	if err != nil {
 		http.Error(w, "Bad Gateway", http.StatusBadGateway)
 		return
