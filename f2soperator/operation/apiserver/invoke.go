@@ -54,7 +54,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	logging.Info("request to invoke a function")
 
 	// get request method
-	method := r.Method
+	method := strings.ToUpper(r.Method)
 
 	// parse uid
 	logging.Info("parsing target path from request")
@@ -65,7 +65,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	request := queue.F2SRequest{
 		UID:           f2shub.F2SEventManager.GenerateUUID(),
 		Path:          "/" + vars["target"],
-		Method:        strings.ToUpper(method),
+		Method:        method,
 		ResultChannel: make(chan queue.F2SRequestResult),
 	}
 

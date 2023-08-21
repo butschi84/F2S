@@ -120,7 +120,7 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	url := fmt.Sprintf("http://%s:%v%s", string(pod.Address.IP), functionTarget.Function.Target.Port, functionTarget.Function.Target.Endpoint)
 	// url := fmt.Sprintf("http://127.0.0.1:59514")
 	logging.Info(fmt.Sprintf("[%s] request url: %s", req.UID, url))
-	logging.Info(fmt.Sprintf("[%s] method is: %s", req.Method))
+	logging.Info(fmt.Sprintf("[%s] method is: %s", req.UID, req.Method))
 	switch req.Method {
 	case "GET":
 		requestErr = httpGet(url, &requestResult)
