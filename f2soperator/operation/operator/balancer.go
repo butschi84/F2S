@@ -188,7 +188,7 @@ func scaleDeployments() {
 			// send 'function scaled' event
 			f2shub.F2SEventManager.Publish(eventmanager.Event{
 				UID:         f2shub.F2SEventManager.GenerateUUID(),
-				Data:        function,
+				Data:        dispatcherFunction.Pretty(),
 				Type:        eventmanager.Event_FunctionScaled,
 				Description: fmt.Sprintf("F2SFunction %s scaled from %v to %v", function.Name, currentAvailableReplicas, int(resultScale)),
 			})
