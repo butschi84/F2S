@@ -150,7 +150,8 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		requestResult.Duration = float64(elapsed)
 		requestResult.DurationPerInflightRequest = float64(elapsedPerInflight)
 
-		// send result to channel
-		*result <- requestResult
 	}
+
+	// send result to channel
+	*result <- requestResult
 }
