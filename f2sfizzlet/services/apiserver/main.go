@@ -27,10 +27,7 @@ func HandleRequests(wg *sync.WaitGroup) {
 	router.Use(corsMiddleware)
 
 	router.HandleFunc("/", handleRequest)
-
-	// frontend, ui
-	frontendHandler := http.FileServer(http.Dir("./static/frontend"))
-	router.PathPrefix("/").Handler(frontendHandler)
+	router.PathPrefix("/").HandlerFunc(handleRequest)
 
 	logging.Info("listening on http://0.0.0.0:9092")
 	http.ListenAndServe("0.0.0.0:9092", router)
