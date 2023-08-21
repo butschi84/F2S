@@ -41,7 +41,7 @@ const server = http.createServer((req, res) => {
         }, delay);
         break;
       case "/json":
-        if (req.method === 'POST' && req.headers['content-type'] === 'application/json') {
+        if (req.method === 'POST' && req.headers['Content-Type'] === 'application/json') {
           let requestBody = '';
           req.on('data', (chunk) => {
             requestBody += chunk.toString();
@@ -63,7 +63,7 @@ const server = http.createServer((req, res) => {
         }else{
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.end(req.body ? req.body : JSON.stringify({'status': 'done'})); 
+          res.end(req.body ? req.body : JSON.stringify({'status': 'done', 'req.method': req.method, 'content.type': req.headers['Content-Type']})); 
         }
         break;
     }
