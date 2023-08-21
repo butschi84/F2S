@@ -65,7 +65,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	request := queue.F2SRequest{
 		UID:           f2shub.F2SEventManager.GenerateUUID(),
 		Path:          "/" + vars["target"],
-		Method:        method,
+		Method:        "",
 		ResultChannel: make(chan queue.F2SRequestResult),
 	}
 
