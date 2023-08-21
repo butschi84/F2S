@@ -16,5 +16,5 @@ COPY ./executables/ ./
 RUN npm install
 COPY --from=f2sfizzlet /app/f2sfizzlet ./f2sfizzlet
 
-EXPOSE 8080
-CMD ["npm", "start"]
+EXPOSE 9092
+CMD ["./init.sh"]
