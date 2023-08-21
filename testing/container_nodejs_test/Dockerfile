@@ -18,4 +18,4 @@ COPY --from=f2sfizzlet /app/f2sfizzlet ./f2sfizzlet
 COPY ./init.sh .
 
 EXPOSE 9092
-CMD ["./init.sh"]
+CMD ["bash", "init.sh"]
