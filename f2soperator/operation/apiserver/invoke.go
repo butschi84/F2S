@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -64,7 +65,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	request := queue.F2SRequest{
 		UID:           f2shub.F2SEventManager.GenerateUUID(),
 		Path:          "/" + vars["target"],
-		Method:        method,
+		Method:        strings.ToUpper(method),
 		ResultChannel: make(chan queue.F2SRequestResult),
 	}
 
