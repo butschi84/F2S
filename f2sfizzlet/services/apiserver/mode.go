@@ -6,12 +6,12 @@ import "net"
 func isPortListening() FizzletMode {
 	logging.Info("checking if port 8080 is listening...")
 	conn, err := net.Dial("tcp", ":8080")
-	defer conn.Close()
 	if err != nil {
 		logging.Info("port is not listening. use 'command line' mode")
 		return ModeCommandLine
 	}
 
+	defer conn.Close()
 	logging.Info("port is listening. use 'reverse proxy' mode")
 	return ModeReverseProxy
 }
