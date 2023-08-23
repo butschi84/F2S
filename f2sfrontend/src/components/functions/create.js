@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useForm from '../../modules/forms/useForm';
 import Select from '../../modules/forms/select'
 import {createNewF2SFunction} from '../../store/functionsSlice';
 import { connect, useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 function F2SFunctionCreate(props) {
     const dispatch = useDispatch();
 
-    const { form, handleChange, resetForm, setForm } = useForm({
+    const { form, handleChange, resetForm, setForm, setInForm } = useForm({
 		name: '',
         spec_endpoint: '',
         spec_method: 'GET',
         spec_description: '',
-        target_containerimage: '',
-        targt_endpoint: '',
-        target_port: '80',
+        target_containerimage: 'romanhuesler/f2snodejstest:latest',
+        target_endpoint: '/',
+        target_port: '9092',
         target_minreplicas: '0',
         target_maxreplicas: '1',
 	});
@@ -25,6 +26,12 @@ function F2SFunctionCreate(props) {
         {id: "PUT", name: "PUT"},
         {id: "DELETE", name: "DELETE"}
     ]
+
+    useEffect(() => {
+        const generatedFunctionName =  `my-function-${uuidv4()}`
+        setInForm("name", generatedFunctionName)
+        setInForm("spec_endpoint", `/${generatedFunctionName}`)
+    }, [])
 
     function save() {
         const f2sfunction = {
