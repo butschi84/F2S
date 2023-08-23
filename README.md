@@ -14,6 +14,8 @@ An Open Source Function as a Service (FaaS) Platform. <br />
   Define your Functions as K8S CRDs
 * **Scale to Zero**<br/>
   Can scale Deployments to zero when there is no activity
+* **Authentication**<br/>
+  Right now, F2S Supports Token (JWT) Authentication and Basic Auth
 
 # Content
 - [F2S](#f2s)
@@ -65,17 +67,21 @@ helm install f2s f2s/f2s
   Beginners can use a UI to manage the soultion (i.e. create the CRD’s using the UI)
 
 ## All Features included
-
-* No "enterprise only" features
+No "enterprise only" features
 * <font color=orange>TO DO</font> Kafka Message Bus Integration
 * Scale to Zero
-* <font color=orange>TO DO</font> Security (OAuth)
+* Authentication
+  * None
+  * Token (JWT)
+  * Basic Auth
+  * <font color=orange>TO DO</font> Security (OAuth)
+* <font color=orange>TO DO</font> Authorization (RBAC)
 # Architecture
 
 ![](docs/architecture.png)
 
 * **API Server**<br/>
-  API Server is the REST API Interface. Functions can be defined and invoked via API. All invocations are sent to dispatcher.
+  'API Server' is the REST API Interface. Functions can be defined and invoked via API. Authentication and Authorization are part of 'API Server'. All function invocations are then sent to 'dispatcher'.
 * **Metrics**<br/>
   F2S Exposes Metrics in order to be able to make scaling decisions and have insight in all activity
 * **Config**<br/>
