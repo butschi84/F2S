@@ -30,6 +30,9 @@ An Open Source Function as a Service (FaaS) Platform. <br />
 - [Configuration](#configuration)
   - [CRDs functions.f2s.opensight.ch](#crds-functionsf2sopensightch)
   - [Configmap - config.yaml](#configmap---configyaml)
+    - [Timeouts](#timeouts)
+    - [Authentication](#authentication)
+    - [Debugging](#debugging)
 
 # Quick Start Guide
 This will install f2s on your kubernetes cluster. 
@@ -106,6 +109,8 @@ Initial Datamodel is for testing and will certainly change
 
 ## Configmap - config.yaml
 
+F2S Operator is configured by using [a configmap](helm/templates/f2s/f2s-configmap.yaml). Here is an example config for f2s with all parameters.
+
 ```
 # enable debug output
 debug: true
@@ -118,8 +123,42 @@ f2s:
     request_timeout: 120000
     http_timeout: 60000
     scaling_timeout: 45000
+   auth:
+    global_config:
+      type: token
+    basic:
+      - username: roman
+        password: helloworld
+        group: group1
+    token:
+      tokens:
+        - token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQyMzc4OTgsImdyb3VwIjoiZ3JvdXAxIiwic3ViIjoicm9tYW4ifQ.xQOtzG2cNa4eg97qidR-YN7v3qyJ18qjShWYLFUs_bU
+      jwt_secret: test
 ```
 
+### Timeouts
+Timeouts can be configured in the configmap. F2S will abort those requests that exceed a timeout period.
+
+* scaling_timeout<br />
+  When zero replicas of a function are available, f2s will scale up the deployment from zero to one.
+* http_timeout<br />
+  How long should f2s wait at maximum for completion of a backend function
+* request timeout<br />
+  timeout for completion of the whole request
+
+
+![](docs/timeouts.png)
+
+### Authentication
+Right now, F2S Supports the Authentication Modes:
+
+* none<br />
+  just allow all requests
+* basic<br />
+  http basic auth
+* token<br />
+  authentication with a jwt bearer token
+### Debugging
 Environment Variables take precedence over the configmap and are useful for local testing / debugging.
 
 ```

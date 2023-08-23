@@ -8,3 +8,14 @@ f2s:
     request_timeout: 120000
     http_timeout: 60000
     scaling_timeout: 4000
+  auth:
+    global_config:
+      type: basic
+    basic:
+      - username: roman
+        password: helloworld
+        group: group1
+    token:
+      tokens:
+        - token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQyMzc4OTgsImdyb3VwIjoiZ3JvdXAxIiwic3ViIjoicm9tYW4ifQ.xQOtzG2cNa4eg97qidR-YN7v3qyJ18qjShWYLFUs_bU
+      jwt_secret: test

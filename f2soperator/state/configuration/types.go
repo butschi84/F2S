@@ -21,10 +21,35 @@ type F2SConfigMapPrometheus struct {
 }
 type F2SConfigMapF2S struct {
 	Timeouts F2SConfigMapF2STimeouts `yaml:"timeouts"`
+	Auth     F2SConfigMapAuth        `yaml:"auth"`
 }
 
 type F2SConfigMapF2STimeouts struct {
 	RequestTimeout int `yaml:"request_timeout"`
 	HttpTimeout    int `yaml:"http_timeout"`
 	ScalingTimeout int `yaml:"scaling_timeout"`
+}
+
+// auth
+type F2SConfigMapAuth struct {
+	GlobalConfig F2SConfigMapAuthGlobalConfig `yaml:"global_config"`
+	Basic        []F2SConfigMapAuthBasicUser  `yaml:"basic"`
+	Token        F2SConfigMapAuthToken        `yaml:"token"`
+}
+type F2SConfigMapAuthGlobalConfig struct {
+	Type string `yaml:"type"`
+}
+
+type F2SConfigMapAuthBasicUser struct {
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Group    string `yaml:"group"`
+}
+type F2SConfigMapAuthToken struct {
+	Tokens    []F2SConfigMapAuthTokenToken `yaml:"tokens"`
+	JwtSecret string                       `yaml:"jwt_secret"`
+}
+
+type F2SConfigMapAuthTokenToken struct {
+	Token string `yaml:"token"`
 }

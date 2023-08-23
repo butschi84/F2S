@@ -13,9 +13,12 @@ export const createNewF2SFunction = (func) => async dispatch => {
 
 // get all f2s functions
 export const getAllFunctions = () => async dispatch => {
-	const allFunctions = await serviceGetFunctions();
-
-    return dispatch(setFunctions(allFunctions));
+	serviceGetFunctions().then(allFunctions => {
+		return dispatch(setFunctions(allFunctions));
+	}).catch(ex => {
+		console.log("error when trying to get all functions:", ex);
+		return dispatch(setFunctions([]));
+	})
 };
 
 const functionsSlice = createSlice({

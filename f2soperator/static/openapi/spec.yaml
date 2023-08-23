@@ -13,9 +13,49 @@ tags:
     description: Interact with F2S-Containers K8S Namespace
   - name: Invoke
     description: Invoke F2S Functions
+  - name: Authentication
+    description: Methods for APIServer Authentication
   - name: F2S Internal
     description: Internal F2S API Endpoints for Debugging
 paths:
+  /auth/type:
+    get:
+      summary: get configured authentication type (token, basic, none)
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: OK
+          content:
+            type: string
+  /auth/signjwt:
+    post:
+      summary: issue a jwt token for apiserver jwt auth
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jwtsecret:
+                  type: string
+                  example: "abcd123"
+                group:
+                  type: string
+                  example: "group1"
+                username:
+                  type: string
+                  example: "user1"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /invoke/{target}:
     get:
       summary: invoke a f2s function

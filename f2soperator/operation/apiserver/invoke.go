@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -72,7 +73,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	// Read the request body.
 	if method == "POST" || method == "PUT" {
 		logging.Debug(fmt.Sprintf("[%s] reading request body", request.UID))
-		body, err := ioutil.ReadAll(r.Body)
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			logging.Error(fmt.Errorf("[%s] Failed to read request body", request.UID))
 			http.Error(w, "Failed to read request body", http.StatusInternalServerError)

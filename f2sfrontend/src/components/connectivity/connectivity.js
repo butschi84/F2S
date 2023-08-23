@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { checkConnectivity, setBackendURL} from '../../store/connectivitySlice'
+import { checkConnectivity, setBackendURL, logout} from '../../store/connectivitySlice'
 
 function ConnectivityCheck(props) {
     const dispatch = useDispatch()
-    const [backendUrl, setBackendUrl] = useState(props.apiURL);
+    const [urlPath, setUrlPath] = useState("")
 
     useEffect(() => {
         dispatch(checkConnectivity())
     }, [])
+
+    function logoff() {
+        dispatch(logout())
+    }
+
+    function connect() {
+        dispatch(setBackendURL(urlPath))
+    }
 
     return (
         <React.Fragment>
@@ -22,12 +30,12 @@ function ConnectivityCheck(props) {
                                 className="input" 
                                 type="text" 
                                 placeholder="Text input" 
-                                value={backendUrl} 
-                                onChange={(p) => setBackendUrl(p.target.value)} />
+                                value={urlPath} 
+                                onChange={(p) => setUrlPath(p.target.value)} />
                         </div>
                         <p className="help">Please specify address of f2s backend API</p>
                     </div>
-                    <button className='button is-primary' onClick={()=>dispatch(setBackendURL(backendUrl))}>Save</button>
+                    <button className='button is-primary' onClick={connect}>Save</button>
                 </div>
             }
 
@@ -35,7 +43,7 @@ function ConnectivityCheck(props) {
                 props.connectivity && 
                 <React.Fragment>
                 {props.children}
-                <button className='backendUrlButton button' onClick={()=>dispatch(setBackendURL(""))}>Connectivity</button>
+                <button className='backendUrlButton button' onClick={logoff}>Logout</button>
                 </React.Fragment>
             }
         </React.Fragment>

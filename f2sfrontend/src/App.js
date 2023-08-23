@@ -9,12 +9,14 @@ import F2SFunctionDetails from './components/functions/details';
 import Settings from './components/settings/settings';
 import ConnectivityCheck from './components/connectivity/connectivity'
 import F2SFunctionCreate from './components/functions/create';
+import Authentication from './components/authentication/authentication';
 
 function App() {
   return (
     <div className="App">
       <Provider store={store}>
         <ConnectivityCheck >
+          <Authentication>
           <Router>
             <NavBar />
             <div className="container">
@@ -29,6 +31,7 @@ function App() {
             </Routes>
             </div>
           </Router>
+          </Authentication>
         </ConnectivityCheck>
       </Provider>
     </div>

@@ -4,7 +4,6 @@ import (
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 	"butschi84/f2s/services/logger"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -28,7 +27,7 @@ func Initialize() *F2SConfiguration {
 
 	// read f2sconfigmap
 	// Read YAML file
-	data, err := ioutil.ReadFile("config.yaml")
+	data, err := os.ReadFile("config.yaml")
 	if err != nil {
 		log.Fatal(err)
 	}
