@@ -2,8 +2,17 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import {
 	getFunctions as serviceGetFunctions,
-	createFunction as serviceCreateFunction
+	createFunction as serviceCreateFunction,
+	deleteFunction as serviceDeleteFunction
 } from '../services/functions'
+
+// Delete a function
+export const deleteF2SFunction = (func) => async (dispatch, getState) => {
+	await serviceDeleteFunction(func);
+
+	// remove function from state
+	dispatch(getAllFunctions())
+}
 
 // create a new f2s function
 export const createNewF2SFunction = (func) => async dispatch => {

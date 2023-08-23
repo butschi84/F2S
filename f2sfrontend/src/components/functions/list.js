@@ -25,6 +25,10 @@ function F2SFunctions(props) {
             name: '',
             selector: row => <NavLink className="button is-primary" to={`/f2sfunctions/${row.uid}/invoke`}>Invoke</NavLink>
         },
+        {
+            name: '',
+            selector: row => <NavLink className="button is-danger" to={`/f2sfunctions/${row.uid}/delete`}>Delete</NavLink>
+        },
     ];
 
 

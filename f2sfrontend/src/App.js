@@ -10,6 +10,8 @@ import Settings from './components/settings/settings';
 import ConnectivityCheck from './components/connectivity/connectivity'
 import F2SFunctionCreate from './components/functions/create';
 import Authentication from './components/authentication/authentication';
+import DeleteF2SFunction from './components/functions/delete';
+
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
             <Routes>
               <Route path="/f2sfunctions/create" element={ <F2SFunctionCreate /> } />
               <Route path="/f2sfunctions/:id/invoke" element={ <InvokeFunction /> } />
+              <Route path="/f2sfunctions/:id/delete" element={ <DeleteF2SFunction /> } />
               <Route path="/f2sfunctions/:id" element={ <F2SFunctionDetails /> } />
               <Route path="/f2sfunctions" element={ <F2SFunctions /> } />
 
