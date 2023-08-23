@@ -4,9 +4,11 @@ import Select from '../../modules/forms/select'
 import {createNewF2SFunction} from '../../store/functionsSlice';
 import { connect, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 
 function F2SFunctionCreate(props) {
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const { form, handleChange, resetForm, setForm, setInForm } = useForm({
 		name: '',
@@ -33,7 +35,7 @@ function F2SFunctionCreate(props) {
         setInForm("spec_endpoint", `/${generatedFunctionName}`)
     }, [])
 
-    function save() {
+    async function save() {
         const f2sfunction = {
             name: form.name,
             spec: {
@@ -49,7 +51,8 @@ function F2SFunctionCreate(props) {
                 maxReplicas: parseInt(form.target_maxreplicas)
             }
         }
-        dispatch(createNewF2SFunction(f2sfunction))
+        await dispatch(createNewF2SFunction(f2sfunction));
+        navigate('/f2sfunctions');
     }
 
     return (
