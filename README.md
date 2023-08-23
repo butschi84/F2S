@@ -14,6 +14,8 @@ An Open Source Function as a Service (FaaS) Platform. <br />
   Define your Functions as K8S CRDs
 * **Scale to Zero**<br/>
   Can scale Deployments to zero when there is no activity
+* **Autoscaling**<br/>
+  F2S continuously measures the performance of your containers and uses the data for autoscaling
 * **Authentication**<br/>
   Right now, F2S Supports Token (JWT) Authentication and Basic Auth
 
