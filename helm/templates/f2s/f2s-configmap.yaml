@@ -17,3 +17,6 @@ data:
         request_timeout: 120000
         http_timeout: 60000
         scaling_timeout: 45000
+      auth:
+        global_config:
+          type: none
