@@ -75,7 +75,7 @@ export function post(url, postData) {
 
     return new Promise(async (resolve, reject) => {
         try{
-            let {data} = await axios.post(`${apiurl}${url}`, { headers }, postData);
+            let {data} = await axios.post(`${apiurl}${url}`, postData, { headers });
             resolve(data);
         }catch(ex) {
             reject(ex)
@@ -92,7 +92,7 @@ export function put(url, postData) {
 
     return new Promise(async (resolve, reject) => {
         try{
-            let {data} = await axios.put(`${apiurl}${url}`, { headers }, postData);
+            let {data} = await axios.put(`${apiurl}${url}`, postData, { headers });
             resolve(data);
         }catch(ex) {
             reject(ex)
