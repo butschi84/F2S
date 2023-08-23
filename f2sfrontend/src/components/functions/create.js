@@ -2,15 +2,15 @@ import React, { useEffect } from 'react';
 import useForm from '../../modules/forms/useForm';
 import Select from '../../modules/forms/select'
 import {createNewF2SFunction} from '../../store/functionsSlice';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { NavLink, useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function F2SFunctionCreate(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
-    const { form, handleChange, resetForm, setForm, setInForm } = useForm({
+    const { form, handleChange, setInForm } = useForm({
 		name: '',
         spec_endpoint: '',
         spec_method: 'GET',
@@ -33,7 +33,7 @@ function F2SFunctionCreate(props) {
         const generatedFunctionName =  `my-function-${uuidv4()}`
         setInForm("name", generatedFunctionName)
         setInForm("spec_endpoint", `/${generatedFunctionName}`)
-    }, [])
+    }, [setInForm])
 
     async function save() {
         const f2sfunction = {

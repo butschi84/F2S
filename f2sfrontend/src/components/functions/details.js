@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useParams } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as _ from 'lodash';
-import axios from 'axios';
-import spinner from '../../images/spinner2.gif';
 import yaml from 'js-yaml';
 import ReactMarkdown from 'react-markdown';
 
@@ -28,8 +26,8 @@ function F2SFunctionDetails(props) {
     useEffect(() => {
         // find specific subscription
         const functionId = routeParams.id;
-        setF2SFunction(_.find(props.functions, f => { return f.uid == functionId }))
-    }, [])
+        setF2SFunction(_.find(props.functions, f => { return f.uid === functionId }))
+    }, [props.functions, routeParams.id])
 
     if(!f2sfunction) return ""
     return (
@@ -38,15 +36,15 @@ function F2SFunctionDetails(props) {
 
             <div class="tabs">
                 <ul>
-                    <li className={tab=="metadata" ? "is-active" : ""}><a onClick={()=>setTab("metadata")}>Metadata</a></li>
-                    <li className={tab=="specification" ? "is-active" : ""}><a onClick={()=>setTab("specification")}>Specification</a></li>
-                    <li className={tab=="target" ? "is-active" : ""}><a onClick={()=>setTab("target")}>Target</a></li>
-                    <li className={tab=="yaml" ? "is-active" : ""}><a onClick={()=>setTab("yaml")}>YAML Definition</a></li>
+                    <li className={tab==="metadata" ? "is-active" : ""}><div onClick={()=>setTab("metadata")}>Metadata</div></li>
+                    <li className={tab==="specification" ? "is-active" : ""}><div onClick={()=>setTab("specification")}>Specification</div></li>
+                    <li className={tab==="target" ? "is-active" : ""}><div onClick={()=>setTab("target")}>Target</div></li>
+                    <li className={tab==="yaml" ? "is-active" : ""}><div onClick={()=>setTab("yaml")}>YAML Definition</div></li>
                 </ul>
             </div>
 
             {/* Metadata */}
-            {tab == "metadata" &&
+            {tab === "metadata" &&
             <div className="card">
                 <div className="card-content">
                     <div className="content">
@@ -69,7 +67,7 @@ function F2SFunctionDetails(props) {
             }
 
             {/* Specification */}
-            {tab == "specification" &&
+            {tab === "specification" &&
             <React.Fragment>
             <div className="card">
                 <div className="card-content">
@@ -112,7 +110,7 @@ function F2SFunctionDetails(props) {
             }
 
             {/* Target */}
-            {tab == "target" &&
+            {tab === "target" &&
             <div className="card">
                 <div className="card-content">
                     <div class="media">
@@ -161,7 +159,7 @@ function F2SFunctionDetails(props) {
             }
 
             {/* YAML definition */}
-            {tab == "yaml" &&
+            {tab === "yaml" &&
             <div className="card">
             <div className="card-content">
                 <div className="content">

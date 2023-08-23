@@ -8,7 +8,7 @@ function ConnectivityCheck(props) {
 
     useEffect(() => {
         dispatch(checkConnectivity())
-    }, [])
+    }, [dispatch])
 
     function logoff() {
         dispatch(logout())

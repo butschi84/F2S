@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as _ from 'lodash';
 import { connect, useDispatch } from 'react-redux';
 import { deleteF2SFunction } from '../../store/functionsSlice';
@@ -15,8 +15,8 @@ function DeleteF2SFunction(props) {
     useEffect(() => {
         // find specific subscription
         const functionId = routeParams.id;
-        setF2SFunction(_.find(props.functions, f => { return f.uid == functionId }))
-    }, [])
+        setF2SFunction(_.find(props.functions, f => { return f.uid === functionId }))
+    }, [props.functions, routeParams.id])
 
     function deletefunction() {
         dispatch(deleteF2SFunction(f2sfunction));

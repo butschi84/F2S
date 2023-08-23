@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { getConfig as serviceGetConfig } from '../services/config'
-import axios from 'axios'
 
 export const getF2SConfig = () => async (dispatch, getState) => {
 	const config = await serviceGetConfig()

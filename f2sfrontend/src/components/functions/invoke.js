@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useParams } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as _ from 'lodash';
-import axios from 'axios';
 import spinner from '../../images/spinner2.gif';
 import { get, post } from '../../services/common'
 
@@ -17,8 +16,8 @@ function InvokeFunction(props) {
     useEffect(() => {
         // find specific subscription
         const functionId = routeParams.id;
-        setF2SFunction(_.find(props.functions, f => { return f.uid == functionId }))
-    }, [])
+        setF2SFunction(_.find(props.functions, f => { return f.uid === functionId }))
+    }, [props.functions, routeParams.id])
 
     function invoke(f2sfunction, apiURL) {
         if(!f2sfunction.spec) return
@@ -42,6 +41,8 @@ function InvokeFunction(props) {
                     console.log(error)
                     setInvocationInProgress(false)
                 })
+                break;
+            default:
                 break;
         }
     }
@@ -94,7 +95,7 @@ function InvokeFunction(props) {
             <div className="card">
                 <div className="card-content">
                     <div className="content">
-                        { invocationResult != "" &&
+                        { invocationResult !== "" &&
                             <React.Fragment>
                             Result
                             <textarea className="input" rows="40" cols="40" style={{height: "150px"}}>
@@ -106,7 +107,7 @@ function InvokeFunction(props) {
                         }
 
                         { invocationInProgress &&
-                            <img src={spinner} />
+                            <img src={spinner} alt="in progress" />
                         }
                     </div>
                 </div>

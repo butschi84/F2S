@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { getAuthType } from '../../services/auth'
 import { 
     signinWithToken,
     signinWithUsernamePassword } from '../../store/connectivitySlice';
@@ -8,10 +7,7 @@ import {
 function Authentication(props) {
     const dispatch = useDispatch()
 
-    {/* TOKEN AUTH */}
     const [jwttoken, setToken] = useState("")
-    
-    {/* BASIC AUTH */}
     const [basicAuthUsername, setBasicAuthUsername] = useState("")
     const [basicAuthPassword, setBasicAuthPassword] = useState("")
 
@@ -28,7 +24,7 @@ function Authentication(props) {
     return (
         <React.Fragment>
             {/* TOKEN AUTH */}
-            {!authenticated && authenticationType == "token" &&
+            {!authenticated && authenticationType === "token" &&
                 <div className='container' style={{width: "500px", marginTop: "300px"}}>
                     <React.Fragment>
                         <h2 className='title'>F2S Authentication</h2>
@@ -45,7 +41,7 @@ function Authentication(props) {
             }
 
             {/* BASIC AUTH */}
-            {!authenticated && authenticationType == "basic" &&
+            {!authenticated && authenticationType === "basic" &&
                 <div className='container' style={{width: "500px", marginTop: "300px"}}>
                 <React.Fragment>
                     <h2 className='title'>F2S Authentication</h2>
@@ -67,7 +63,7 @@ function Authentication(props) {
             </div>
             }
 
-            { (authenticated || authenticationType == "none")  &&
+            { (authenticated || authenticationType === "none")  &&
                 props.children
             }
         </React.Fragment>

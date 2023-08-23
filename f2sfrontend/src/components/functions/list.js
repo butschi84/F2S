@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { getAllFunctions } from '../../store/functionsSlice';
 import DataTable from 'react-data-table-component';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 
 function F2SFunctions(props) {
@@ -33,8 +33,8 @@ function F2SFunctions(props) {
 
 
     useEffect(() => {
-        dispatch( getAllFunctions())
-    }, []);
+        dispatch(getAllFunctions());
+    }, [dispatch]);
 
 
     return (

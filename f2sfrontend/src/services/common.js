@@ -26,9 +26,9 @@ function fetchAuthHeader() {
             const password = localStorage.getItem("password");
             const basic = btoa(`${username}:${password}`); // Encode username and password in Base64
             return `Basic ${basic}`;
+        default:
+            return null;
     }
-
-    return null;
 }
 
 export function get(url) {

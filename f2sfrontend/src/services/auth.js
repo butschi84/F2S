@@ -1,5 +1,4 @@
 import * as common from './common';
-import config from '../config';
 
 export function getAuthType() {
     return common.get(`/auth/type`);

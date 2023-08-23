@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { 
 	getAuthType as serviceGetAuthType,
 	signin as serviceAuthSignin } from '../services/auth';
@@ -9,7 +9,7 @@ async function check(url) {
 	try{
 		const response = await axios.get(reqUrl);
 		const status = response.data.status
-		return status == "ok"
+		return status === "ok"
 	}catch(ex) {
 		return false
 	}
@@ -76,7 +76,7 @@ export const setBackendURL = (url) => async (dispatch, getState) => {
 
 function getInitialApiURL() {
 	const localStoreApiUrl = localStorage.getItem("apiurl")
-	if(localStoreApiUrl != "") return localStoreApiUrl
+	if(localStoreApiUrl !== "") return localStoreApiUrl
 	return window.location.href
 }
 
