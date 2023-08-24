@@ -36,10 +36,10 @@ function F2SFunctionDetails(props) {
 
             <div class="tabs">
                 <ul>
-                    <li className={tab==="metadata" ? "is-active" : ""}><div onClick={()=>setTab("metadata")}>Metadata</div></li>
-                    <li className={tab==="specification" ? "is-active" : ""}><div onClick={()=>setTab("specification")}>Specification</div></li>
-                    <li className={tab==="target" ? "is-active" : ""}><div onClick={()=>setTab("target")}>Target</div></li>
-                    <li className={tab==="yaml" ? "is-active" : ""}><div onClick={()=>setTab("yaml")}>YAML Definition</div></li>
+                    <li className={tab==="metadata" ? "is-active" : ""}><a onClick={()=>setTab("metadata")}>Metadata</a></li>
+                    <li className={tab==="specification" ? "is-active" : ""}><a onClick={()=>setTab("specification")}>Specification</a></li>
+                    <li className={tab==="target" ? "is-active" : ""}><a onClick={()=>setTab("target")}>Target</a></li>
+                    <li className={tab==="yaml" ? "is-active" : ""}><a onClick={()=>setTab("yaml")}>YAML Definition</a></li>
                 </ul>
             </div>
 
