@@ -7,38 +7,7 @@ An Open Source Function as a Service (FaaS) Platform. <br />
 [Get started in 5 Minutes](#quick-start-guide) on your Kubernetes platform.
 
 ![](docs/highlights.png)
-
-## Features
-
-* **Gitops**<br/>
-  Define your Functions as K8S CRDs
-* **Scale to Zero**<br/>
-  Can scale Deployments to zero when there is no activity
-* **Autoscaling**<br/>
-  F2S continuously measures the performance of your containers and uses the data for autoscaling
-* **Authentication**<br/>
-  Right now, F2S Supports Token (JWT) Authentication and Basic Auth
-
-# Content
-- [F2S](#f2s)
-  - [Features](#features)
-- [Content](#content)
-- [Quick Start Guide](#quick-start-guide)
-- [Core Concept](#core-concept)
-  - [All Features included](#all-features-included)
-- [Architecture](#architecture)
-  - [Namespaces](#namespaces)
-  - [Gitops (CRDs Config)](#gitops-crds-config)
-  - [High Availability](#high-availability)
-  - [Autoscaling](#autoscaling)
-- [Configuration](#configuration)
-  - [CRDs functions.f2s.opensight.ch](#crds-functionsf2sopensightch)
-  - [Configmap - config.yaml](#configmap---configyaml)
-    - [Timeouts](#timeouts)
-    - [Authentication](#authentication)
-    - [Debugging](#debugging)
-
-# Quick Start Guide
+## Quick Start Guide
 This will install f2s on your kubernetes cluster. 
 
 * "Functions" CRD
@@ -57,8 +26,25 @@ kubectl apply -f https://butschi84.github.io/F2S/helm-release/crds/crds.yaml
 # install f2s
 helm install f2s f2s/f2s
 ```
+## Features
 
-# Core Concept
+* **Gitops**<br/>
+  Define your Functions as K8S CRDs
+* **Scale to Zero**<br/>
+  Can scale Deployments to zero when there is no activity
+* **Autoscaling**<br/>
+  F2S continuously measures the performance of your containers and uses the data for autoscaling
+* **Authentication**<br/>
+  Right now, F2S Supports Token (JWT) Authentication and Basic Auth
+  * None
+  * Token (JWT)
+  * Basic Auth
+  * <font color=orange>TO DO</font> Security (OAuth)
+* **Authorization**<br/>
+  <font color=orange>TO DO</font> Authorization (RBAC)
+* **Kafka**<br/>
+  <font color=orange>TO DO</font> Kafka Message Bus Integration
+## Core Concept
 
 * Keep it as simple as can be
 * Run out of the box with as few dependencies as possible. <br/>
@@ -67,17 +53,29 @@ helm install f2s f2s/f2s
 * Lightweight. Use the features of vanilla kubernetes where ever possible
 * Intuitive. No steep learning curve<br/>
   Beginners can use a UI to manage the soultion (i.e. create the CRD’s using the UI)
+* No "enterprise only" features
 
-## All Features included
-No "enterprise only" features
-* <font color=orange>TO DO</font> Kafka Message Bus Integration
-* Scale to Zero
-* Authentication
-  * None
-  * Token (JWT)
-  * Basic Auth
-  * <font color=orange>TO DO</font> Security (OAuth)
-* <font color=orange>TO DO</font> Authorization (RBAC)
+# Content
+- [F2S](#f2s)
+  - [Quick Start Guide](#quick-start-guide)
+  - [Features](#features)
+  - [Core Concept](#core-concept)
+- [Content](#content)
+- [Architecture](#architecture)
+  - [Namespaces](#namespaces)
+  - [Gitops (CRDs Config)](#gitops-crds-config)
+  - [High Availability](#high-availability)
+  - [Autoscaling](#autoscaling)
+- [Configuration](#configuration)
+  - [CRDs functions.f2s.opensight.ch](#crds-functionsf2sopensightch)
+  - [Configmap - config.yaml](#configmap---configyaml)
+    - [Timeouts](#timeouts)
+    - [Authentication](#authentication)
+    - [Debugging](#debugging)
+- [Building Custom Functions](#building-custom-functions)
+  - [Example - NodeJS](#example---nodejs)
+  - [Example - Python](#example---python)
+
 # Architecture
 
 ![](docs/architecture.png)
@@ -108,7 +106,7 @@ F2SFunctions are managed by CRDs (bring your own Gitops)
 We use a redundant setup of 2 F2S Pods. 
 
 ## Autoscaling
-All Metrics go to the prometheus instance. The plan is to use it with autoscaler on k8s
+All Metrics go to the prometheus instance. Prometheus is used to collect the metrics of all f2s operators and source for scaling decisions.
 
 # Configuration
 ## CRDs functions.f2s.opensight.ch
@@ -173,3 +171,24 @@ Environment Variables take precedence over the configmap and are useful for loca
 export Prometheus_URL=localhost:9090
 export KUBECONFIG=~/.kube/config
 ```
+
+# Building Custom Functions
+
+Each Function that you like to run on F2S needs to be containerized and instrumented with a 'f2s fizzlet', a process that listens on 9092 and accepts incoming requests.<br/>
+
+F2SFizzlet can run in 'reverseproxy mode' ([example - nodejs](#example---nodejs)) or in 'command line mode'.
+
+We have some example containers that should get you started:
+* [NodeJS](testing/container_nodejs_test/)
+* [Python](testing/container_python_test/)
+
+## Example - NodeJS
+
+An example container for a NodeJS application is under [testing/container_nodejs_test](testing/container_nodejs_test/). If your NodeJS application listens on 8080, fizzlet will notice and switch to "reverseproxy mode" automatically. 
+
+![](docs/fizzlet_reverseproxy_mode.png)
+
+## Example - Python
+An example for a Python application is under [testing/container_python_test](testing/container_python_test). When fizzlet receives a POST,PUT request, which is in 'application/json' Content-Type, it will write the request body to a 'input.json' and invoke the start.sh script ('start.sh input.json')
+
+![](docs/fizzlet_cmd_mode.png)
