@@ -79,6 +79,7 @@ function InvokeFunction(props) {
                         <textarea
                         className="input"
                         style={{height:"150px"}}
+                        readOnly={f2sfunction.spec.method === "GET" || f2sfunction.spec.method === "DELETE"}
                         onChange={(e)=>setPostData(e.target.value)}
                         value={postData}
                         rows="10"></textarea>
