@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
+
+	"github.com/google/uuid"
 )
 
 func handleReqCommandLine(w http.ResponseWriter, r *http.Request) {
@@ -42,17 +44,23 @@ func handleReqCommandLine(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			err = os.WriteFile("input.json", jsonData, 0644)
+			// Generate a new random UUID
+			newUUID := uuid.New()
+			uuidString := newUUID.String()
+			inputFilename := fmt.Sprintf("input-%s.json", uuidString)
+
+			err = os.WriteFile(inputFilename, jsonData, 0644)
 			if err != nil {
 				http.Error(w, "Error writing to file", http.StatusInternalServerError)
 				return
 			}
 
-			invocation.Parameters = "input.json"
+			invocation.Parameters = inputFilename
+			defer os.Remove(inputFilename)
 		} else {
 			// http.Error(w, "Content-Type is not JSON", http.StatusUnsupportedMediaType)
 
-			body, err := ioutil.ReadAll(r.Body)
+			body, err := io.ReadAll(r.Body)
 			if err != nil {
 				http.Error(w, "Error reading request body", http.StatusInternalServerError)
 				return
