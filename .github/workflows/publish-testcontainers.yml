@@ -1,9 +1,9 @@
-name: publish-testcontainers
+name: publish-examples
 
 on:
   push:
     tags:
-      - "testcontainers-*"
+      - "examples-*"
 
 jobs:
   build:
@@ -28,14 +28,14 @@ jobs:
 
       - name: Get TAG
         id: get_tag
-        run: echo TAG=${GITHUB_REF#refs/tags/} | sed 's/testcontainers-//' >> $GITHUB_ENV
+        run: echo TAG=${GITHUB_REF#refs/tags/} | sed 's/examples-//' >> $GITHUB_ENV
 
       # nodejs testcontainer
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ./testing/container_nodejs_test
-          file: ./testing/container_nodejs_test/Dockerfile
+          context: ./examples/container_nodejs_test
+          file: ./examples/container_nodejs_test/Dockerfile
           push: true
           platforms: linux/amd64
           build-args: |
@@ -48,8 +48,8 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ./testing/container_python_test
-          file: ./testing/container_python_test/Dockerfile
+          context: ./examples/container_python_test
+          file: ./examples/container_python_test/Dockerfile
           push: true
           platforms: linux/amd64
           build-args: |
@@ -57,3 +57,17 @@ jobs:
           tags: |
             romanhuesler/f2spythontest:${{ env.TAG }}
             romanhuesler/f2spythontest:latest
+
+      # python datefinder
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: ./examples/container_python_datefinder
+          file: ./examples/container_python_datefinder/Dockerfile
+          push: true
+          platforms: linux/amd64
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
+          tags: |
+            romanhuesler/f2spythondatefinder:${{ env.TAG }}
+            romanhuesler/f2spythondatefinder:latest

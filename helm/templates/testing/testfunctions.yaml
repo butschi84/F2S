@@ -58,6 +58,23 @@ target:
 apiVersion: "f2s.opensight.ch/v1alpha1"
 kind: "Function"
 metadata:
+  name: "datefinder"
+  namespace: "f2s"
+spec:
+  endpoint: "/datefinder"
+  method: "POST"
+  description: |
+    Python Program that will find all dates in the input string
+target:
+  containerImage: "romanhuesler/f2spythondatefinder"
+  endpoint: "/"
+  port: 9092
+  minReplicas: 0
+  maxReplicas: 5
+---
+apiVersion: "f2s.opensight.ch/v1alpha1"
+kind: "Function"
+metadata:
   name: "test-nodejs-json"
   namespace: "f2s"
 spec:

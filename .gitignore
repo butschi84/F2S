@@ -5,3 +5,5 @@ config_testing.yaml
 # test containers
 node_modules
 output.txt
+
+__pycache__
