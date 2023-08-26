@@ -1,1 +1,1 @@
-python datefinder.py
+python finder.py "$1"
