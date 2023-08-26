@@ -82,16 +82,21 @@ func handleReqCommandLine(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// set response headers
+	// get raw result
+	rawResult := stdout.String()
 
+	// set response headers
+	logging.Info(fmt.Sprintf("checking if result is in json: %s", rawResult))
 	var result map[string]interface{}
-	if isJSON(stdout.Bytes()) {
+	if isJSON([]byte(rawResult)) {
+		logging.Info("result is in json format")
 		w.Header().Set("Content-Type", "application/json")
 		err := json.Unmarshal([]byte(stdout.String()), &result)
 		if err != nil {
 			logging.Warn(fmt.Sprintf("failed to parse request result to json for request"))
 		}
 	} else {
+		logging.Info("result is not in json format")
 		w.Header().Set("Content-Type", "text/plain")
 		result = map[string]interface{}{"data": stdout.String()}
 	}
