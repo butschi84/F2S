@@ -21,10 +21,10 @@ func httpGet(url string, result *queue.F2SRequestResult) error {
 	response, err := client.Get(url)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			logging.Error(fmt.Errorf("http_timeout: %s", err))
+			logging.Error(fmt.Errorf("[%s] http_timeout: %s", result.Request.UID, err))
 			return fmt.Errorf("http_timeout: %s", err)
 		} else {
-			logging.Error(fmt.Errorf("error during httpGet function Call: %s", err))
+			logging.Error(fmt.Errorf("[%s] error during httpGet function Call: %s", result.Request.UID, err))
 			return err
 		}
 
@@ -39,6 +39,11 @@ func httpGet(url string, result *queue.F2SRequestResult) error {
 	return nil
 }
 
+func isJSON(data []byte) bool {
+	var js json.RawMessage
+	return json.Unmarshal(data, &js) == nil
+}
+
 func httpPost(url, data string, result *queue.F2SRequestResult) error {
 	// Create a new HTTP client with a timeout
 	client := http.Client{
@@ -48,14 +53,21 @@ func httpPost(url, data string, result *queue.F2SRequestResult) error {
 	// Create the request body as a byte buffer from the string data
 	body := bytes.NewBufferString(data)
 
+	// determine content type
+	contentType := "text/plain"
+	if isJSON(body.Bytes()) {
+		contentType = "application/json"
+	}
+	logging.Info(fmt.Sprintf("[%s] determined post content-type: %s", result.Request.UID, contentType))
+
 	// Send POST request using the client
-	response, err := client.Post(url, "application/json", body)
+	response, err := client.Post(url, contentType, body)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
 			logging.Error(fmt.Errorf("http_timeout: %s", err))
 			return fmt.Errorf("http_timeout: %s", err)
 		} else {
-			logging.Error(fmt.Errorf("error during httpPost function Call: %s", err))
+			logging.Error(fmt.Errorf("[%s] error during httpPost function Call: %s", result.Request.UID, err))
 			return err
 		}
 	}
@@ -81,20 +93,26 @@ func httpPut(url, data string, result *queue.F2SRequestResult) error {
 	// Create a PUT request using http.NewRequest
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
-		logging.Error(fmt.Errorf("error creating PUT request: %s", err))
+		logging.Error(fmt.Errorf("[%s] error creating PUT request: %s", result.Request.UID, err))
 		return err
 	}
-	// Set the appropriate content type for the request (e.g., "application/json" for JSON data)
-	req.Header.Set("Content-Type", "application/json")
+
+	// determine content type
+	contentType := "text/plain"
+	if isJSON(body.Bytes()) {
+		contentType = "application/json"
+	}
+	logging.Info(fmt.Sprintf("[%s] determined put content-type: %s", result.Request.UID, contentType))
+	req.Header.Set("Content-Type", contentType)
 
 	// Send the request using the client
 	response, err := client.Do(req)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			logging.Error(fmt.Errorf("http_timeout: %s", err))
+			logging.Error(fmt.Errorf("[%s] http_timeout: %s", result.Request.UID, err))
 			return fmt.Errorf("http_timeout: %s", err)
 		} else {
-			logging.Error(fmt.Errorf("error during httpPut function Call: %s", err))
+			logging.Error(fmt.Errorf("[%s] error during httpPut function Call: %s", result.Request.UID, err))
 			return err
 		}
 	}
@@ -117,7 +135,7 @@ func httpDelete(url string, result *queue.F2SRequestResult) error {
 	// Create a DELETE request using http.NewRequest
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		logging.Error(fmt.Errorf("error creating DELETE request: %s", err))
+		logging.Error(fmt.Errorf("[%s] error creating DELETE request: %s", result.Request.UID, err))
 		return err
 	}
 
@@ -125,10 +143,10 @@ func httpDelete(url string, result *queue.F2SRequestResult) error {
 	response, err := client.Do(req)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			logging.Error(fmt.Errorf("http_timeout: %s", err))
+			logging.Error(fmt.Errorf("[%s] http_timeout: %s", result.Request.UID, err))
 			return fmt.Errorf("http_timeout: %s", err)
 		} else {
-			logging.Error(fmt.Errorf("error during httpDelete function Call: %s", err))
+			logging.Error(fmt.Errorf("[%s] error during httpDelete function Call: %s", result.Request.UID, err))
 			return err
 		}
 	}
@@ -147,7 +165,7 @@ func fetchResponse(response *http.Response, result *queue.F2SRequestResult) (err
 	// Read response body
 	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
-		logging.Error(fmt.Errorf("[fetchResponse] error when reading httpPost function call result body: %s", err))
+		logging.Error(fmt.Errorf("[%s] [fetchResponse] error when reading httpPost function call result body: %s", result.Request.UID, err))
 		return err
 	}
 
@@ -160,7 +178,7 @@ func fetchResponse(response *http.Response, result *queue.F2SRequestResult) (err
 		var parsedResult map[string]interface{}
 		err := json.Unmarshal([]byte(responseBody), &parsedResult)
 		if err != nil {
-			logging.Warn(fmt.Sprintf("failed to parse request result to json for request: %s", &result.UID))
+			logging.Warn(fmt.Sprintf("[%s] failed to parse request result to json for request: %s", result.Request.UID, &result.UID))
 		}
 		result.Result = parsedResult
 		result.ContentType = response.Header.Get("Content-Type")
