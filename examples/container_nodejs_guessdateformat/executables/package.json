@@ -1,0 +1,19 @@
+{
+  "name": "test_container",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "react-scripts build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http": "^0.0.1-security",
+    "moment-guess": "^1.2.4",
+    "react-scripts": "5.0.1",
+    "url": "^0.11.1"
+  }
+}

@@ -71,3 +71,17 @@ jobs:
           tags: |
             romanhuesler/f2spythondatefinder:${{ env.TAG }}
             romanhuesler/f2spythondatefinder:latest
+
+      # nodejs guessdateformat
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: ./examples/container_nodejs_guessdateformat
+          file: ./examples/container_nodejs_guessdateformat/Dockerfile
+          push: true
+          platforms: linux/amd64
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
+          tags: |
+            romanhuesler/f2snodejsguessdateformat:${{ env.TAG }}
+            romanhuesler/f2snodejsguessdateformat:latest
