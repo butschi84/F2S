@@ -21,7 +21,7 @@ for match in matches:
         "raw_length": len(match[1])
     })
 
-json_output = json.dumps(matched_dates, default=str)
+json_output = json.dumps({"matches": matched_dates}, default=str)
 
 # Print the JSON array
 print(json_output)
