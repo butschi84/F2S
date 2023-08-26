@@ -1,8 +1,8 @@
 package apiserver
 
-type test struct {
+type RequestResult struct {
 	Result string
-	Data   string
+	Data   map[string]interface{}
 }
 
 type Invocation struct {
