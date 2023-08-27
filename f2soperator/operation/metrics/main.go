@@ -38,7 +38,7 @@ func init() {
 			Name: "f2s_requests_incoming_total",
 			Help: "Total number of incoming requests",
 		},
-		[]string{"target", "functionuid", "functionname"},
+		[]string{"target", "functionuid", "functionname", "username"},
 	)
 
 	// metric - total completed requests

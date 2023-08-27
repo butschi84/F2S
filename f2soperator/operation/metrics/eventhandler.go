@@ -15,7 +15,7 @@ func handleEvent(event eventmanager.Event) {
 		// increase metric 'total_incoming_requests
 		request := event.Data.(queue.F2SRequest)
 		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalIncomingRequests'", request.Function.Name))
-		metricTotalIncomingRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name).Inc()
+		metricTotalIncomingRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name, request.F2SUser.Username).Inc()
 
 		// increase metric 'active_requests
 		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricactiveRequests'", request.Function.Name))
