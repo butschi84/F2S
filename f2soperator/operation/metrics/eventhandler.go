@@ -13,13 +13,13 @@ func handleEvent(event eventmanager.Event) {
 	// function invoked
 	case eventmanager.Event_FunctionInvoked:
 		// increase metric 'total_incoming_requests
-		prettyFunction := event.Data.(v1alpha1types.PrettyFunction)
-		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalIncomingRequests'", prettyFunction.Name))
-		metricTotalIncomingRequests.WithLabelValues(prettyFunction.Spec.Endpoint, string(prettyFunction.UID), prettyFunction.Name).Inc()
+		request := event.Data.(queue.F2SRequest)
+		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalIncomingRequests'", request.Function.Name))
+		metricTotalIncomingRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name).Inc()
 
 		// increase metric 'active_requests
-		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricactiveRequests'", prettyFunction.Name))
-		metricActiveRequests.WithLabelValues(prettyFunction.Spec.Endpoint, string(prettyFunction.UID), prettyFunction.Name).Inc()
+		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricactiveRequests'", request.Function.Name))
+		metricActiveRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name).Inc()
 		currentInflightRequests += 1
 
 	case eventmanager.Event_FunctionScaled:

@@ -9,14 +9,14 @@ import (
 )
 
 // put new incoming requests into queue
-func (dispatcherFunction *F2SDispatcherFunction) ServeRequest(request queue.F2SRequest) (*DispatcherFunctionTarget, error) {
+func (dispatcherFunction *F2SDispatcherFunction) ServeRequest(request *queue.F2SRequest) (*DispatcherFunctionTarget, error) {
 	// error prevention
 	if len(dispatcherFunction.ServingPods) == 0 {
 		return &DispatcherFunctionTarget{}, fmt.Errorf("Cannot serve request %s. function %s has 0 pods available", request.UID, request.Path)
 	}
 
 	// add inflight request to first pod in array
-	dispatcherFunction.ServingPods[0].InflightRequests = append(dispatcherFunction.ServingPods[0].InflightRequests, request)
+	dispatcherFunction.ServingPods[0].InflightRequests = append(dispatcherFunction.ServingPods[0].InflightRequests, *request)
 
 	// shift pods, so next invocation is served by another pod (1,2,3 => 2,3,1)
 	if len(dispatcherFunction.ServingPods) > 1 {

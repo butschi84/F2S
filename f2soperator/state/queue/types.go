@@ -1,5 +1,7 @@
 package queue
 
+import "butschi84/f2s/state/configuration/api/types/v1alpha1"
+
 type F2SAuthUser struct {
 	Username string
 	Group    string
@@ -11,6 +13,7 @@ type F2SRequest struct {
 	Path          string
 	Method        string
 	Payload       string
+	Function      v1alpha1.PrettyFunction
 	ResultChannel chan F2SRequestResult
 
 	F2SUser F2SAuthUser
@@ -29,12 +32,12 @@ type F2SRequestResult struct {
 	DurationPerInflightRequest float64 `json:"-"`
 }
 
-type RequestHandler func(request F2SRequest)
+type RequestHandler func(request *F2SRequest)
 type F2SQueue struct {
 	Requests []F2SRequest
 
 	// dispatcher will subscribe to new requests
-	eventChannel  chan F2SRequest
+	eventChannel  chan *F2SRequest
 	eventHandlers []RequestHandler
 }
 type IF2SQueue interface {

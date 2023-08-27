@@ -92,7 +92,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 
 	// put it into queue
 	logging.Info(fmt.Sprintf("[%s] add request to queue", request.UID))
-	f2shub.F2SQueue.AddRequest(request)
+	f2shub.F2SQueue.AddRequest(&request)
 
 	// wait for completion
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)

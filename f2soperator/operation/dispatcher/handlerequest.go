@@ -10,7 +10,7 @@ import (
 )
 
 // handle function invocations with request_timeout
-func handleRequestsWithTimeout(req queue.F2SRequest) {
+func handleRequestsWithTimeout(req *queue.F2SRequest) {
 	timeout := f2shub.F2SConfiguration.Config.F2S.Timeouts.RequestTimeout
 
 	// Create a context with a timeout of 'request_timeout'
@@ -42,7 +42,7 @@ func handleRequestsWithTimeout(req queue.F2SRequest) {
 			Details: fmt.Sprintf("function %s: 'request_timeout' after %dms", req.Path, timeout),
 			Success: false,
 			UID:     req.UID,
-			Request: req,
+			Request: *req,
 		}
 		req.ResultChannel <- result
 
@@ -57,7 +57,7 @@ func handleRequestsWithTimeout(req queue.F2SRequest) {
 }
 
 // handle function invocations
-func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
+func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	logging.Info(fmt.Sprintf("[%s] processing invocation request: %s", req.UID, req.Path))
 
 	// find function target
@@ -69,10 +69,13 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	}
 	logging.Debug(fmt.Sprintf("[%s] function target is: %s", req.UID, functionTarget.Function.Name))
 
+	// save function in request
+	req.Function = functionTarget.Function.Prettify()
+
 	// send 'function invoked' event
 	f2shub.F2SEventManager.Publish(eventmanager.Event{
 		UID:         f2shub.F2SEventManager.GenerateUUID(),
-		Data:        functionTarget.Function.Prettify(),
+		Data:        *req,
 		Type:        eventmanager.Event_FunctionInvoked,
 		Description: fmt.Sprintf("[%s] function %s has been invoked", req.UID, functionTarget.Function.Name),
 	})
@@ -84,7 +87,7 @@ func handleRequest(req queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		UID:                        req.UID,
 		Duration:                   0.0,
 		DurationPerInflightRequest: 0.0,
-		Request:                    req,
+		Request:                    *req,
 	}
 
 	// wait for function pod to be available

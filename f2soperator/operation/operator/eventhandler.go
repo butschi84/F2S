@@ -2,6 +2,7 @@ package operator
 
 import (
 	"butschi84/f2s/state/eventmanager"
+	"butschi84/f2s/state/queue"
 	"fmt"
 	"time"
 
@@ -25,8 +26,8 @@ func handleEvent(event eventmanager.Event) {
 		}
 	case eventmanager.Event_FunctionInvoked:
 		logging.Info("function invoked. checking minimum availability")
-		function := event.Data.(v1alpha1types.PrettyFunction)
-		checkMinimumAvailability(&function)
+		request := event.Data.(queue.F2SRequest)
+		checkMinimumAvailability(&request.Function)
 	}
 }
 

@@ -15,7 +15,7 @@ func init() {
 func Initialize() *F2SQueue {
 	f2squeue := F2SQueue{
 		Requests:     make([]F2SRequest, 0),
-		eventChannel: make(chan F2SRequest),
+		eventChannel: make(chan *F2SRequest),
 	}
 	logging.Info("starting queue")
 	f2squeue.Start()
@@ -42,7 +42,7 @@ func (em *F2SQueue) Subscribe(handler RequestHandler) {
 }
 
 // add a new request to the queue
-func (queue *F2SQueue) AddRequest(req F2SRequest) {
+func (queue *F2SQueue) AddRequest(req *F2SRequest) {
 	logging.Info("adding request to queue")
 	queue.eventChannel <- req
 }
