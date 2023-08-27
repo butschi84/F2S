@@ -20,6 +20,7 @@ func handleEvent(event eventmanager.Event) {
 		function := event.Data.(v1alpha1types.PrettyFunction)
 		logging.Info(fmt.Sprintf("function %s has just been scaled", function.Name))
 		metricLastFunctionScaling.WithLabelValues(function.Spec.Endpoint, string(function.UID), function.Name).Set(float64(time.Now().Unix()))
+
 	case eventmanager.Event_InflightRequestsChanged:
 		request := event.Data.(queue.F2SRequest)
 		logging.Info(fmt.Sprintf("number of inflight requests changed for function: %s", request.Function.Name))
@@ -28,7 +29,7 @@ func handleEvent(event eventmanager.Event) {
 			for _, servingPod := range dispatcherFunction.ServingPods {
 				inflightRequests += len(servingPod.InflightRequests)
 			}
-			metricActiveRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name).Set(float64(inflightRequests))
+			metricActiveRequests.WithLabelValues(dispatcherFunction.Function.Spec.Endpoint, string(dispatcherFunction.Function.UID), dispatcherFunction.Function.Name).Set(float64(inflightRequests))
 		}
 	case eventmanager.Event_FunctionInvokationEnded:
 		result := event.Data.(queue.F2SRequestResult)
