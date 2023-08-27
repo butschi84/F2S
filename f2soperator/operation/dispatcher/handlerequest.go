@@ -26,6 +26,14 @@ func handleRequestsWithTimeout(req *queue.F2SRequest) {
 	case result := <-requestResultChan:
 		req.ResultChannel <- result
 
+		// send 'inflight requests changed' event
+		f2shub.F2SEventManager.Publish(eventmanager.Event{
+			UID:         f2shub.F2SEventManager.GenerateUUID(),
+			Data:        *req,
+			Type:        eventmanager.Event_InflightRequestsChanged,
+			Description: fmt.Sprintf("[%s] inflight request completed for function %s", req.UID, req.Function.Name),
+		})
+
 		// send request completed event
 		f2shub.F2SEventManager.Publish(eventmanager.Event{
 			UID:         req.UID,
@@ -45,6 +53,14 @@ func handleRequestsWithTimeout(req *queue.F2SRequest) {
 			Request: *req,
 		}
 		req.ResultChannel <- result
+
+		// send 'inflight requests changed' event
+		f2shub.F2SEventManager.Publish(eventmanager.Event{
+			UID:         f2shub.F2SEventManager.GenerateUUID(),
+			Data:        *req,
+			Type:        eventmanager.Event_InflightRequestsChanged,
+			Description: fmt.Sprintf("[%s] inflight request failed for function %s", req.UID, req.Function.Name),
+		})
 
 		// send request completed event
 		f2shub.F2SEventManager.Publish(eventmanager.Event{
@@ -113,6 +129,14 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		*result <- requestResult
 		return
 	}
+
+	// send 'inflight requests changed' event
+	f2shub.F2SEventManager.Publish(eventmanager.Event{
+		UID:         f2shub.F2SEventManager.GenerateUUID(),
+		Data:        *req,
+		Type:        eventmanager.Event_InflightRequestsChanged,
+		Description: fmt.Sprintf("[%s] there is a new inflight request for function %s", req.UID, functionTarget.Function.Name),
+	})
 
 	// maybe check here if pod is ready ?
 

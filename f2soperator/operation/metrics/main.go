@@ -25,9 +25,6 @@ var metricFunctionCapacity *prometheus.HistogramVec
 var metricRequestDuration *prometheus.HistogramVec
 var metricLastFunctionScaling *prometheus.GaugeVec
 
-// keep track of inflight requests
-var currentInflightRequests int
-
 func init() {
 	// initialize logging
 	logging = logger.Initialize("metrics")

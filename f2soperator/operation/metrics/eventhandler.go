@@ -16,16 +16,20 @@ func handleEvent(event eventmanager.Event) {
 		request := event.Data.(queue.F2SRequest)
 		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalIncomingRequests'", request.Function.Name))
 		metricTotalIncomingRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name, request.F2SUser.Username).Inc()
-
-		// increase metric 'active_requests
-		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricactiveRequests'", request.Function.Name))
-		metricActiveRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name).Inc()
-		currentInflightRequests += 1
-
 	case eventmanager.Event_FunctionScaled:
 		function := event.Data.(v1alpha1types.PrettyFunction)
 		logging.Info(fmt.Sprintf("function %s has just been scaled", function.Name))
 		metricLastFunctionScaling.WithLabelValues(function.Spec.Endpoint, string(function.UID), function.Name).Set(float64(time.Now().Unix()))
+	case eventmanager.Event_InflightRequestsChanged:
+		request := event.Data.(queue.F2SRequest)
+		logging.Info(fmt.Sprintf("number of inflight requests changed for function: %s", request.Function.Name))
+		for _, dispatcherFunction := range f2shub.F2SDispatcherHub.DispatcherFunctions {
+			inflightRequests := 0
+			for _, servingPod := range dispatcherFunction.ServingPods {
+				inflightRequests += len(servingPod.InflightRequests)
+			}
+			metricActiveRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name).Set(float64(inflightRequests))
+		}
 	case eventmanager.Event_FunctionInvokationEnded:
 		result := event.Data.(queue.F2SRequestResult)
 		functionTarget, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByEndpoint(result.Request.Path)
@@ -51,11 +55,6 @@ func handleEvent(event eventmanager.Event) {
 			logging.Info(fmt.Sprintf("function %s invokation ended. increasing counter 'metricTotalFailedRequests'", functionTarget.Function.Name))
 			metricTotalFailedRequests.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Inc()
 		}
-
-		// decrease metric 'active_requests
-		logging.Info(fmt.Sprintf("function %s invokation ended. descreasing auge metricactiveRequests", functionTarget.Function.Name))
-		currentInflightRequests -= 1
-		metricActiveRequests.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Dec()
 
 		// update last request completion metric
 		logging.Info(fmt.Sprintf("function %s invokation ended. set timestamp of metric lastRequestCompletion", functionTarget.Function.Name))
