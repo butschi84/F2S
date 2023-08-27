@@ -10,7 +10,7 @@ f2s:
     scaling_timeout: 4000
   auth:
     global_config:
-      type: basic
+      type: token
     basic:
       - username: roman
         password: helloworld

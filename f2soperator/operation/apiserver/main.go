@@ -57,6 +57,8 @@ func HandleRequests(hub *hub.F2SHub) {
 	protectedRouter.HandleFunc("/dispatcher", getCurrentDispatcherData).Methods(http.MethodGet)
 	protectedRouter.HandleFunc("/config", getConfiguration).Methods(http.MethodGet)
 	protectedRouter.HandleFunc("/events", getLatestEvents).Methods(http.MethodGet)
+	protectedRouter.HandleFunc("/users/me", queryCurrentUser).Methods(http.MethodGet)
+	protectedRouter.HandleFunc("/users", queryAllUsers).Methods(http.MethodGet)
 	protectedRouter.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 	protectedRouter.HandleFunc("/invoke/{target}", invokeFunction)
 	protectedRouter.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)

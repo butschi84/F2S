@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -52,6 +53,18 @@ func (a *F2SApiServerAuthToken) AuthenticateRequest(request *http.Request) error
 		logging.Warn(fmt.Sprintf("[auth] sub claim not found"))
 		return fmt.Errorf("sub claim not found")
 	}
+
+	// Access the "group" attribute
+	group, groupExists := claims["group"].(string)
+	if !groupExists {
+		logging.Warn(fmt.Sprintf("[auth] group claim not found"))
+		return fmt.Errorf("group claim not found")
+	}
+
+	// store information in request context
+	ctx := context.WithValue(request.Context(), "username", sub)
+	ctx = context.WithValue(ctx, "usergroup", group)
+	*request = *request.WithContext(ctx)
 
 	// Use the sub attribute
 	logging.Info(fmt.Sprintf("[auth] sub: %s", sub))

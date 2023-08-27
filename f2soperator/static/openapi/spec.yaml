@@ -28,6 +28,30 @@ paths:
           description: OK
           content:
             type: string
+  /users/me:
+    get:
+      summary: get current user
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /users:
+    get:
+      summary: get all configured users
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /auth/signjwt:
     post:
       summary: issue a jwt token for apiserver jwt auth

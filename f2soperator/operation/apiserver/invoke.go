@@ -70,6 +70,13 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		ResultChannel: make(chan queue.F2SRequestResult),
 	}
 
+	// get user info
+	currentUser, getUserErr := getCurrentUser(r)
+	if getUserErr != nil {
+		logging.Error(fmt.Errorf("[%s] failed to get user info for this request", request.UID))
+	}
+	request.F2SUser = currentUser
+
 	// Read the request body.
 	if method == "POST" || method == "PUT" {
 		logging.Debug(fmt.Sprintf("[%s] reading request body", request.UID))

@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"net/http"
@@ -49,6 +50,12 @@ func (a *F2SApiServerAuthBasic) AuthenticateRequest(request *http.Request) error
 		if user.Username == username {
 			if user.Password == password {
 				logging.Info(fmt.Sprintf("[auth] user '%s' authenticated successfully", username))
+
+				// store information in request context
+				ctx := context.WithValue(request.Context(), "username", username)
+				ctx = context.WithValue(ctx, "usergroup", user.Group)
+				*request = *request.WithContext(ctx)
+
 				return nil
 			} else {
 				logging.Warn(fmt.Sprintf("[auth] password for user '%s' did not match", username))

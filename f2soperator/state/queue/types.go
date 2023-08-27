@@ -1,5 +1,10 @@
 package queue
 
+type F2SAuthUser struct {
+	Username string
+	Group    string
+}
+
 // F2SRequest to invoke a function
 type F2SRequest struct {
 	UID           string
@@ -7,6 +12,8 @@ type F2SRequest struct {
 	Method        string
 	Payload       string
 	ResultChannel chan F2SRequestResult
+
+	F2SUser F2SAuthUser
 }
 
 type F2SRequestResult struct {
