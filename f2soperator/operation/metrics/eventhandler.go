@@ -46,7 +46,7 @@ func handleEvent(event eventmanager.Event) {
 
 			// increase metric 'total request duration'
 			logging.Info(fmt.Sprintf("function %s finished. increase metric 'total request duration' by %vms", functionTarget.Function.Name, result.Duration))
-			metricTotalRequestDuration.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Add(result.Duration)
+			metricTotalRequestDuration.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name, result.Request.F2SUser.Username).Add(result.Duration)
 
 			// recaulculate capacity
 			logging.Info(fmt.Sprintf("function %s finished. recalculating capacity", functionTarget.Function.Name))
