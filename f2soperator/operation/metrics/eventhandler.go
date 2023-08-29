@@ -16,6 +16,7 @@ func handleEvent(event eventmanager.Event) {
 		request := event.Data.(queue.F2SRequest)
 		logging.Info(fmt.Sprintf("function %s was invoked. increasing counter 'metricTotalIncomingRequests'", request.Function.Name))
 		metricTotalIncomingRequests.WithLabelValues(request.Function.Spec.Endpoint, string(request.Function.UID), request.Function.Name, request.F2SUser.Username).Inc()
+
 	case eventmanager.Event_FunctionScaled:
 		function := event.Data.(v1alpha1types.PrettyFunction)
 		logging.Info(fmt.Sprintf("function %s has just been scaled", function.Name))
@@ -42,6 +43,10 @@ func handleEvent(event eventmanager.Event) {
 			// increase metric 'total_completed_requests
 			logging.Info(fmt.Sprintf("function %s invokation ended. increasing counter 'metricTotalCompletedRequests'", functionTarget.Function.Name))
 			metricTotalCompletedRequests.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Inc()
+
+			// increase metric 'total request duration'
+			logging.Info(fmt.Sprintf("function %s finished. increase metric 'total request duration' by %vms", functionTarget.Function.Name, result.Duration))
+			metricTotalRequestDuration.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Add(result.Duration)
 
 			// recaulculate capacity
 			logging.Info(fmt.Sprintf("function %s finished. recalculating capacity", functionTarget.Function.Name))
