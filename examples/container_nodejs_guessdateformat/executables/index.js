@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
             } catch (error) {
               res.statusCode = 400; // Bad Request if JSON parsing fails
               res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ error: 'Invalid JSON' }));
+              res.end(JSON.stringify({ error: `Invalid JSON ${error}` }));
             }
           });
         }else{
