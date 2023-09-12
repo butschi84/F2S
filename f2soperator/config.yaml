@@ -14,8 +14,18 @@ f2s:
     basic:
       - username: roman
         password: helloworld
-        group: group1
+        group: admins
     token:
       tokens:
         - token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQyMzc4OTgsImdyb3VwIjoiZ3JvdXAxIiwic3ViIjoicm9tYW4ifQ.xQOtzG2cNa4eg97qidR-YN7v3qyJ18qjShWYLFUs_bU
       jwt_secret: test
+    authorization:
+      - group: admins
+        privileges:
+          - functions:list
+          - functions:invoke
+          - functions:create
+          - functions:delete
+          - functions:update
+          - settings:view
+          - settings:update

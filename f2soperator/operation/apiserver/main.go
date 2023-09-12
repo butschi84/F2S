@@ -3,8 +3,10 @@ package apiserver
 import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
+	"butschi84/f2s/state/configuration"
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/gorilla/mux"
 )
@@ -76,11 +78,70 @@ func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
 
 		logging.Info(fmt.Sprintf("authenticate request with '%s' auth model", f2shub.F2SConfiguration.Config.F2S.Auth.GlobalConfig.Type))
+
+		// user authentication
 		authErr := authenticateIncomingRequest(request)
 		if authErr != nil {
 			logging.Warn(fmt.Sprintf("there was an error while authenticating the request: %s", authErr.Error()))
 			http.Error(w, "access denied", http.StatusUnauthorized)
 			return
+		}
+
+		// user authorization
+		authType := f2shub.F2SConfiguration.Config.F2S.Auth.GlobalConfig.Type
+		if authType != "" && authType != "none" {
+
+			// parse subset of requestpath
+			logging.Debug(fmt.Sprintf("parsing main request path from: %s", request.URL.Path))
+			re := regexp.MustCompile(`/(?P<reqpath>[^/]*)`)
+			matches := re.FindStringSubmatch(request.URL.Path)
+			mainRequestPath := matches[re.SubexpIndex("reqpath")]
+			logging.Debug(fmt.Sprintf("main req path: %s", mainRequestPath))
+
+			// get request method
+			requestMethod := request.Method
+
+			// get users authorization group
+			usergroup := request.Context().Value("usergroup").(string)
+			username := request.Context().Value("username").(string)
+			logging.Debug(fmt.Sprintf("user is in authorization group: %s", usergroup))
+
+			var requiredPrivilege string
+			if mainRequestPath == "invoke" {
+				requiredPrivilege = string(configuration.F2SPrivilegeFunctionsInvoke)
+			} else if mainRequestPath == "functions" && requestMethod == http.MethodGet {
+				requiredPrivilege = string(configuration.F2SPrivilegeFunctionsList)
+			} else if mainRequestPath == "functions" && requestMethod == http.MethodPost {
+				requiredPrivilege = string(configuration.F2SPrivilegeFunctionsCreate)
+			} else if mainRequestPath == "functions" && requestMethod == http.MethodDelete {
+				requiredPrivilege = string(configuration.F2SPrivilegeFunctionsDelete)
+			} else if mainRequestPath == "deployments" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "operator" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "services" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "endpoints" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "dispatcher" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "config" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "events" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "users" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "deployments" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			} else if mainRequestPath == "prometheus" {
+				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
+			}
+
+			// check if user has privilege
+			if requiredPrivilege != "" && !configuration.HasGlobalPrivilege(requiredPrivilege, usergroup) {
+				http.Error(w, fmt.Sprintf("access denied - missing role '%s' for user %s", requiredPrivilege, username), http.StatusUnauthorized)
+				return
+			}
 		}
 
 		// Call the next handler in the chain

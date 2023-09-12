@@ -30,11 +30,14 @@ type F2SConfigMapF2STimeouts struct {
 	ScalingTimeout int `yaml:"scaling_timeout"`
 }
 
-// auth
+// *********************************
+// auth section
+// *********************************
 type F2SConfigMapAuth struct {
-	GlobalConfig F2SConfigMapAuthGlobalConfig `yaml:"global_config"`
-	Basic        []F2SConfigMapAuthBasicUser  `yaml:"basic"`
-	Token        F2SConfigMapAuthToken        `yaml:"token"`
+	GlobalConfig  F2SConfigMapAuthGlobalConfig         `yaml:"global_config"`
+	Basic         []F2SConfigMapAuthBasicUser          `yaml:"basic"`
+	Token         F2SConfigMapAuthToken                `yaml:"token"`
+	Authorization []F2SConfigMapAuthAuthorizationGroup `yaml:"authorization"`
 }
 type F2SConfigMapAuthGlobalConfig struct {
 	Type string `yaml:"type"`
@@ -52,4 +55,9 @@ type F2SConfigMapAuthToken struct {
 
 type F2SConfigMapAuthTokenToken struct {
 	Token string `yaml:"token"`
+}
+
+type F2SConfigMapAuthAuthorizationGroup struct {
+	Group      string   `yaml:"group"`
+	Privileges []string `yaml:"privileges"`
 }
