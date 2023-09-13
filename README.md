@@ -41,7 +41,7 @@ helm install f2s f2s/f2s
   * Basic Auth
   * <font color=orange>TO DO</font> Security (OAuth)
 * **Authorization**<br/>
-  <font color=orange>TO DO</font> Authorization (RBAC)
+  Authorization (RBAC)
 * **Kafka**<br/>
   <font color=orange>TO DO</font> Kafka Message Bus Integration
 ## Core Concept
@@ -71,6 +71,7 @@ helm install f2s f2s/f2s
   - [Configmap - config.yaml](#configmap---configyaml)
     - [Timeouts](#timeouts)
     - [Authentication](#authentication)
+    - [Authorization](#authorization)
     - [Debugging](#debugging)
 - [Building Custom Functions](#building-custom-functions)
   - [Example - NodeJS](#example---nodejs)
@@ -158,12 +159,65 @@ Timeouts can be configured in the configmap. F2S will abort those requests that 
 ### Authentication
 Right now, F2S Supports the Authentication Modes:
 
-* none<br />
-  just allow all requests
-* basic<br />
-  http basic auth
-* token<br />
-  authentication with a jwt bearer token
+**none**<br />
+Just allow all requests. Authorization Controls are also disabled in Authentication Mode 'none'.
+
+```
+f2s:
+  auth:
+    global_config:
+      type: none
+```
+
+**basic**<br />
+HTTP basic auth.
+
+```
+f2s:
+  auth:
+    global_config:
+      type: basic
+    basic:
+      - username: roman
+        password: helloworld
+        group: admins
+```
+
+**token**<br />
+Authentication with a jwt bearer token.
+
+```
+f2s:
+  auth:
+    global_config:
+      type: token
+    token:
+      tokens:
+        - token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQyMzc4OTgsImdyb3VwIjoiZ3JvdXAxIiwic3ViIjoicm9tYW4ifQ.xQOtzG2cNa4eg97qidR-YN7v3qyJ18qjShWYLFUs_bU
+      jwt_secret: test
+```
+
+### Authorization
+Each user Account can be assigned to a group. Global Privileges are then assigned to the group via F2S Configmap
+
+```
+f2s:
+  ...
+  auth:
+    ...
+    authorization:
+      - group: admins
+        privileges:
+          - functions:list
+          - functions:invoke
+          - functions:create
+          - functions:delete
+          - functions:update
+          - settings:view
+          - settings:update
+
+```
+
 ### Debugging
 Environment Variables take precedence over the configmap and are useful for local testing / debugging.
 
