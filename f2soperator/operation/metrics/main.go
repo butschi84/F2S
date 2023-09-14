@@ -22,7 +22,6 @@ var metricTotalRequestDuration *prometheus.CounterVec
 var metricTotalFailedRequests *prometheus.CounterVec
 var metricActiveRequests *prometheus.GaugeVec
 var metricLastRequestCompletion *prometheus.GaugeVec
-var metricFunctionCapacity *prometheus.HistogramVec
 var metricRequestDuration *prometheus.HistogramVec
 var metricLastFunctionScaling *prometheus.GaugeVec
 
@@ -84,19 +83,6 @@ func init() {
 		[]string{"target", "functionuid", "functionname"},
 	)
 
-	// metric - capacity
-	// completion duration / current inflight requests
-	// from 0.1 req/s to 10 req/s ¯\_(ツ)_/¯
-	metricFunctionCapacityBuckets := []float64{0.01, 0.02, 0.04, 0.1, 0.2, 0.5, 0.75, 1.0, 2.0, 4.0, 10.0}
-	metricFunctionCapacity = prometheus.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Name:    "f2s_function_capacity_requests_per_second",
-			Help:    "Number of requests that this function can handle per second",
-			Buckets: metricFunctionCapacityBuckets,
-		},
-		[]string{"target", "functionuid", "functionname"},
-	)
-
 	// metric - request duration
 	// buckets specification for measuring response time
 	// from 10ms to 60s ¯\_(ツ)_/¯
@@ -127,7 +113,6 @@ func init() {
 	prometheus.MustRegister(metricActiveRequests)
 	prometheus.MustRegister(metricLastRequestCompletion)
 	prometheus.MustRegister(metricRequestDuration)
-	prometheus.MustRegister(metricFunctionCapacity)
 	prometheus.MustRegister(metricLastFunctionScaling)
 }
 

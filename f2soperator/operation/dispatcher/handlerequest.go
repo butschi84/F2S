@@ -98,12 +98,11 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 
 	// prepare output
 	requestResult := queue.F2SRequestResult{
-		Result:                     map[string]interface{}{},
-		Success:                    false,
-		UID:                        req.UID,
-		Duration:                   0.0,
-		DurationPerInflightRequest: 0.0,
-		Request:                    *req,
+		Result:   map[string]interface{}{},
+		Success:  false,
+		UID:      req.UID,
+		Duration: 0.0,
+		Request:  *req,
 	}
 
 	// wait for function pod to be available
@@ -181,8 +180,6 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		// prepare output
 		requestResult.Success = true
 		requestResult.Duration = float64(elapsed)
-		requestResult.DurationPerInflightRequest = float64(elapsedPerInflight)
-
 	}
 
 	// send result to channel
