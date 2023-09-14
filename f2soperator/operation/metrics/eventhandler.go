@@ -48,11 +48,6 @@ func handleEvent(event eventmanager.Event) {
 			logging.Info(fmt.Sprintf("function %s finished. increase metric 'total request duration' by %vms", functionTarget.Function.Name, result.Duration))
 			metricTotalRequestDuration.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name, result.Request.F2SUser.Username, result.F2SDispatcherTargetUID).Add(result.Duration)
 
-			// recaulculate capacity
-			logging.Info(fmt.Sprintf("function %s finished. recalculating capacity", functionTarget.Function.Name))
-			functionCapacityRequestsPerSecond := 1000 / result.DurationPerInflightRequest
-			metricFunctionCapacity.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Observe(functionCapacityRequestsPerSecond)
-
 			// update request duration metric
 			logging.Info("observing function duration:", fmt.Sprintf("%v", float64(result.Duration)))
 			metricRequestDuration.WithLabelValues(functionTarget.Function.Spec.Endpoint, string(functionTarget.Function.UID), functionTarget.Function.Name).Observe(result.Duration)
