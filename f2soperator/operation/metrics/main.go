@@ -45,7 +45,7 @@ func init() {
 			Name: "f2s_requests_duration_total",
 			Help: "Total duration of all completed requests",
 		},
-		[]string{"target", "functionuid", "functionname", "username"},
+		[]string{"target", "functionuid", "functionname", "username", "podUID"},
 	)
 
 	// metric - total completed requests
@@ -54,7 +54,7 @@ func init() {
 			Name: "f2s_requests_completed_total",
 			Help: "Total number of completed requests",
 		},
-		[]string{"target", "functionuid", "functionname"},
+		[]string{"target", "functionuid", "functionname", "podUID"},
 	)
 
 	// metric - total failed requests

@@ -129,6 +129,7 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		*result <- requestResult
 		return
 	}
+	requestResult.F2SDispatcherTargetUID = pod.UID
 
 	// send 'inflight requests changed' event
 	f2shub.F2SEventManager.Publish(eventmanager.Event{

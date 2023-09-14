@@ -1,6 +1,8 @@
 package queue
 
-import "butschi84/f2s/state/configuration/api/types/v1alpha1"
+import (
+	"butschi84/f2s/state/configuration/api/types/v1alpha1"
+)
 
 type F2SAuthUser struct {
 	Username string
@@ -30,6 +32,7 @@ type F2SRequestResult struct {
 
 	Duration                   float64 `json:"-"`
 	DurationPerInflightRequest float64 `json:"-"`
+	F2SDispatcherTargetUID     string  `json:"-"`
 }
 
 type RequestHandler func(request *F2SRequest)

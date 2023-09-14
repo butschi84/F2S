@@ -28,7 +28,6 @@ func (dispatcherFunction *F2SDispatcherFunction) ServeRequest(request *queue.F2S
 		s2[len(dispatcherFunction.ServingPods)-1] = firstPod
 		copy(dispatcherFunction.ServingPods, s2)
 	}
-
 	return &dispatcherFunction.ServingPods[len(dispatcherFunction.ServingPods)-1], nil
 }
 
@@ -58,7 +57,7 @@ func (dispatcherFunction *F2SDispatcherFunction) SetLastScaling() {
 	dispatcherFunction.LastScaling = time.Now()
 }
 
-func (dispatcherFunction *F2SDispatcherFunction) AddServingPod(address corev1.EndpointAddress) {
+func (dispatcherFunction *F2SDispatcherFunction) AddServingPod(address corev1.EndpointAddress, podUID string) {
 	logging.Debug(fmt.Sprintf("add servingpod %s to dispatchertarget %s", string(address.IP), dispatcherFunction.Function.Name))
 	for _, pod := range dispatcherFunction.ServingPods {
 		if string(pod.Address.IP) == string(address.IP) {
@@ -69,6 +68,7 @@ func (dispatcherFunction *F2SDispatcherFunction) AddServingPod(address corev1.En
 	dispatcherFunction.ServingPods = append(dispatcherFunction.ServingPods, DispatcherFunctionTarget{
 		InflightRequests: make([]queue.F2SRequest, 0),
 		Address:          address,
+		UID:              podUID,
 	})
 }
 

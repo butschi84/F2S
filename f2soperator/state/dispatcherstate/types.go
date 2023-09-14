@@ -9,6 +9,7 @@ import (
 )
 
 type DispatcherFunctionTarget struct {
+	UID              string
 	Address          corev1.EndpointAddress
 	InflightRequests []queue.F2SRequest
 }
