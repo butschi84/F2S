@@ -54,20 +54,20 @@ func handleRequestsWithTimeout(req *queue.F2SRequest) {
 		}
 		req.ResultChannel <- result
 
-		// send 'inflight requests changed' event
-		f2shub.F2SEventManager.Publish(eventmanager.Event{
-			UID:         f2shub.F2SEventManager.GenerateUUID(),
-			Data:        *req,
-			Type:        eventmanager.Event_InflightRequestsChanged,
-			Description: fmt.Sprintf("[%s] inflight request failed for function %s", req.UID, req.Function.Name),
-		})
-
 		// send request completed event
 		f2shub.F2SEventManager.Publish(eventmanager.Event{
 			UID:         req.UID,
 			Data:        result,
 			Type:        eventmanager.Event_FunctionInvokationEnded,
 			Description: fmt.Sprintf("%s => function call ended with result: %v", req.UID, result.Success),
+		})
+
+		// send 'inflight requests changed' event
+		f2shub.F2SEventManager.Publish(eventmanager.Event{
+			UID:         f2shub.F2SEventManager.GenerateUUID(),
+			Data:        *req,
+			Type:        eventmanager.Event_InflightRequestsChanged,
+			Description: fmt.Sprintf("[%s] inflight request failed for function %s", req.UID, req.Function.Name),
 		})
 	}
 }
