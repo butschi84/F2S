@@ -40,9 +40,9 @@ func reloadEndpoints() {
 		target := f2shub.F2SDispatcherHub.AddDispatcherFunction(&function)
 
 		if len(endpoint.Subsets) > 0 {
-			for _, address := range endpoint.Subsets[0].Addresses {
+			for i, address := range endpoint.Subsets[0].Addresses {
 				logging.Info(fmt.Sprintf("add servingpod %s for function %s", string(address.IP), function.Name))
-				podUID := endpoint.Subsets[0].Addresses[0].TargetRef.UID
+				podUID := endpoint.Subsets[0].Addresses[i].TargetRef.UID
 				target.AddServingPod(address, string(podUID))
 			}
 

@@ -45,7 +45,7 @@ data:
           expr: avg(f2s_request_duration_seconds_sum / f2s_request_duration_seconds_count) by(functionname)
 
         - record: job:function_capacity_average:reqpersec
-          expr: 1000 / (max_over_time(delta(f2s_requests_duration_total[15s])[24h:]) / on(podUID, functionname) max_over_time(delta(f2s_requests_completed_total[15s])[24h:]))
+          expr: 1000 / (max_over_time(max by(functionuid, functionname, podUID) (delta(f2s_requests_duration_total[15s]))[24h:]) / on(podUID, functionname, functionuid) max_over_time(max by(functionuid, functionname, podUID)(delta(f2s_requests_completed_total[15s]))[24h:]))
 
         # calculated number of containers needed to perform the incoming requests
         - record: job:function_containers_required:containers
