@@ -80,6 +80,31 @@ paths:
             application/json:
               schema:
                 type: object
+  /prometheus/{functionname}/{metricname}:
+    get:
+      summary: read a function metric from prometheus
+      tags:
+        - F2S Internal
+      parameters:
+        - in: path
+          name: functionname
+          required: true
+          schema:
+            type: string
+            example: my-fucntion
+        - in: path
+          name: metricname
+          required: true
+          schema:
+            type: string
+            example: job:function_capacity_average:reqpersec
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
   /invoke/{target}:
     get:
       summary: invoke a f2s function

@@ -20,6 +20,7 @@ type PrometheusResponse struct {
 	} `json:"data"`
 }
 
+// get the most recent metric value
 func ReadPrometheusMetricValue(config *configuration.F2SConfiguration, metricName string, labels map[string]string) (float64, error) {
 
 	promResponse, err := ReadPrometheusMetric(config, metricName, labels)
