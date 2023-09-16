@@ -1,3 +1,7 @@
+#root {
+  height: 100vh;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -22,12 +26,39 @@ code {
   right: 20px; 
 }
 
+/* F2S Styles - Tabs */
+.tabs li.is-active a {
+  border-bottom-color: #E91E61 !important
+}
+
+/* F2S Styles - Navbar */
 .navbar-wrap {
   margin-bottom: 40px;
   border-bottom: solid 0px;
-  background: linear-gradient(to right, #e91f63, white);
+  /* background: linear-gradient(to right, #e91f63, white); */
   max-width: 250px;
   padding: 3px;
+}
+.navbar {
+  background-color: #0F1216 !important;
+}
+.navbar-item:hover {
+  background-color: #181C1F !important;
+}
+.navbar-link {
+  color: white !important;
+  background-color: #0F1216 !important;
+}
+.navbar-link:not(.is-arrowless)::after {
+  border-color: white !important
+}
+.navbar-item.active {
+  color: white !important;
+  background-color: #181C1F !important;
+}
+.navbar-dropdown {
+  background-color: #181C1F !important;
+  border: 0px !important
 }
 
 .card {
@@ -36,4 +67,76 @@ code {
 
 .input {
   margin-bottom: 20px;
+}
+
+/* F2S Styles - Card */
+.card {
+  background-color: #181C1F !important;
+  border: 1px solid #32363B !important;
+  color: #7E7F89 !important;
+}
+
+/* F2S Styles */
+.f2s-main-bg {
+  background-color: #0F1216 ;
+  color: #7E7F89;
+  font-family: "avenir";
+  font-weight: 400;
+  height: 100vh;
+}
+
+.title {
+  color: white
+}
+
+/* F2S Styles - Datatable */
+.rdt_Table {
+  background-color: #181C1F !important;
+  color: #7E7F89 !important;
+  font-family: "avenir";
+  font-weight: 400;
+  font-size: 12pt;
+}
+
+.rdt_TableRow {
+  background-color: #181C1F !important;
+  color: #7E7F89 !important;
+  font-family: "avenir" !important;
+  font-weight: 400 !important;
+  font-size: 12pt !important;
+}
+
+.rdt_TableHeadRow {
+  background-color: #181C1F !important;
+  color: #FFFFFF !important;
+  font-family: "avenir" !important;
+  font-weight: 500 !important;
+  font-size: 14pt !important;
+}
+
+.rdt_Pagination {
+  background-color: #181C1F !important;
+  color: #7E7F89 !important;
+  font-family: "avenir" !important;
+  font-weight: 400 !important;
+  font-size: 12pt !important;
+}
+
+.button {
+  background-color: #E91E61 !important;
+  border: 1px solid #7E7F89 !important
+}
+
+a {
+  color: white !important
+}
+
+.f2slogo {
+  width: 320px;
+  height: 80px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+.navbar-item img {
+  max-height: unset;
 }

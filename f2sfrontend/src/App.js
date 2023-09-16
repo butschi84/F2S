@@ -15,7 +15,7 @@ import DeleteF2SFunction from './components/functions/delete';
 
 function App() {
   return (
-    <div className="App">
+    <div className="f2s-main-bg">
       <Provider store={store}>
         <ConnectivityCheck >
           <Authentication>

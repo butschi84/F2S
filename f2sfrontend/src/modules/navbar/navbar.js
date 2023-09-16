@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../images/f2s-logo.png';
+import logo from '../../images/f2s-logo-dark.png';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -9,7 +9,7 @@ function Navbar(props) {
             <nav className="navbar" role="navigation" aria-label="main navigation" >
                 <div className="navbar-brand">
                     <a className="navbar-item" href="/">
-                    <img src={logo} width="112" height="28" alt="f2slogo" />
+                    <img src={logo} alt="f2slogo" className="f2slogo" />
                     </a>
 
                     <div role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="f2sNavbar">
