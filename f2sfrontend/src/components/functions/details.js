@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import * as _ from 'lodash';
 import yaml from 'js-yaml';
 import ReactMarkdown from 'react-markdown';
+import { getMetricLastValue } from '../../services/functions';
+import NumericMetric from "../../modules/metric/numericMetric";
 
 function getF2SFunctionYAMLDefinition(f2sfunction) {
     let clone = {...f2sfunction}
@@ -20,14 +22,31 @@ function getF2SFunctionYAMLDefinition(f2sfunction) {
 function F2SFunctionDetails(props) {
     const routeParams = useParams();
     const [f2sfunction, setF2SFunction] = useState()
+    const [metricFunctionCapacity, setMetricFunctionCapacity] = useState("unknown")
+    const [metricFunctionReplicas, setMetricFunctionReplicas] = useState("unknown")
     const [tab, setTab] = useState("metadata")
 
     // set current subscription as state
     useEffect(() => {
         // find specific subscription
         const functionId = routeParams.id;
-        setF2SFunction(_.find(props.functions, f => { return f.uid === functionId }))
+        const f2sFunction = _.find(props.functions, f => { return f.uid === functionId })
+        setF2SFunction(f2sFunction)
+
+        // get some function metrics
+        getFunctionMetrics(f2sFunction)
     }, [props.functions, routeParams.id])
+
+    async function getFunctionMetrics(f2sFunction) {
+        getMetricLastValue("job:function_capacity_average:reqpersec", f2sFunction.name).then(data => {
+            if(data.status && data.status == "success")
+            setMetricFunctionCapacity(data.data.result[0].value[1])
+        })
+        getMetricLastValue("kube_deployment_status_replicas_available", f2sFunction.name).then(data => {
+            if(data.status && data.status == "success")
+            setMetricFunctionReplicas(data.data.result[0].value[1])
+        })
+    }
 
     if(!f2sfunction) return ""
     return (
@@ -39,6 +58,7 @@ function F2SFunctionDetails(props) {
                     <li className={tab==="metadata" ? "is-active" : ""}><a onClick={()=>setTab("metadata")}>Metadata</a></li>
                     <li className={tab==="specification" ? "is-active" : ""}><a onClick={()=>setTab("specification")}>Specification</a></li>
                     <li className={tab==="target" ? "is-active" : ""}><a onClick={()=>setTab("target")}>Target</a></li>
+                    <li className={tab==="metrics" ? "is-active" : ""}><a onClick={()=>setTab("metrics")}>Metrics</a></li>
                     <li className={tab==="yaml" ? "is-active" : ""}><a onClick={()=>setTab("yaml")}>YAML Definition</a></li>
                 </ul>
             </div>
@@ -168,7 +188,21 @@ function F2SFunctionDetails(props) {
                     </textarea>
                 </div>
             </div>
-        </div>
+            </div>
+            }
+
+            {/* Metrics */}
+            {tab === "metrics" &&
+                <React.Fragment>
+                    <div className="columns">
+                        <div className="column">
+                            <NumericMetric title="Function Capacity" value={metricFunctionCapacity} units="req/s" />
+                        </div>
+                        <div className="column">
+                            <NumericMetric title="Current Function Replicas" value={metricFunctionReplicas} units="replicas ready" />
+                        </div>
+                    </div>
+                </React.Fragment>
             }
         </React.Fragment>
     )

@@ -11,3 +11,7 @@ export function createFunction(f2sfunction) {
 export function deleteFunction(f2sfunction) {
     return common.del(`/functions/${f2sfunction.uid}`);
 }
+
+export function getMetricLastValue(metricName, functionName) {
+    return common.get(`/prometheus/${functionName}/${metricName}`);
+}

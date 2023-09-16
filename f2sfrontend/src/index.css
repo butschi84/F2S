@@ -140,3 +140,15 @@ a {
 .navbar-item img {
   max-height: unset;
 }
+
+/* F2S Styles - Metrics */
+.metric_text {
+  font-size: 60pt;
+  color: #E91E61
+}
+
+.metric_units {
+  font-size: 30pt;
+  vertical-align: bottom;
+  line-height: 100pt;
+}
