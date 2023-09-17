@@ -129,14 +129,18 @@ func scaleDeployments() {
 	functions := configuration.ActiveConfiguration.Functions
 	for _, function := range functions.Items {
 		var resultScale int
-		currentAvailableReplicas, err := prometheus.ReadPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("kube_deployment_status_replicas_available{\"functionname\":\"%s\"}", function.Name))
-		requiredContainers, err := prometheus.ReadPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("job:function_containers_required:containers{\"functionname\": \"%s\"}", function.Name))
+		currentAvailableReplicas, err := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("kube_deployment_status_replicas_available{functionname=\"%s\"}", function.Name))
+		logging.Error(err)
+		requiredContainers, err := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("job:function_containers_required:containers{functionname=\"%s\"}", function.Name))
+		logging.Error(err)
 		if err != nil {
 			// no invocations / metrics => scale to minimum
 			resultScale = 0
 		} else {
 			resultScale = int(math.Ceil(requiredContainers))
 		}
+		logging.Info(fmt.Sprintf("function %s has currently %v replicas available", function.Name, currentAvailableReplicas))
+		logging.Info(fmt.Sprintf("function %s has desired %v replicas", function.Name, requiredContainers))
 
 		// get current inflight requests of function
 		target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)

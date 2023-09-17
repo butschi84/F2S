@@ -11,13 +11,24 @@ import (
 	"time"
 )
 
-type PrometheusResponse struct {
+type PrometheusRangeResponse struct {
 	Status string `json:"status"`
 	Data   struct {
 		ResultType string `json:"resultType"`
 		Result     []struct {
 			Metric map[string]string `json:"metric"`
 			Values [][]interface{}   `json:"values"`
+		} `json:"result"`
+	} `json:"data"`
+}
+
+type PrometheusValueResponse struct {
+	Status string `json:"status"`
+	Data   struct {
+		ResultType string `json:"resultType"`
+		Result     []struct {
+			Metric map[string]string `json:"metric"`
+			Value  []interface{}     `json:"value"`
 		} `json:"result"`
 	} `json:"data"`
 }
@@ -47,7 +58,7 @@ func ReadPrometheusMetricValue(config *configuration.F2SConfiguration, metricQue
 }
 
 // read current value of a prometheus metric
-func ReadPrometheusMetric(config *configuration.F2SConfiguration, queryString string) (PrometheusResponse, error) {
+func ReadPrometheusMetric(config *configuration.F2SConfiguration, queryString string) (PrometheusRangeResponse, error) {
 	client := http.DefaultClient
 
 	// Get the current time (now)
@@ -63,28 +74,74 @@ func ReadPrometheusMetric(config *configuration.F2SConfiguration, queryString st
 	// Send GET request to Prometheus
 	resp, err := client.Get(requestURL)
 	if err != nil {
-		return PrometheusResponse{}, err
+		return PrometheusRangeResponse{}, err
 	}
 	defer resp.Body.Close()
 
 	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return PrometheusResponse{}, err
+		return PrometheusRangeResponse{}, err
 	}
 
 	// fmt.Println(string(body))
 
 	// Parse the JSON response
-	var promResponse PrometheusResponse
+	var promResponse PrometheusRangeResponse
 	if err := json.Unmarshal(body, &promResponse); err != nil {
-		return PrometheusResponse{}, err
+		return PrometheusRangeResponse{}, err
 	}
 
 	// Check if any metric result exists
 	if len(promResponse.Data.Result) == 0 {
-		return PrometheusResponse{}, fmt.Errorf("metric not found")
+		return PrometheusRangeResponse{}, fmt.Errorf("metric not found")
 	}
 
 	return promResponse, nil
+}
+
+// read current value of a prometheus metric
+func ReadCurrentPrometheusMetricValue(config *configuration.F2SConfiguration, queryString string) (float64, error) {
+	client := http.DefaultClient
+
+	// Prepare the request URL
+	encodedQueryString := url.QueryEscape(queryString)
+	requestURL := fmt.Sprintf("http://%s/api/v1/query?query=%s", config.Config.Prometheus.URL, encodedQueryString)
+
+	// Send GET request to Prometheus
+	resp, err := client.Get(requestURL)
+	if err != nil {
+		return 0.0, err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return 0.0, err
+	}
+
+	// fmt.Println(string(body))
+
+	// Parse the JSON response
+	var promResponse PrometheusValueResponse
+	if err := json.Unmarshal(body, &promResponse); err != nil {
+		return 0.0, err
+	}
+
+	// Check if any metric result exists
+	if len(promResponse.Data.Result) == 0 {
+		return 0.0, fmt.Errorf("metric not found")
+	}
+
+	// Extract the metric value
+	value := promResponse.Data.Result[0].Value[1]
+
+	// Parse the metric value as a float64
+	metricValue, err := strconv.ParseFloat(fmt.Sprintf("%v", value), 64)
+	if err != nil {
+		return 0.0, err
+	}
+
+	return metricValue, nil
 }
