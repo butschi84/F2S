@@ -16,6 +16,8 @@
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
+    "highcharts": "^10.2.1",
+    "highcharts-react-official": "^3.1.0",
     "react": "^18.2.0",
     "react-data-table-component": "^7.5.3",
     "react-dom": "^18.2.0",

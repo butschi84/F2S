@@ -6,11 +6,10 @@ function NumericMetric(props) {
                 <div className="card-content">
                     <div className="content">
                         {props.title}
-                        <div className="columns">
-                            <div className="column is-one-fifth">
-                                <div className="metric_text">{Math.round(props.value * 100) / 100}</div>
-                            </div>
-                            <div className="column metric_units">
+                        <div style={{display: "flex"}}>
+                            <div className="metric_text">{Math.round(props.value * 100) / 100}</div>
+                            
+                            <div className="metric_units">
                                 {props.units}
                             </div>
                         </div>

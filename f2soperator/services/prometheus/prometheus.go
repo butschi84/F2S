@@ -6,24 +6,26 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
-	"strings"
+	"time"
 )
 
 type PrometheusResponse struct {
 	Status string `json:"status"`
 	Data   struct {
-		Result []struct {
+		ResultType string `json:"resultType"`
+		Result     []struct {
 			Metric map[string]string `json:"metric"`
-			Value  []interface{}     `json:"value"`
+			Values [][]interface{}   `json:"values"`
 		} `json:"result"`
 	} `json:"data"`
 }
 
 // get the most recent metric value
-func ReadPrometheusMetricValue(config *configuration.F2SConfiguration, metricName string, labels map[string]string) (float64, error) {
+func ReadPrometheusMetricValue(config *configuration.F2SConfiguration, metricQuery string) (float64, error) {
 
-	promResponse, err := ReadPrometheusMetric(config, metricName, labels)
+	promResponse, err := ReadPrometheusMetric(config, metricQuery)
 	if err != nil {
 		return 0, err
 	}
@@ -33,7 +35,7 @@ func ReadPrometheusMetricValue(config *configuration.F2SConfiguration, metricNam
 	}
 
 	// Extract the metric value
-	value := promResponse.Data.Result[0].Value[1]
+	value := promResponse.Data.Result[0].Values[len(promResponse.Data.Result[0].Values)-1][1]
 
 	// Parse the metric value as a float64
 	metricValue, err := strconv.ParseFloat(fmt.Sprintf("%v", value), 64)
@@ -45,18 +47,18 @@ func ReadPrometheusMetricValue(config *configuration.F2SConfiguration, metricNam
 }
 
 // read current value of a prometheus metric
-func ReadPrometheusMetric(config *configuration.F2SConfiguration, metricName string, labels map[string]string) (PrometheusResponse, error) {
+func ReadPrometheusMetric(config *configuration.F2SConfiguration, queryString string) (PrometheusResponse, error) {
 	client := http.DefaultClient
 
-	// Prepare the label selector
-	var labelSelectors []string
-	for key, value := range labels {
-		labelSelectors = append(labelSelectors, fmt.Sprintf("%s=\"%s\"", key, value))
-	}
-	labelSelector := strings.Join(labelSelectors, ",")
+	// Get the current time (now)
+	now := time.Now()
 
-	// Prepare the request URL with label selector
-	requestURL := fmt.Sprintf("http://%s/api/v1/query?query=%s{%s}", config.Config.Prometheus.URL, metricName, labelSelector)
+	// Calculate the time two hours ago
+	twoHoursAgo := now.Add(-2 * time.Hour)
+
+	// Prepare the request URL
+	encodedQueryString := url.QueryEscape(queryString)
+	requestURL := fmt.Sprintf("http://%s/api/v1/query_range?query=%s&start=%d&end=%d&step=1m", config.Config.Prometheus.URL, encodedQueryString, twoHoursAgo.Unix(), now.Unix())
 
 	// Send GET request to Prometheus
 	resp, err := client.Get(requestURL)
@@ -70,6 +72,8 @@ func ReadPrometheusMetric(config *configuration.F2SConfiguration, metricName str
 	if err != nil {
 		return PrometheusResponse{}, err
 	}
+
+	// fmt.Println(string(body))
 
 	// Parse the JSON response
 	var promResponse PrometheusResponse

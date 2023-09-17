@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"time"
 
 	kubernetesservice "butschi84/f2s/services/kubernetes"
@@ -70,7 +71,7 @@ func RebalancerLoop() {
 
 func CheckMaster() (bool, error) {
 	logging.Debug("[check master] reading prometheus metric 'f2s_master_election_ready_pods'")
-	result, err := prometheus.ReadPrometheusMetric(&configuration.ActiveConfiguration, "f2s_master_election_ready_pods", map[string]string{})
+	result, err := prometheus.ReadPrometheusMetric(&configuration.ActiveConfiguration, "f2s_master_election_ready_pods")
 	if err != nil {
 		logging.Error(err)
 		logging.Error(fmt.Errorf("[check master] prometheus seems not to be reachable. prometheus URL can also specified by 'export Prometheus_URL=localhost:9090'"))
@@ -87,7 +88,7 @@ func CheckMaster() (bool, error) {
 		f2shub.F2SOperatorState.KnownOperators[i].PodUID = result.Data.Result[i].Metric["uid"]
 
 		// Extract the timestamp from the first result
-		timestamp := result.Data.Result[i].Value[0].(float64)
+		timestamp, _ := strconv.ParseFloat(result.Data.Result[i].Values[len(result.Data.Result[i].Values)-1][1].(string), 64)
 		// timestamp, err := strconv.ParseFloat(timestampStr, 64)
 		if err == nil {
 			f2shub.F2SOperatorState.KnownOperators[i].LastContact = time.Unix(int64(timestamp), 0)

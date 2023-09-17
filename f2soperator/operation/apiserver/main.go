@@ -63,7 +63,7 @@ func HandleRequests(hub *hub.F2SHub) {
 	protectedRouter.HandleFunc("/users", queryAllUsers).Methods(http.MethodGet)
 	protectedRouter.HandleFunc("/deployments", createDeployment).Methods(http.MethodPost)
 	protectedRouter.HandleFunc("/invoke/{target}", invokeFunction)
-	protectedRouter.HandleFunc("/prometheus/{functionname}/{metricname}", getPrometheusMetric)
+	protectedRouter.HandleFunc("/prometheus/query", getPrometheusMetric)
 
 	// frontend, ui
 	frontendHandler := http.FileServer(http.Dir("./static/frontend"))

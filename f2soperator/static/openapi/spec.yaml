@@ -80,20 +80,14 @@ paths:
             application/json:
               schema:
                 type: object
-  /prometheus/{functionname}/{metricname}:
+  /prometheus/query:
     get:
       summary: read a function metric from prometheus
       tags:
         - F2S Internal
       parameters:
-        - in: path
-          name: functionname
-          required: true
-          schema:
-            type: string
-            example: my-fucntion
-        - in: path
-          name: metricname
+        - in: query
+          name: query
           required: true
           schema:
             type: string

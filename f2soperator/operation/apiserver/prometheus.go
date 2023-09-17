@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 // *********************************************************
@@ -15,13 +13,12 @@ import (
 func getPrometheusMetric(w http.ResponseWriter, r *http.Request) {
 	logging.Info("request to get a prometheus metric")
 
-	vars := mux.Vars(r)
-	functionName := vars["functionname"]
-	metricName := vars["metricname"]
+	// Get the "query" parameter from the URL query string
+	query := r.URL.Query().Get("query")
 
-	result, err := prometheus.ReadPrometheusMetric(f2shub.F2SConfiguration, metricName, map[string]string{"functionname": functionName})
+	result, err := prometheus.ReadPrometheusMetric(f2shub.F2SConfiguration, query)
 	if err != nil {
-		logging.Error(fmt.Errorf("could not read prometheus metric %s", err))
+		logging.Error(fmt.Errorf("could not read prometheus metric: %s", err))
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("could not read prometheus metric %s", err)})
 		return
 	}

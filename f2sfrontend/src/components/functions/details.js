@@ -6,6 +6,7 @@ import yaml from 'js-yaml';
 import ReactMarkdown from 'react-markdown';
 import { getMetricLastValue } from '../../services/functions';
 import NumericMetric from "../../modules/metric/numericMetric";
+import VectorMetric from "../../modules/metric/vectorMetric";
 
 function getF2SFunctionYAMLDefinition(f2sfunction) {
     let clone = {...f2sfunction}
@@ -21,9 +22,10 @@ function getF2SFunctionYAMLDefinition(f2sfunction) {
 
 function F2SFunctionDetails(props) {
     const routeParams = useParams();
-    const [f2sfunction, setF2SFunction] = useState()
+    const [f2sfunction, setF2SFunction] = useState(null)
     const [metricFunctionCapacity, setMetricFunctionCapacity] = useState("unknown")
     const [metricFunctionReplicas, setMetricFunctionReplicas] = useState("unknown")
+    const [metricFunctionTotalCompleted, setMetricFunctionTotalCompleted] = useState([])
     const [tab, setTab] = useState("metadata")
 
     // set current subscription as state
@@ -32,19 +34,33 @@ function F2SFunctionDetails(props) {
         const functionId = routeParams.id;
         const f2sFunction = _.find(props.functions, f => { return f.uid === functionId })
         setF2SFunction(f2sFunction)
-
-        // get some function metrics
-        getFunctionMetrics(f2sFunction)
     }, [props.functions, routeParams.id])
 
-    async function getFunctionMetrics(f2sFunction) {
-        getMetricLastValue("job:function_capacity_average:reqpersec", f2sFunction.name).then(data => {
+    useEffect(() => {
+        if(!f2sfunction) return
+        getFunctionMetrics()
+        const inter = setInterval(()=>{ getFunctionMetrics() }, 5000)
+        return () => {
+            clearInterval(inter);
+        };
+    }, [f2sfunction])
+
+    async function getFunctionMetrics() 
+    {
+        if(!f2sfunction || !f2sfunction.hasOwnProperty("name")) return
+
+        getMetricLastValue(`job:function_capacity_average:reqpersec{functionname=\"${f2sfunction.name}\"}`).then(data => {
             if(data.status && data.status == "success")
-            setMetricFunctionCapacity(data.data.result[0].value[1])
+            setMetricFunctionCapacity(data.data.result[0].values[data.data.result[0].values.length -1][1])
         })
-        getMetricLastValue("kube_deployment_status_replicas_available", f2sFunction.name).then(data => {
+        getMetricLastValue(`kube_deployment_status_replicas_available{functionname=\"${f2sfunction.name}\"}`).then(data => {
             if(data.status && data.status == "success")
-            setMetricFunctionReplicas(data.data.result[0].value[1])
+            setMetricFunctionReplicas(data.data.result[0].values[data.data.result[0].values.length -1][1])
+        })
+
+        getMetricLastValue(`sum by(functionuid)(increase(f2s_requests_completed_total{functionname=\"${f2sfunction.name}\"}[1m])%2B1)`).then(data => {
+            if(!data.status || data.status !== "success") return
+            setMetricFunctionTotalCompleted(data.data.result[0].values)
         })
     }
 
@@ -202,6 +218,8 @@ function F2SFunctionDetails(props) {
                             <NumericMetric title="Current Function Replicas" value={metricFunctionReplicas} units="replicas ready" />
                         </div>
                     </div>
+                    <VectorMetric 
+                        values={metricFunctionTotalCompleted}/>
                 </React.Fragment>
             }
         </React.Fragment>

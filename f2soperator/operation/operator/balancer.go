@@ -129,8 +129,8 @@ func scaleDeployments() {
 	functions := configuration.ActiveConfiguration.Functions
 	for _, function := range functions.Items {
 		var resultScale int
-		currentAvailableReplicas, err := prometheus.ReadPrometheusMetricValue(&configuration.ActiveConfiguration, "kube_deployment_status_replicas_available", map[string]string{"functionname": function.Name})
-		requiredContainers, err := prometheus.ReadPrometheusMetricValue(&configuration.ActiveConfiguration, "job:function_containers_required:containers", map[string]string{"functionname": function.Name})
+		currentAvailableReplicas, err := prometheus.ReadPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("kube_deployment_status_replicas_available{\"functionname\":\"%s\"}", function.Name))
+		requiredContainers, err := prometheus.ReadPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("job:function_containers_required:containers{\"functionname\": \"%s\"}", function.Name))
 		if err != nil {
 			// no invocations / metrics => scale to minimum
 			resultScale = 0
