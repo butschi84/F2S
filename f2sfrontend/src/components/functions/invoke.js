@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as _ from 'lodash';
 import spinner from '../../images/spinner2.gif';
 import { get, post } from '../../services/common'
+import ReactMarkdown from 'react-markdown';
 
 function InvokeFunction(props) {
     const routeParams = useParams();
@@ -50,32 +51,33 @@ function InvokeFunction(props) {
     if(!f2sfunction || !f2sfunction.spec) return ""
     return (
         <React.Fragment>
-            <h1 className='title'>Invoke Function</h1>
+            <h1 className='title'>Invoke - {f2sfunction.name}</h1>
 
             <div className="card">
                 <div className="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">Description</p>
+                        </div>
+                    </div>
                     <div className="content">
-                        Function Name
-                        <input 
-                        className="input"
-                        readOnly
-                        value={f2sfunction.name} />
-                        <br />
-                        Method
-                        <input 
-                        className="input"
-                        readOnly
-                        value={f2sfunction.spec.method} />
-                        <br />
-                        Endpoint
-                        <input 
-                        className="input"
-                        readOnly
-                        value={`${props.apiURL}/invoke${f2sfunction.spec.endpoint}`} />
-                        <br />
-                        <br />
+                        {/* Description */}
+                        <ReactMarkdown>{f2sfunction.spec.description}</ReactMarkdown>
+                    </div>
+                </div>
+            </div>
 
-                        Data
+            <div className="card">
+                <div className="card-content">
+                <div class="media">
+                    <div class="media-content">
+                            { ["PUT", "POST"].includes(f2sfunction.spec.method) &&
+                            <p class="title is-4">{f2sfunction.spec.method.toLowerCase()} data</p>
+                            }
+                        </div>
+                    </div>
+                    <div className="content">
+                        { ["PUT", "POST"].includes(f2sfunction.spec.method) &&
                         <textarea
                         className="input"
                         style={{height:"150px"}}
@@ -83,12 +85,12 @@ function InvokeFunction(props) {
                         onChange={(e)=>setPostData(e.target.value)}
                         value={postData}
                         rows="10"></textarea>
+                        }
                         
                         <button 
                         className="button is-primary"
                         disabled={invocationInProgress}
                         onClick={()=>invoke(f2sfunction, props.apiURL)}>Invoke</button>
-                        
                     </div>
                 </div>
             </div>

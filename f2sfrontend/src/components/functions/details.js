@@ -67,7 +67,7 @@ function F2SFunctionDetails(props) {
     if(!f2sfunction) return ""
     return (
         <React.Fragment>
-            <h1 className='title'>F2S Function Details</h1>
+            <h1 className='title'>Function Details - {f2sfunction.name}</h1>
 
             <div class="tabs">
                 <ul>
