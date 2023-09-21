@@ -1,278 +1,58 @@
 apiVersion: v1
 entries:
   f2s:
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.0.2.tgz
-    version: 0.0.2
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.0.3.tgz
-    version: 0.0.3
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.0.4.tgz
-    version: 0.0.4
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.0.11.tgz
-    version: 0.0.11
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.0.12.tgz
-    version: 0.0.12
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.0.14.tgz
-    version: 0.0.14
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.0.tgz
-    version: 0.1.0
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.1.tgz
-    version: 0.1.1
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.2.tgz
-    version: 0.1.2
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.3.tgz
-    version: 0.1.3
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.4.tgz
-    version: 0.1.4
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.5.tgz
-    version: 0.1.5
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.6.tgz
-    version: 0.1.6
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.7.tgz
-    version: 0.1.7
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.8.tgz
-    version: 0.1.8
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.9.tgz
-    version: 0.1.9
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.13.tgz
-    version: 0.1.13
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.14.tgz
-    version: 0.1.14
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.15.tgz
-    version: 0.1.15
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.17.tgz
-    version: 0.1.17
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.18.tgz
-    version: 0.1.18
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.19.tgz
-    version: 0.1.19
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.20.tgz
-    version: 0.1.20
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.21.tgz
-    version: 0.1.21
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.22.tgz
-    version: 0.1.22
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.23.tgz
-    version: 0.1.23
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.24.tgz
-    version: 0.1.24
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.25.tgz
-    version: 0.1.25
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.26.tgz
-    version: 0.1.26
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.27.tgz
-    version: 0.1.27
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.28.tgz
-    version: 0.1.28
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.29.tgz
-    version: 0.1.29
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.30.tgz
-    version: 0.1.30
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.31.tgz
-    version: 0.1.31
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.32.tgz
-    version: 0.1.32
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.33.tgz
-    version: 0.1.33
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.2.0.tgz
-    version: 0.2.0
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.2.1.tgz
-    version: 0.2.1
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.1.31.tgz
-    version: 0.1.31
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.2.2.tgz
-    version: 0.2.2
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.2.3.tgz
-    version: 0.2.3
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.2.4.tgz
-    version: 0.2.4
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.2.5.tgz
-    version: 0.2.5
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.2.6.tgz
-    version: 0.2.6
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.0.tgz
-    version: 0.3.0
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.1.tgz
-    version: 0.3.1
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.2.tgz
-    version: 0.3.2
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.3.tgz
-    version: 0.3.3
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.4.tgz
-    version: 0.3.4
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.5.tgz
-    version: 0.3.5
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.6.tgz
-    version: 0.3.6
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.7.tgz
-    version: 0.3.7
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.8.tgz
-    version: 0.3.8
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.9.tgz
-    version: 0.3.9
-  - description: f2s deployment
-    name: f2s
-    urls:
-    - https://butschi84.github.io/F2S/helm-release/f2s-0.3.10.tgz
-    version: 0.3.10
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.0.tgz
+      version: 0.3.0
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.1.tgz
+      version: 0.3.1
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.2.tgz
+      version: 0.3.2
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.3.tgz
+      version: 0.3.3
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.4.tgz
+      version: 0.3.4
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.5.tgz
+      version: 0.3.5
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.6.tgz
+      version: 0.3.6
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.7.tgz
+      version: 0.3.7
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.8.tgz
+      version: 0.3.8
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.9.tgz
+      version: 0.3.9
+    - description: f2s deployment
+      name: f2s
+      urls:
+        - https://butschi84.github.io/F2S/helm-release/f2s-0.3.10.tgz
+      version: 0.3.10
