@@ -36,6 +36,11 @@ function Navbar(props) {
                                 </NavLink>
                             </div>
                         </div>
+                        <div class="navbar-item is-hoverable">
+                            <NavLink to="/images" className="navbar-item">
+                                Images
+                            </NavLink>
+                        </div>
                         <div class="navbar-item has-dropdown is-hoverable">
                             <div className="navbar-link">
                             More

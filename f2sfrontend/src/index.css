@@ -152,3 +152,10 @@ a {
   vertical-align: bottom;
   line-height: 110pt;
 }
+
+/* F2S Styles - Boxes */
+.box {
+  background-color: #181C1F !important;
+  border: 1px solid #32363B !important;
+  color: #7E7F89 !important;
+}
