@@ -18,7 +18,7 @@ spec:
       serviceAccountName: f2s-service
       containers:
         - name: f2s-operator
-          image: romanhuesler/f2s
+          image: romanhuesler/f2s:{{.Chart.AppVersion}}
           ports:
             - containerPort: 8081
             - containerPort: 8080
