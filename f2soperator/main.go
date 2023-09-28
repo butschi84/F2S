@@ -4,6 +4,7 @@ import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/operation/apiserver"
 	"butschi84/f2s/operation/dispatcher"
+	"butschi84/f2s/operation/kafka"
 	"butschi84/f2s/operation/metrics"
 	"butschi84/f2s/operation/operator"
 	"butschi84/f2s/services/logger"
@@ -66,6 +67,8 @@ func main() {
 	go handleComponent("metrics", metrics.HandleRequests, &wg)
 	logging.Info("=> initializng request dispatcher")
 	go handleComponent("dispatcher", dispatcher.Initialize, &wg)
+	logging.Info("=> initializng kafka integration")
+	go handleComponent("kafka", kafka.Initialize, &wg)
 
 	logging.Info("=> done initializing")
 	wg.Wait()

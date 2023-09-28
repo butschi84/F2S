@@ -1,7 +1,9 @@
 package configuration
 
 import (
+	"butschi84/f2s/state/configuration/api/types/v1alpha1"
 	typesV1alpha1 "butschi84/f2s/state/configuration/api/types/v1alpha1"
+	"fmt"
 )
 
 // f2s configmap
@@ -22,12 +24,42 @@ type F2SConfigMapPrometheus struct {
 type F2SConfigMapF2S struct {
 	Timeouts F2SConfigMapF2STimeouts `yaml:"timeouts"`
 	Auth     F2SConfigMapAuth        `yaml:"auth"`
+	Kafka    F2SConfigMapKafka       `yaml:"kafka"`
 }
 
 type F2SConfigMapF2STimeouts struct {
 	RequestTimeout int `yaml:"request_timeout"`
 	HttpTimeout    int `yaml:"http_timeout"`
 	ScalingTimeout int `yaml:"scaling_timeout"`
+}
+
+// *********************************
+// kafka section
+// *********************************
+type F2SConfigMapKafka struct {
+	Enabled   bool                        `yaml:"enabled"`
+	Brokers   []string                    `yaml:"brokers"`
+	Listeners []F2SConfigMapKafkaListener `yaml:"listeners"`
+}
+
+type F2SConfigMapKafkaListener struct {
+	Topic         string                            `yaml:"topic"`
+	ConsumerGroup string                            `yaml:"consumergroup"`
+	Actions       []F2SConfigMapKafkaListenerAction `yaml:"actions"`
+}
+type F2SConfigMapKafkaListenerAction struct {
+	Triggers     []F2SConfigMapKafkaListenerActionTriggers `yaml:"triggers"`
+	F2SFunctions []string                                  `yaml:"f2sfunctions"`
+	Response     F2SConfigMapKafkaListenerActionResponse   `yaml:"response"`
+}
+type F2SConfigMapKafkaListenerActionResponse struct {
+	Key string `yaml:"key"`
+}
+
+type F2SConfigMapKafkaListenerActionTriggers struct {
+	Type   string `yaml:"type"`
+	Filter string `yaml:"filter"`
+	Value  string `yaml:"value"`
 }
 
 // *********************************
@@ -60,4 +92,18 @@ type F2SConfigMapAuthTokenToken struct {
 type F2SConfigMapAuthAuthorizationGroup struct {
 	Group      string   `yaml:"group"`
 	Privileges []string `yaml:"privileges"`
+}
+
+// *********************************
+// getters
+// *********************************
+
+// get a function from running config with specific uid
+func (config *F2SConfiguration) GetFunctionByUID(uid string) (v1alpha1.PrettyFunction, error) {
+	for _, item := range config.Functions.Items {
+		if string(item.UID) == uid {
+			return item.Prettify(), nil
+		}
+	}
+	return v1alpha1.PrettyFunction{}, fmt.Errorf("function with id %s not found in running config", uid)
 }

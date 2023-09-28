@@ -72,6 +72,7 @@ helm install f2s f2s/f2s
     - [Timeouts](#timeouts)
     - [Authentication](#authentication)
     - [Authorization](#authorization)
+    - [Kafka](#kafka)
     - [Debugging](#debugging)
 - [Building Custom Functions](#building-custom-functions)
   - [Example - NodeJS](#example---nodejs)
@@ -216,6 +217,29 @@ f2s:
           - settings:view
           - settings:update
 
+```
+
+### Kafka
+F2S can receive Function Invocations from kafka. "Listeners" and "Actions" have to be declared in the kafka config block in the f2s configmap. Here is an example how to configure. The Action will react to kafka messages with key 'test-key' and invoke the f2sfunction with the specified uid.
+
+```
+kafka:
+    enabled: true
+    consumergroup: f2s-consumer
+    brokers:
+      - kafka-1.kafka
+    listeners:
+      - topic: test
+        actions:
+          - name: test-action
+            triggers:
+              - type: key
+                filter: equal
+                value: test-key
+            f2sfunctions:
+              - xxxxxxxxxx
+            response:
+              key: test-response
 ```
 
 ### Debugging

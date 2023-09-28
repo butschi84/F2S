@@ -29,3 +29,24 @@ f2s:
           - functions:update
           - settings:view
           - settings:update
+  kafka:
+    enabled: true
+    brokers:
+      - 192.168.2.41:30051
+      - 192.168.2.42:30052
+      - 192.168.2.43:30053
+      # - kafka-1.kafka
+    listeners:
+      - topic: test-topic
+        consumergroup: f2s-consumer
+        actions:
+          - name: test-action
+            triggers:
+              - type: key
+                filter: equal
+                value: test-key
+            f2sfunctions:
+              - ffe4eb97-3716-479f-8cd4-f86d05bb8e99
+              # - fb790e7d-506d-4817-9336-400d147b12f4
+            response:
+              key: test-response
