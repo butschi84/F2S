@@ -13,3 +13,54 @@ promtail:
 # - f2s traffic dashboard
 grafana:
   enabled: true
+
+# default f2s config
+f2sconfig:
+  debug: true
+
+  prometheus:
+    url: prometheus-service.f2s:9090
+
+  f2s:
+    timeouts:
+      request_timeout: 120000
+      http_timeout: 60000
+      scaling_timeout: 45000
+    auth:
+      global_config:
+        type: none
+      basic:
+        - username: roman
+          password: helloworld
+          group: admins
+      token:
+        tokens:
+          - token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQyMzc4OTgsImdyb3VwIjoiZ3JvdXAxIiwic3ViIjoicm9tYW4ifQ.xQOtzG2cNa4eg97qidR-YN7v3qyJ18qjShWYLFUs_bU
+        jwt_secret: test
+      authorization:
+        - group: admins
+          privileges:
+            - functions:list
+            - functions:invoke
+            - functions:create
+            - functions:delete
+            - functions:update
+            - settings:view
+            - settings:update
+    kafka:
+      enabled: false
+      brokers:
+        - kafka-0.kafka-headless.kafka:9092
+        - kafka-1.kafka-headless.kafka:9092
+        - kafka-2.kafka-headless.kafka:9092
+      listeners:
+        - topic: test
+          actions:
+            - triggers:
+                - type: key
+                  filter: equal
+                  value: test-key
+              f2sfunctions:
+                - ffe4eb97-3716-479f-8cd4-f86d05bb8e99
+              response:
+                key: test-response
