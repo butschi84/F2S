@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -17,31 +16,28 @@ type IF2SLogger interface {
 }
 
 type F2SLogger struct {
-	PackageName string
-	Logger      *log.Logger
+	ComponentName string
+	Logger        *log.Logger
 }
 
-func Initialize(PackageName string) F2SLogger {
-	packageNameLength := 20
-	packageNamePadded := fmt.Sprintf("%-*s", packageNameLength, PackageName+"]")
-
+func Initialize(ComponentName string) F2SLogger {
 	return F2SLogger{
-		PackageName: packageNamePadded,
-		Logger:      log.New(os.Stdout, "["+packageNamePadded+" ", log.LstdFlags),
+		ComponentName: ComponentName,
+		Logger:        log.New(os.Stdout, "component=\""+ComponentName+"\" ", log.LstdFlags),
 	}
 }
 
 func (l F2SLogger) Info(text ...string) {
-	l.Logger.Printf("[INFO] %s", strings.Join(text, " "))
+	l.Logger.Printf("loglevel=info msg=\"%s\"", strings.Join(text, " "))
 }
 func (l F2SLogger) Debug(text ...string) {
-	l.Logger.Printf("[DEBUG] %s", strings.Join(text, " "))
+	l.Logger.Printf("loglevel=debug msg=\"%s\"", strings.Join(text, " "))
 }
 func (l F2SLogger) Warn(text ...string) {
-	l.Logger.Printf("[WARN] %s", strings.Join(text, " "))
+	l.Logger.Printf("loglevel=warn msg=\"%s\"", strings.Join(text, " "))
 }
 func (l F2SLogger) Error(err error) {
 	if err != nil {
-		l.Logger.Printf("[ERROR] %s", err.Error())
+		l.Logger.Printf("loglevel=error msg=\"%s\"", err.Error())
 	}
 }
