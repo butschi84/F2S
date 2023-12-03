@@ -4,6 +4,7 @@ import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"fmt"
+	"time"
 )
 
 var logging logger.F2SLogger
@@ -18,9 +19,8 @@ func Initialize(hub *hub.F2SHub) {
 	f2shub = hub
 
 	// check if kafka integration is enabled in config
-	if !hub.F2SConfiguration.Config.F2S.Kafka.Enabled {
-		logging.Info("kafka integration is disabled via config")
-		return
+	for !hub.F2SConfiguration.Config.F2S.Kafka.Enabled {
+		time.Sleep(10 * time.Second)
 	}
 
 	// get all configured kafka listeners
