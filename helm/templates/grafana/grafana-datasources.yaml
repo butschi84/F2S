@@ -13,4 +13,10 @@ data:
         access: proxy
         url: http://prometheus-service.f2s:9090
         isDefault: true
+      {{- if .Values.promtail.enabled }}
+      - name: Loki
+        type: loki
+        access: proxy
+        url: {{.Values.promtail.loki_url}}
+      {{- end }}
 {{- end }}

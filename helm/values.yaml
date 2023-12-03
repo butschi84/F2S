@@ -6,7 +6,7 @@ testfunctions:
 # you need your own loki instance
 promtail:
   enabled: false
-  loki_url: http://loki-loki-distributed-gateway.loki:80/loki/api/v1/push
+  loki_url: http://loki-loki-distributed-gateway.loki:80
 
 # deploy grafana to have insight into metrics
 # - f2s scaling decision dashboard
