@@ -80,8 +80,8 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	logging.Debug(fmt.Sprintf("[%s] search function target for endpoint: %s", req.UID, req.Path))
 	functionTarget, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByEndpoint(req.Path)
 	if err != nil {
-		logging.Error(fmt.Errorf("[%s] cannot serve request. function target not found for endpoint %s", req.UID, req.Path))
-		logging.Error(err)
+		logging.Error(fmt.Sprintf("[%s] cannot serve request. function target not found for endpoint %s", req.UID, req.Path))
+		logging.Error(fmt.Sprintf("%s", err))
 	}
 	logging.Debug(fmt.Sprintf("[%s] function target is: %s", req.UID, functionTarget.Function.Name))
 
@@ -110,7 +110,7 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	if len(functionTarget.ServingPods) == 0 {
 		err := waitForTargetPod(functionTarget)
 		if err != nil {
-			logging.Error(fmt.Errorf("[%s] aborting function '%s'. scale from 0 failed: %s", req.UID, functionTarget.Function.Name, err.Error()))
+			logging.Error(fmt.Sprintf("[%s] aborting function '%s'. scale from 0 failed: %s", req.UID, functionTarget.Function.Name, err.Error()))
 			// send result to channel
 			requestResult.Details = fmt.Sprintf("[%s] aborting function '%s'. scale from 0 failed: %s", req.UID, functionTarget.Function.Name, err.Error())
 			requestResult.Success = false
@@ -122,7 +122,7 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	// get the pod that will actually serve the request
 	pod, err := functionTarget.ServeRequest(req)
 	if err != nil {
-		logging.Error(fmt.Errorf("[%s] cannot serve request because cannot determine which pod should serve the request: %s", req.UID, err.Error()))
+		logging.Error(fmt.Sprintf("[%s] cannot serve request because cannot determine which pod should serve the request: %s", req.UID, err.Error()))
 		requestResult.Details = fmt.Sprintf("[%s] aborting function '%s' invocation because target cannot serve request: %s", req.UID, functionTarget.Function.Name, err.Error())
 		requestResult.Success = false
 		*result <- requestResult
@@ -166,7 +166,7 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 	}
 
 	if requestErr != nil {
-		logging.Error(err)
+		logging.Error(fmt.Sprintf("%s", err))
 		// send result to channel
 		requestResult.Details = fmt.Sprintf("[%s] error on function http invocation: %s", req.UID, requestErr.Error())
 		requestResult.Success = false

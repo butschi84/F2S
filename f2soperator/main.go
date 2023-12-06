@@ -14,12 +14,13 @@ import (
 	"butschi84/f2s/state/operatorstate"
 	"butschi84/f2s/state/queue"
 	"fmt"
+	"log/slog"
 	"sync"
 )
 
 var (
 	F2SConfiguration configuration.F2SConfiguration
-	logging          logger.F2SLogger
+	logging          *slog.Logger
 	F2SHub           hub.F2SHub
 )
 

@@ -4,10 +4,11 @@ import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"fmt"
+	"log/slog"
 	"time"
 )
 
-var logging logger.F2SLogger
+var logging *slog.Logger
 var f2shub *hub.F2SHub
 
 func init() {

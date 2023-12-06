@@ -36,7 +36,7 @@ func checkMinimumAvailability(function *v1alpha1types.PrettyFunction) {
 	logging.Info("[checkMinimumAvailability] checking minimum availability")
 	target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
 	if err != nil {
-		logging.Error(fmt.Errorf("[checkMinimumAvailability] could not get target for function %s. %s", function.Name, err.Error()))
+		logging.Error(fmt.Sprintf("[checkMinimumAvailability] could not get target for function %s. %s", function.Name, err.Error()))
 		return
 	}
 	if len(target.ServingPods) == 0 {
@@ -92,8 +92,8 @@ func OnF2SEndpointsChanged(obj interface{}) {
 	err := runtime.DefaultUnstructuredConverter.
 		FromUnstructured(obj.(*unstructured.Unstructured).UnstructuredContent(), d)
 	if err != nil {
-		logging.Error(fmt.Errorf("could not convert event to endpoint"))
-		logging.Error(err)
+		logging.Error(fmt.Sprintf("could not convert event to endpoint"))
+		logging.Error(fmt.Sprintf("%s", err))
 		return
 	}
 

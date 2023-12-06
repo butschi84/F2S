@@ -18,7 +18,7 @@ func getPrometheusMetric(w http.ResponseWriter, r *http.Request) {
 
 	result, err := prometheus.ReadPrometheusMetric(f2shub.F2SConfiguration, query)
 	if err != nil {
-		logging.Error(fmt.Errorf("could not read prometheus metric: %s", err))
+		logging.Error(fmt.Sprintf("could not read prometheus metric: %s", err))
 		json.NewEncoder(w).Encode(Status{Status: fmt.Sprintf("could not read prometheus metric %s", err)})
 		return
 	}

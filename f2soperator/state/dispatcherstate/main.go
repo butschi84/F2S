@@ -2,9 +2,10 @@ package dispatcherstate
 
 import (
 	"butschi84/f2s/services/logger"
+	"log/slog"
 )
 
-var logging logger.F2SLogger
+var logging *slog.Logger
 
 var functionTargets F2SDispatcherHub
 

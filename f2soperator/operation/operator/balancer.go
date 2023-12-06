@@ -103,7 +103,7 @@ func getLastScalingTimestamp(deploymentName string) (time.Time, bool) {
 	// get annotations of k8s deployment
 	annotations, err := kubernetesservice.GetDeploymentAnnotations(deploymentName)
 	if err != nil {
-		logging.Error(fmt.Errorf("could not get annotations of kubernetes deployment: %s", deploymentName))
+		logging.Error(fmt.Sprintf("could not get annotations of kubernetes deployment: %s", deploymentName))
 		return time.Time{}, false
 	}
 
@@ -114,7 +114,7 @@ func getLastScalingTimestamp(deploymentName string) (time.Time, bool) {
 		// convert to time.time
 		tm, err := convertMillisToTime(timestamp)
 		if err != nil {
-			logging.Error(fmt.Errorf("could not convert timestamp %s to time.time", timestamp))
+			logging.Error(fmt.Sprintf("could not convert timestamp %s to time.time", timestamp))
 			return time.Time{}, false
 		}
 		return tm, true
@@ -130,9 +130,9 @@ func scaleDeployments() {
 	for _, function := range functions.Items {
 		var resultScale int
 		currentAvailableReplicas, err := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("kube_deployment_status_replicas_available{functionname=\"%s\"}", function.Name))
-		logging.Error(err)
+		logging.Error(fmt.Sprintf("%s", err))
 		requiredContainers, err := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("job:function_containers_required:containers{functionname=\"%s\"}", function.Name))
-		logging.Error(err)
+		logging.Error(fmt.Sprintf("%s", err))
 		if err != nil {
 			// no invocations / metrics => scale to minimum
 			resultScale = 0
@@ -145,8 +145,8 @@ func scaleDeployments() {
 		// get current inflight requests of function
 		target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
 		if err != nil {
-			logging.Error(err)
-			logging.Error(fmt.Errorf("[scaling] could not get function target for function-name: %s. skipping scaling of this function...", function.Name))
+			logging.Error(fmt.Sprintf("%s", err))
+			logging.Error(fmt.Sprintf("[scaling] could not get function target for function-name: %s. skipping scaling of this function...", function.Name))
 			continue
 		}
 		numInflightRequests := target.GetTotalInflightRequests()

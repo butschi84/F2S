@@ -4,10 +4,11 @@ import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"fmt"
+	"log/slog"
 	"time"
 )
 
-var logging logger.F2SLogger
+var logging *slog.Logger
 var f2shub *hub.F2SHub
 
 func Initialize(h *hub.F2SHub) {
@@ -44,7 +45,7 @@ func GetCurrentDispatcherData() string {
 
 		// get function target
 		target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
-		logging.Error(err)
+		logging.Error(fmt.Sprintf("%s", err))
 
 		output += fmt.Sprintf("Endpoints: %d", len(target.ServingPods))
 		for _, endpoint := range target.ServingPods {

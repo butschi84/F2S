@@ -73,7 +73,7 @@ func createFunction(w http.ResponseWriter, r *http.Request) {
 
 	// Unmarshal the JSON data into the function struct
 	if err := json.Unmarshal(body, &function); err != nil {
-		logging.Error(err)
+		logging.Error(fmt.Sprintf("%s", err))
 		http.Error(w, "Failed to parse JSON data", http.StatusBadRequest)
 		return
 	}

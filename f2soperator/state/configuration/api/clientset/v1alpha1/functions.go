@@ -36,7 +36,7 @@ func (c *functionClient) List(opts metav1.ListOptions) (*v1alpha1.FunctionList, 
 		//VersionedParams(&opts, scheme.ParameterCodec).
 		Do(ctx).
 		Into(&result)
-	logging.Error(err)
+	logging.Error(fmt.Sprintf("%s", err))
 	return &result, err
 }
 
@@ -51,7 +51,7 @@ func (c *functionClient) Get(name string, opts metav1.GetOptions) (*v1alpha1.Fun
 		VersionedParams(&opts, scheme.ParameterCodec)
 
 	err := req.Do(ctx).Into(&result)
-	logging.Error(err)
+	logging.Error(fmt.Sprintf("%s", err))
 	return &result, err
 }
 
@@ -65,7 +65,7 @@ func (c *functionClient) Create(project *v1alpha1.Function) (*v1alpha1.Function,
 		Body(project)
 
 	err := req.Do(ctx).Into(&result)
-	logging.Error(err)
+	logging.Error(fmt.Sprintf("%s", err))
 	return &result, err
 }
 
@@ -99,11 +99,11 @@ func (c *functionClient) Delete(uid string, opts metav1.DeleteOptions) error {
 				Name(f.Name).
 				Do(ctx).
 				Error()
-			logging.Error(err)
+			logging.Error(fmt.Sprintf("%s", err))
 			return err
 		}
 	}
 
-	logging.Error(fmt.Errorf("function could not be found"))
+	logging.Error(fmt.Sprint("function could not be found"))
 	return fmt.Errorf("function could not be found")
 }

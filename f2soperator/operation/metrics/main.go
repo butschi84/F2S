@@ -3,6 +3,7 @@ package metrics
 import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
+	"log/slog"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -10,7 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var logging logger.F2SLogger
+var logging *slog.Logger
 
 // pointer to F2SConfiguration
 var f2shub hub.F2SHub

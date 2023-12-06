@@ -3,9 +3,10 @@ package queue
 import (
 	"butschi84/f2s/services/logger"
 	"fmt"
+	"log/slog"
 )
 
-var logging logger.F2SLogger
+var logging *slog.Logger
 
 func init() {
 	// initialize logging

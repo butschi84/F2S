@@ -5,13 +5,14 @@ import (
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/state/configuration"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"regexp"
 
 	"github.com/gorilla/mux"
 )
 
-var logging logger.F2SLogger
+var logging *slog.Logger
 
 var f2shub *hub.F2SHub
 
