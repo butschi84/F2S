@@ -3,7 +3,8 @@ package queue
 import (
 	"butschi84/f2s/services/logger"
 	"fmt"
-	"log/slog"
+
+	"golang.org/x/exp/slog"
 )
 
 var logging *slog.Logger

@@ -5,8 +5,9 @@ import (
 	"butschi84/f2s/services/logger"
 	"fmt"
 	"log"
-	"log/slog"
 	"os"
+
+	"golang.org/x/exp/slog"
 
 	"gopkg.in/yaml.v2"
 )

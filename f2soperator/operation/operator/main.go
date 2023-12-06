@@ -7,11 +7,12 @@ import (
 	"butschi84/f2s/state/configuration"
 	"butschi84/f2s/state/operatorstate"
 	"fmt"
-	"log/slog"
 	"os"
 	"sort"
 	"strconv"
 	"time"
+
+	"golang.org/x/exp/slog"
 
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 )

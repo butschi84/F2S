@@ -3,8 +3,9 @@ package metrics
 import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
-	"log/slog"
 	"net/http"
+
+	"golang.org/x/exp/slog"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"

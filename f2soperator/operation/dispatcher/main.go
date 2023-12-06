@@ -4,8 +4,9 @@ import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/services/logger"
 	"fmt"
-	"log/slog"
 	"time"
+
+	"golang.org/x/exp/slog"
 )
 
 var logging *slog.Logger

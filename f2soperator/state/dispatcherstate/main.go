@@ -2,7 +2,8 @@ package dispatcherstate
 
 import (
 	"butschi84/f2s/services/logger"
-	"log/slog"
+
+	"golang.org/x/exp/slog"
 )
 
 var logging *slog.Logger

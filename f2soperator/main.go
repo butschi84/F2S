@@ -14,7 +14,9 @@ import (
 	"butschi84/f2s/state/operatorstate"
 	"butschi84/f2s/state/queue"
 	"fmt"
-	"log/slog"
+
+	"golang.org/x/exp/slog"
+
 	"sync"
 )
 

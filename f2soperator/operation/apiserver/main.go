@@ -5,9 +5,10 @@ import (
 	"butschi84/f2s/services/logger"
 	"butschi84/f2s/state/configuration"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"regexp"
+
+	"golang.org/x/exp/slog"
 
 	"github.com/gorilla/mux"
 )
