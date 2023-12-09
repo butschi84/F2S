@@ -75,11 +75,13 @@ data:
               type: 
               timestamp: 
               source: file
+              level: 
         - labels:
             timestamp:
             component:
             source:
             type: 
+            level: 
       relabel_configs:
         - source_labels:
             - __meta_kubernetes_pod_node_name

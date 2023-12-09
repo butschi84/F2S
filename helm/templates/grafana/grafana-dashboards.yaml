@@ -27,12 +27,89 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 2,
+      "id": 1,
       "links": [],
       "liveNow": false,
       "panels": [
         {
           "datasource": "Loki",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "color-background"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "dark-purple",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 104
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 233
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "component"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 119
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "msg"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "super-light-purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
           "gridPos": {
             "h": 32,
             "w": 24,
@@ -41,26 +118,62 @@ data:
           },
           "id": 1,
           "options": {
-            "dedupStrategy": "none",
-            "enableLogDetails": true,
-            "prettifyLogMessage": false,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
           },
+          "pluginVersion": "10.2.2",
           "targets": [
             {
               "datasource": "Loki",
               "editorMode": "builder",
-              "expr": "{namespace=\"f2s\", pod=~\"$operator\"} |= ``",
+              "expr": "{namespace=\"f2s\", pod=~\"$operator\", pod=~\"f2s.+\", component=~\"$component\", level=~\"$loglevel\"} |~ `$searchtext`",
               "queryType": "range",
               "refId": "A"
             }
           ],
-          "title": "Panel Title",
-          "type": "logs"
+          "title": "F2S Logs",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "format": "kvp",
+                "keepTime": true,
+                "replace": true,
+                "source": "Line"
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "pattern": "Time|level|component|msg"
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "Time": 0,
+                  "component": 2,
+                  "level": 1,
+                  "msg": 3
+                },
+                "renameByName": {}
+              }
+            }
+          ],
+          "type": "table"
         }
       ],
       "refresh": "",
@@ -79,7 +192,10 @@ data:
                 "$__all"
               ]
             },
-            "datasource": "Loki",
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
             "definition": "",
             "hide": 0,
             "includeAll": true,
@@ -97,18 +213,103 @@ data:
             "skipUrlSync": false,
             "sort": 0,
             "type": "query"
+          },
+          {
+            "allValue": ".+",
+            "current": {
+              "selected": true,
+              "text": [
+                "operator"
+              ],
+              "value": [
+                "operator"
+              ]
+            },
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "definition": "",
+            "hide": 0,
+            "includeAll": true,
+            "multi": true,
+            "name": "component",
+            "options": [],
+            "query": {
+              "label": "component",
+              "refId": "LokiVariableQueryEditor-VariableQuery",
+              "stream": "{pod=~\"f2s.+\"}",
+              "type": 1
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          },
+          {
+            "allValue": ".+",
+            "current": {
+              "selected": true,
+              "text": [
+                "All"
+              ],
+              "value": [
+                "$__all"
+              ]
+            },
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "definition": "",
+            "hide": 0,
+            "includeAll": true,
+            "multi": true,
+            "name": "loglevel",
+            "options": [],
+            "query": {
+              "label": "level",
+              "refId": "LokiVariableQueryEditor-VariableQuery",
+              "stream": "",
+              "type": 1
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          },
+          {
+            "current": {
+              "selected": false,
+              "text": ".*",
+              "value": ".*"
+            },
+            "hide": 0,
+            "name": "searchtext",
+            "options": [
+              {
+                "selected": true,
+                "text": ".*",
+                "value": ".*"
+              }
+            ],
+            "query": ".*",
+            "skipUrlSync": false,
+            "type": "textbox"
           }
         ]
       },
       "time": {
-        "from": "now-15m",
+        "from": "now-5m",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
       "title": "F2S Logs",
       "uid": "ef59a269-5c05-46c5-a607-536b880779ec",
-      "version": 5,
+      "version": 1,
       "weekStart": ""
     }
   {{- end }}
