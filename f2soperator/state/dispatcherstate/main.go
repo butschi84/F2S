@@ -2,11 +2,9 @@ package dispatcherstate
 
 import (
 	"butschi84/f2s/services/logger"
-
-	"golang.org/x/exp/slog"
 )
 
-var logging *slog.Logger
+var logging *logger.F2SLogger
 
 var functionTargets F2SDispatcherHub
 

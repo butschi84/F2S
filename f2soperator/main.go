@@ -15,14 +15,12 @@ import (
 	"butschi84/f2s/state/queue"
 	"fmt"
 
-	"golang.org/x/exp/slog"
-
 	"sync"
 )
 
 var (
 	F2SConfiguration configuration.F2SConfiguration
-	logging          *slog.Logger
+	logging          *logger.F2SLogger
 	F2SHub           hub.F2SHub
 )
 

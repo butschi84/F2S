@@ -12,12 +12,10 @@ import (
 	"strconv"
 	"time"
 
-	"golang.org/x/exp/slog"
-
 	kubernetesservice "butschi84/f2s/services/kubernetes"
 )
 
-var logging *slog.Logger
+var logging *logger.F2SLogger
 var f2shub *hub.F2SHub
 
 func init() {

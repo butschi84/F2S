@@ -5,14 +5,12 @@ import (
 	"butschi84/f2s/services/logger"
 	"net/http"
 
-	"golang.org/x/exp/slog"
-
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var logging *slog.Logger
+var logging *logger.F2SLogger
 
 // pointer to F2SConfiguration
 var f2shub hub.F2SHub

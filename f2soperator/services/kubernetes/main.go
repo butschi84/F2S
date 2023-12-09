@@ -2,11 +2,9 @@ package kubernetesservice
 
 import (
 	"butschi84/f2s/services/logger"
-
-	"golang.org/x/exp/slog"
 )
 
-var logging *slog.Logger
+var logging *logger.F2SLogger
 
 func init() {
 	// initialize logging

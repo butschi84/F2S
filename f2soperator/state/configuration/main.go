@@ -7,12 +7,10 @@ import (
 	"log"
 	"os"
 
-	"golang.org/x/exp/slog"
-
 	"gopkg.in/yaml.v2"
 )
 
-var logging *slog.Logger
+var logging *logger.F2SLogger
 
 var ActiveConfiguration F2SConfiguration
 

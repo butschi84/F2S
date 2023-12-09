@@ -174,8 +174,8 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 		// measure time elapsed
 		elapsed := time.Since(start).Milliseconds()
 		elapsedPerInflight := int(time.Since(start).Milliseconds()) / len(pod.InflightRequests)
-		logging.Info(fmt.Sprintf("[%s] Function execution time: %s\n", req.UID, fmt.Sprintf("%vms", elapsed)))
-		logging.Info(fmt.Sprintf("[%s] Function execution time per inflight request: %sms\n", req.UID, fmt.Sprintf("%v", elapsedPerInflight)))
+		logging.Info(fmt.Sprintf("[%s] Function execution time: %s", req.UID, fmt.Sprintf("%vms", elapsed)))
+		logging.Info(fmt.Sprintf("[%s] Function execution time per inflight request: %sms", req.UID, fmt.Sprintf("%v", elapsedPerInflight)))
 
 		// prepare output
 		requestResult.Success = true

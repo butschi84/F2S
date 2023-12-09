@@ -242,6 +242,8 @@ kafka:
               key: test-response
 ```
 
+Fitler values will have to be one of `equal`, `not equal`, `contains` or `not contains`
+
 ### Debugging
 Environment Variables take precedence over the configmap and are useful for local testing / debugging.
 

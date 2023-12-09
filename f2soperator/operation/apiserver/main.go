@@ -8,12 +8,10 @@ import (
 	"net/http"
 	"regexp"
 
-	"golang.org/x/exp/slog"
-
 	"github.com/gorilla/mux"
 )
 
-var logging *slog.Logger
+var logging *logger.F2SLogger
 
 var f2shub *hub.F2SHub
 
