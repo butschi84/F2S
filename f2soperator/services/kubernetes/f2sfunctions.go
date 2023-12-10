@@ -16,7 +16,7 @@ func GetF2SFunctions() (*typesV1alpha1.FunctionList, error) {
 	logging.Info("initializing k8s clientset")
 	clientSet, err := GetV1Alpha1ClientSet()
 	if err != nil {
-		logging.Error(fmt.Sprintf("error during clientset initialisation: %s", err))
+		logging.Error(fmt.Errorf("[GetF2SFunctions] error during clientset initialisation: %s", err.Error()))
 		panic(err)
 	}
 
@@ -37,7 +37,7 @@ func CreateF2SFunction(prettyFunction *typesV1alpha1.PrettyFunction) (*typesV1al
 	logging.Info("initializing k8s clientset")
 	clientSet, err := GetV1Alpha1ClientSet()
 	if err != nil {
-		logging.Error(fmt.Sprintf("error during clientset initialisation: %s", err))
+		logging.Error(fmt.Errorf("[CreateF2SFunction] error during clientset initialisation: %s", err.Error()))
 		panic(err)
 	}
 
@@ -64,7 +64,7 @@ func CreateF2SFunction(prettyFunction *typesV1alpha1.PrettyFunction) (*typesV1al
 	logging.Info("creating function in k8s")
 	function, err := clientSet.Functions("f2s").Create(newFunction)
 	if err != nil {
-		logging.Error(fmt.Sprintf("error during function creation: %s", err))
+		logging.Error(fmt.Errorf("[CreateF2SFunction] error during function creation: %s", err.Error()))
 		log.Fatal(err)
 	}
 
@@ -79,7 +79,7 @@ func DeleteF2SFunction(uid string) error {
 	logging.Info("initializing k8s clientset")
 	clientSet, err := GetV1Alpha1ClientSet()
 	if err != nil {
-		logging.Error(fmt.Sprintf("error during clientset initialisation: %s", err))
+		logging.Error(fmt.Errorf("[DeleteF2SFunction] error during clientset initialisation: %s", err.Error()))
 		panic(err)
 	}
 
@@ -87,7 +87,7 @@ func DeleteF2SFunction(uid string) error {
 	err = clientSet.Functions("f2s").Delete(uid, metav1.DeleteOptions{})
 
 	if err != nil {
-		logging.Error(fmt.Sprintf("error during deletion: %s", err))
+		logging.Error(fmt.Errorf("[DeleteF2SFunction] error during deletion: %s", err.Error()))
 	}
 
 	return err

@@ -44,7 +44,7 @@ func GetCurrentDispatcherData() string {
 
 		// get function target
 		target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
-		logging.Error(fmt.Sprintf("%s", err))
+		logging.Error(fmt.Errorf("could not get current dispatcher data: %s", err.Error()))
 
 		output += fmt.Sprintf("Endpoints: %d", len(target.ServingPods))
 		for _, endpoint := range target.ServingPods {

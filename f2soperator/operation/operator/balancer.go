@@ -103,7 +103,7 @@ func getLastScalingTimestamp(deploymentName string) (time.Time, bool) {
 	// get annotations of k8s deployment
 	annotations, err := kubernetesservice.GetDeploymentAnnotations(deploymentName)
 	if err != nil {
-		logging.Error(fmt.Sprintf("could not get annotations of kubernetes deployment: %s", deploymentName))
+		logging.Error(fmt.Errorf("could not get annotations of kubernetes deployment '%s': %s", deploymentName, err.Error()))
 		return time.Time{}, false
 	}
 
@@ -114,7 +114,7 @@ func getLastScalingTimestamp(deploymentName string) (time.Time, bool) {
 		// convert to time.time
 		tm, err := convertMillisToTime(timestamp)
 		if err != nil {
-			logging.Error(fmt.Sprintf("could not convert timestamp %s to time.time", timestamp))
+			logging.Error(fmt.Errorf("could not convert timestamp %s to time.time: ", timestamp, err.Error()))
 			return time.Time{}, false
 		}
 		return tm, true
@@ -132,10 +132,10 @@ func scaleDeployments() {
 		currentAvailableReplicas, availableReplicasErr := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("kube_deployment_status_replicas_available{functionname=\"%s\"}", function.Name))
 		requiredContainers, requiredContainersErr := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("job:function_containers_required:containers{functionname=\"%s\"} or vector(0)", function.Name))
 		if availableReplicasErr != nil {
-			logging.Error("there was an error when trying to read metric [kube_deployment_status_replicas_available]. setting result-scale to 0")
+			logging.Error(fmt.Errorf("there was an error when trying to read metric [kube_deployment_status_replicas_available]. setting result-scale to 0: %s", availableReplicasErr.Error()))
 			resultScale = 0
 		} else if requiredContainersErr != nil {
-			logging.Error("there was an error when trying to read metric [job:function_containers_required:containers]. setting result-scale to 0")
+			logging.Error(fmt.Errorf("there was an error when trying to read metric [job:function_containers_required:containers]. setting result-scale to 0: %s", requiredContainersErr.Error()))
 			resultScale = 0
 		} else {
 			resultScale = int(math.Ceil(requiredContainers))
@@ -146,8 +146,8 @@ func scaleDeployments() {
 		// get current inflight requests of function
 		target, err := f2shub.F2SDispatcherHub.GetDispatcherFunctionByName(function.Name)
 		if err != nil {
-			logging.Error(fmt.Sprintf("%s", err))
-			logging.Error(fmt.Sprintf("[scaling] could not get function target for function-name: %s. skipping scaling of this function...", function.Name))
+			logging.Error(fmt.Errorf("could not GetDispatcherFunctionByName: %s", err.Error()))
+			logging.Error(fmt.Errorf("[scaling] could not get function target for function-name: %s. skipping scaling of this function...", function.Name))
 			continue
 		}
 		numInflightRequests := target.GetTotalInflightRequests()

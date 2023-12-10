@@ -73,8 +73,7 @@ func CheckMaster() (bool, error) {
 	logging.Debug("[check master] reading prometheus metric 'f2s_master_election_ready_pods'")
 	result, err := prometheus.ReadPrometheusMetric(&configuration.ActiveConfiguration, "f2s_master_election_ready_pods")
 	if err != nil {
-		logging.Error(fmt.Sprintf("%s", err))
-		logging.Error(fmt.Sprintf("[check master] prometheus seems not to be reachable. prometheus URL can also specified by 'export Prometheus_URL=localhost:9090'"))
+		logging.Error(fmt.Errorf("[check master] prometheus seems not to be reachable. prometheus URL can also specified by 'export Prometheus_URL=localhost:9090'"))
 	}
 
 	// get all f2s replica uid's

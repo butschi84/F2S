@@ -38,8 +38,8 @@ func GetV1Alpha1ClientSet() (*clientV1alpha1.V1Alpha1Client, error) {
 	// Retrieve the in-cluster configuration
 	config, err := getInClusterConfig()
 	if err != nil {
-		logging.Error(fmt.Sprintf("Failed to get in-cluster config: %s\n", err))
-		logging.Error(fmt.Sprintf("you can use env variable 'export KUBECONFIG=~/.kube/config' to specify a local config file"))
+		logging.Error(fmt.Errorf("[GetV1Alpha1ClientSet] Failed to get in-cluster config: %s\n", err.Error()))
+		logging.Error(fmt.Errorf("[GetV1Alpha1ClientSet] you can use env variable 'export KUBECONFIG=~/.kube/config' to specify a local config file"))
 		os.Exit(1)
 	}
 
@@ -57,8 +57,8 @@ func GetV1ClientSet() (*k8s.Clientset, error) {
 	// Retrieve the in-cluster configuration
 	config, err := getInClusterConfig()
 	if err != nil {
-		logging.Error(fmt.Sprintf("Failed to get in-cluster config: %s\n", err))
-		logging.Error(fmt.Sprintf("you can use env variable 'export KUBECONFIG=~/.kube/config' to specify a local config file"))
+		logging.Error(fmt.Errorf("[GetV1ClientSet] Failed to get in-cluster config: %s\n", err.Error()))
+		logging.Error(fmt.Errorf("[GetV1ClientSet] you can use env variable 'export KUBECONFIG=~/.kube/config' to specify a local config file"))
 		os.Exit(1)
 	}
 

@@ -60,7 +60,7 @@ func getUsers() ([]queue.F2SAuthUser, error) {
 				return []byte(jwtSecret), nil
 			})
 			if err != nil {
-				logging.Error(fmt.Sprintf("error decoding token '%s': %s", f2shub.F2SConfiguration.Config.F2S.Auth.Token.Tokens[i].Token, err.Error()))
+				logging.Error(fmt.Errorf("error decoding token '%s': %s", f2shub.F2SConfiguration.Config.F2S.Auth.Token.Tokens[i].Token, err.Error()))
 				continue
 			}
 

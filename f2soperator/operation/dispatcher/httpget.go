@@ -21,10 +21,10 @@ func httpGet(url string, result *queue.F2SRequestResult) error {
 	response, err := client.Get(url)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			logging.Error(fmt.Sprintf("[%s] http_timeout: %s", result.Request.UID, err))
+			logging.Error(fmt.Errorf("[%s] http_timeout: %s", result.Request.UID, err.Error()))
 			return fmt.Errorf("http_timeout: %s", err)
 		} else {
-			logging.Error(fmt.Sprintf("[%s] error during httpGet function Call: %s", result.Request.UID, err))
+			logging.Error(fmt.Errorf("[%s] error during httpGet function Call: %s", result.Request.UID, err.Error()))
 			return err
 		}
 
@@ -64,10 +64,10 @@ func httpPost(url, data string, result *queue.F2SRequestResult) error {
 	response, err := client.Post(url, contentType, body)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			logging.Error(fmt.Sprintf("http_timeout: %s", err))
+			logging.Error(fmt.Errorf("http_timeout: %s", err.Error()))
 			return fmt.Errorf("http_timeout: %s", err)
 		} else {
-			logging.Error(fmt.Sprintf("[%s] error during httpPost function Call: %s", result.Request.UID, err))
+			logging.Error(fmt.Errorf("[%s] error during httpPost function Call: %s", result.Request.UID, err.Error()))
 			return err
 		}
 	}
@@ -93,7 +93,7 @@ func httpPut(url, data string, result *queue.F2SRequestResult) error {
 	// Create a PUT request using http.NewRequest
 	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
-		logging.Error(fmt.Sprintf("[%s] error creating PUT request: %s", result.Request.UID, err))
+		logging.Error(fmt.Errorf("[%s] error creating PUT request: %s", result.Request.UID, err.Error()))
 		return err
 	}
 
@@ -109,10 +109,10 @@ func httpPut(url, data string, result *queue.F2SRequestResult) error {
 	response, err := client.Do(req)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			logging.Error(fmt.Sprintf("[%s] http_timeout: %s", result.Request.UID, err))
-			return fmt.Errorf("http_timeout: %s", err)
+			logging.Error(fmt.Errorf("[%s] http_timeout: %s", result.Request.UID, err.Error()))
+			return fmt.Errorf("http_timeout: %s", err.Error())
 		} else {
-			logging.Error(fmt.Sprintf("[%s] error during httpPut function Call: %s", result.Request.UID, err))
+			logging.Error(fmt.Errorf("[%s] error during httpPut function Call: %s", result.Request.UID, err.Error()))
 			return err
 		}
 	}
@@ -135,7 +135,7 @@ func httpDelete(url string, result *queue.F2SRequestResult) error {
 	// Create a DELETE request using http.NewRequest
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		logging.Error(fmt.Sprintf("[%s] error creating DELETE request: %s", result.Request.UID, err))
+		logging.Error(fmt.Errorf("[%s] error creating DELETE request: %s", result.Request.UID, err.Error()))
 		return err
 	}
 
@@ -143,10 +143,10 @@ func httpDelete(url string, result *queue.F2SRequestResult) error {
 	response, err := client.Do(req)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			logging.Error(fmt.Sprintf("[%s] http_timeout: %s", result.Request.UID, err))
+			logging.Error(fmt.Errorf("[%s] http_timeout: %s", result.Request.UID, err.Error()))
 			return fmt.Errorf("http_timeout: %s", err)
 		} else {
-			logging.Error(fmt.Sprintf("[%s] error during httpDelete function Call: %s", result.Request.UID, err))
+			logging.Error(fmt.Errorf("[%s] error during httpDelete function Call: %s", result.Request.UID, err.Error()))
 			return err
 		}
 	}
@@ -165,7 +165,7 @@ func fetchResponse(response *http.Response, result *queue.F2SRequestResult) (err
 	// Read response body
 	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
-		logging.Error(fmt.Sprintf("[%s] [fetchResponse] error when reading httpPost function call result body: %s", result.Request.UID, err))
+		logging.Error(fmt.Errorf("[%s] [fetchResponse] error when reading httpPost function call result body: %s", result.Request.UID, err.Error()))
 		return err
 	}
 

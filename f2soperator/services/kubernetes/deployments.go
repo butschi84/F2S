@@ -143,7 +143,7 @@ func DeleteDeployment(uid string) error {
 			err = clientset.AppsV1().Deployments("f2s-containers").Delete(context.Background(), d.Name, metav1.DeleteOptions{})
 
 			if err != nil {
-				logging.Error(fmt.Sprintf("error during deletion: %s", err))
+				logging.Error(fmt.Errorf("[DeleteDeployment] error during deletion: %s", err))
 			}
 
 			return nil

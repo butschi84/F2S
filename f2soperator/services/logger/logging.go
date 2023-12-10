@@ -30,8 +30,8 @@ func (l F2SLogger) Debug(text ...string) {
 func (l F2SLogger) Warn(text ...string) {
 	l.Logger.Warn(strings.Join(text, " "), "type", "log")
 }
-func (l F2SLogger) Error(text ...string) {
-	l.Logger.Error(strings.Join(text, " "), "type", "log")
+func (l F2SLogger) Error(err error) {
+	l.Logger.Error(err.Error(), "type", "log")
 }
 
 // log an event

@@ -52,7 +52,7 @@ func runCRDInformer(stopCh <-chan struct{}, s cache.SharedIndexInformer, callbac
 func GetDynamicInformer(resource string, namespace string) (informers.GenericInformer, error) {
 	cfg, err := getInClusterConfig()
 	if err != nil {
-		logging.Error(fmt.Sprintf("Failed to get in-cluster config: %s\n", err.Error()))
+		logging.Error(fmt.Errorf("[GetDynamicInformer] Failed to get in-cluster config: %s\n", err.Error()))
 		os.Exit(1)
 	}
 

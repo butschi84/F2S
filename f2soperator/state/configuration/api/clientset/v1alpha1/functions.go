@@ -36,7 +36,9 @@ func (c *functionClient) List(opts metav1.ListOptions) (*v1alpha1.FunctionList, 
 		//VersionedParams(&opts, scheme.ParameterCodec).
 		Do(ctx).
 		Into(&result)
-	logging.Error(fmt.Sprintf("could not get function list for namespace %s: %s", c.ns, err.Error()))
+	if err != nil {
+		logging.Error(fmt.Errorf("[List] could not get function list for namespace %s: %s", c.ns, err.Error()))
+	}
 	return &result, err
 }
 
@@ -51,7 +53,7 @@ func (c *functionClient) Get(name string, opts metav1.GetOptions) (*v1alpha1.Fun
 		VersionedParams(&opts, scheme.ParameterCodec)
 
 	err := req.Do(ctx).Into(&result)
-	logging.Error(fmt.Sprintf("%s", err))
+	logging.Error(fmt.Errorf("[Get] could no get function definitions: %s", err.Error()))
 	return &result, err
 }
 
@@ -65,7 +67,7 @@ func (c *functionClient) Create(project *v1alpha1.Function) (*v1alpha1.Function,
 		Body(project)
 
 	err := req.Do(ctx).Into(&result)
-	logging.Error(fmt.Sprintf("%s", err))
+	logging.Error(fmt.Errorf("[Create] could not create function definition: %s", err.Error()))
 	return &result, err
 }
 
@@ -99,11 +101,11 @@ func (c *functionClient) Delete(uid string, opts metav1.DeleteOptions) error {
 				Name(f.Name).
 				Do(ctx).
 				Error()
-			logging.Error(fmt.Sprintf("%s", err))
+			logging.Error(fmt.Errorf("[Delete] could not delete function definition: %s", err.Error()))
 			return err
 		}
 	}
 
-	logging.Error(fmt.Sprint("function with uid %s could not be found", uid))
+	logging.Error(fmt.Errorf("[Delete] function with uid %s could not be found", uid))
 	return fmt.Errorf("function could not be found")
 }

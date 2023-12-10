@@ -79,7 +79,7 @@ func DeleteService(uid string) error {
 			err = clientset.CoreV1().Services("f2s-containers").Delete(context.Background(), d.Name, metav1.DeleteOptions{})
 
 			if err != nil {
-				logging.Error(fmt.Sprintf("error during deletion: %s", err))
+				logging.Error(fmt.Errorf("[DeleteService] error during deletion: %s", err.Error()))
 			}
 
 			return nil

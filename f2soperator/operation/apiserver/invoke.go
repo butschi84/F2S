@@ -73,7 +73,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 	// get user info
 	currentUser, getUserErr := getCurrentUser(r)
 	if getUserErr != nil {
-		logging.Error(fmt.Sprintf("[%s] failed to get user info for this request", request.UID))
+		logging.Error(fmt.Errorf("[%s] failed to get user info for this request", request.UID))
 	}
 	request.F2SUser = currentUser
 
@@ -82,7 +82,7 @@ func invokeFunction(w http.ResponseWriter, r *http.Request) {
 		logging.Debug(fmt.Sprintf("[%s] reading request body", request.UID))
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			logging.Error(fmt.Sprintf("[%s] Failed to read request body", request.UID))
+			logging.Error(fmt.Errorf("[%s] Failed to read request body", request.UID))
 			http.Error(w, "Failed to read request body", http.StatusInternalServerError)
 			return
 		}

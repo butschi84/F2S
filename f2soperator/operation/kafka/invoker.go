@@ -15,7 +15,7 @@ func invokeFunction(functionUid string, requestBody string) (result string, err 
 	// get this function from config
 	f2sfunction, errGetFunction := f2shub.F2SConfiguration.GetFunctionByUID(functionUid)
 	if errGetFunction != nil {
-		logging.Error(fmt.Sprintf("error getting function %s from running config. abort function invocation", functionUid))
+		logging.Error(fmt.Errorf("error getting function %s from running config. abort function invocation", functionUid))
 		return
 	}
 
