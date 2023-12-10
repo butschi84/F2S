@@ -50,7 +50,7 @@ data:
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-purple",
+                    "color": "#e91e61",
                     "value": null
                   }
                 ]
@@ -102,7 +102,7 @@ data:
                   {
                     "id": "color",
                     "value": {
-                      "fixedColor": "super-light-purple",
+                      "fixedColor": "#e81e6142",
                       "mode": "fixed"
                     }
                   }
@@ -135,7 +135,7 @@ data:
             {
               "datasource": "Loki",
               "editorMode": "builder",
-              "expr": "{namespace=\"f2s\", pod=~\"$operator\", pod=~\"f2s.+\", component=~\"$component\", level=~\"$loglevel\"} |~ `$searchtext`",
+              "expr": "{namespace=\"f2s\", pod=~\"$operator\", pod=~\"f2s.+\", component=~\"$component\", level=~\"$loglevel\", type=~\"$type\"} |~ `$searchtext`",
               "queryType": "range",
               "refId": "A"
             }
@@ -184,7 +184,7 @@ data:
           {
             "allValue": ".+",
             "current": {
-              "selected": true,
+              "selected": false,
               "text": [
                 "All"
               ],
@@ -219,10 +219,10 @@ data:
             "current": {
               "selected": true,
               "text": [
-                "operator"
+                "configuration"
               ],
               "value": [
-                "operator"
+                "configuration"
               ]
             },
             "datasource": {
@@ -250,7 +250,7 @@ data:
           {
             "allValue": ".+",
             "current": {
-              "selected": true,
+              "selected": false,
               "text": [
                 "All"
               ],
@@ -281,6 +281,40 @@ data:
             "type": "query"
           },
           {
+            "allValue": ".+",
+            "current": {
+              "selected": true,
+              "text": [
+                "event",
+                "log"
+              ],
+              "value": [
+                "event",
+                "log"
+              ]
+            },
+            "hide": 0,
+            "includeAll": false,
+            "multi": true,
+            "name": "type",
+            "options": [
+              {
+                "selected": true,
+                "text": "log",
+                "value": "log"
+              },
+              {
+                "selected": true,
+                "text": "event",
+                "value": "event"
+              }
+            ],
+            "query": "log,event",
+            "queryValue": "",
+            "skipUrlSync": false,
+            "type": "custom"
+          },
+          {
             "current": {
               "selected": false,
               "text": ".*",
@@ -302,7 +336,7 @@ data:
         ]
       },
       "time": {
-        "from": "now-5m",
+        "from": "now-6h",
         "to": "now"
       },
       "timepicker": {},

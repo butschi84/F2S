@@ -131,7 +131,7 @@ func ReadCurrentPrometheusMetricValue(config *configuration.F2SConfiguration, qu
 
 	// Check if any metric result exists
 	if len(promResponse.Data.Result) == 0 {
-		return 0.0, fmt.Errorf("metric not found")
+		return 0.0, fmt.Errorf("metric not found. query string: %s", queryString)
 	}
 
 	// Extract the metric value

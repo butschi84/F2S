@@ -59,7 +59,7 @@ data:
 
         # calculated number of containers needed to perform the incoming requests
         - record: job:function_containers_required:containers
-          expr: ceil(sum(f2sscaling_function_incoming_request_rate) by (functionname) / sum(job:function_capacity_average:reqpersec) by (functionname))
+          expr: ceil(sum(f2sscaling_function_incoming_request_rate) by (functionname) / sum(job:function_capacity_average:reqpersec) by (functionname)) or vector(0)
   prometheus.yml: |-
     global:
       scrape_interval: 5s
