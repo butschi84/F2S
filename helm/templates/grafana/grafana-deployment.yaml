@@ -33,7 +33,14 @@ spec:
             - name: grafana-provisioning-dashboards
               mountPath: /var/lib/grafana/provisioning/dashboards
               readOnly: true
+            - name: grafana-config
+              mountPath: /etc/grafana/custom.ini
+              subPath: f2s-grafana-config.ini
+              readOnly: true
       volumes:
+        - name: grafana-config
+          configMap:
+            name: grafana-config
         - name: grafana-storage
           emptyDir: {}
         - name: grafana-provisioning-datasources

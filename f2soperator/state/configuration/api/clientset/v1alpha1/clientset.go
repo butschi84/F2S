@@ -27,7 +27,7 @@ func NewForConfig(c *rest.Config, scheme *runtime.Scheme) (*V1Alpha1Client, erro
 	config.NegotiatedSerializer = serializer.NewCodecFactory(scheme)
 	config.UserAgent = rest.DefaultKubernetesUserAgent()
 
-	logging.Info("Rest Client Group Version:", fmt.Sprintf("%s", config.GroupVersion))
+	logging.Debug("Rest Client Group Version:", fmt.Sprintf("%s", config.GroupVersion))
 
 	client, err := rest.RESTClientFor(&config)
 	if err != nil {

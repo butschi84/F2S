@@ -27,7 +27,7 @@ type functionClient struct {
 
 func (c *functionClient) List(opts metav1.ListOptions) (*v1alpha1.FunctionList, error) {
 	result := v1alpha1.FunctionList{}
-	logging.Info("get function list for namespace", c.ns)
+	logging.Info(fmt.Sprintf("get function list for namespace %s", c.ns))
 	ctx := context.TODO()
 	err := c.restClient.
 		Get().
@@ -36,7 +36,7 @@ func (c *functionClient) List(opts metav1.ListOptions) (*v1alpha1.FunctionList, 
 		//VersionedParams(&opts, scheme.ParameterCodec).
 		Do(ctx).
 		Into(&result)
-	logging.Error(fmt.Sprintf("%s", err))
+	logging.Error(fmt.Sprintf("could not get function list for namespace %s: %s", c.ns, err.Error()))
 	return &result, err
 }
 
@@ -104,6 +104,6 @@ func (c *functionClient) Delete(uid string, opts metav1.DeleteOptions) error {
 		}
 	}
 
-	logging.Error(fmt.Sprint("function could not be found"))
+	logging.Error(fmt.Sprint("function with uid %s could not be found", uid))
 	return fmt.Errorf("function could not be found")
 }

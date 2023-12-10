@@ -130,10 +130,12 @@ func scaleDeployments() {
 	for _, function := range functions.Items {
 		var resultScale int
 		currentAvailableReplicas, availableReplicasErr := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("kube_deployment_status_replicas_available{functionname=\"%s\"}", function.Name))
-		requiredContainers, requiredContainersErr := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("job:function_containers_required:containers{functionname=\"%s\"}", function.Name))
-		if availableReplicasErr != nil || requiredContainersErr != nil {
-			// no invocations / metrics => scale to minimum
-			logging.Error("there was an error when trying to read metric [kube_deployment_status_replicas_available] or [job:function_containers_required:containers]. setting result scale to 0")
+		requiredContainers, requiredContainersErr := prometheus.ReadCurrentPrometheusMetricValue(&configuration.ActiveConfiguration, fmt.Sprintf("job:function_containers_required:containers{functionname=\"%s\"} or vector(0)", function.Name))
+		if availableReplicasErr != nil {
+			logging.Error("there was an error when trying to read metric [kube_deployment_status_replicas_available]. setting result-scale to 0")
+			resultScale = 0
+		} else if requiredContainersErr != nil {
+			logging.Error("there was an error when trying to read metric [job:function_containers_required:containers]. setting result-scale to 0")
 			resultScale = 0
 		} else {
 			resultScale = int(math.Ceil(requiredContainers))
