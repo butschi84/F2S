@@ -16,7 +16,7 @@ data:
 
         # number of available function containers
         - record: f2sscaling_function_deployment_available_replicas
-          expr: sum(kube_deployment_status_replicas_available) by (functionname)
+          expr: sum(kube_deployment_status_replicas_available{namespace="f2s-containers"}) by (functionname)
 
         # how many req/s can one function container perform
         - record: f2sscaling_function_completion_performance_per_container_request_rate
