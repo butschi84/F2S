@@ -82,7 +82,8 @@ code {
   color: #7E7F89;
   font-family: "avenir";
   font-weight: 400;
-  height: 100vh;
+  min-height: 100vh;
+  padding-bottom: 40px
 }
 
 .title {
