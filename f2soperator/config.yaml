@@ -30,7 +30,7 @@ f2s:
           - settings:view
           - settings:update
   kafka:
-    enabled: true
+    enabled: false
     brokers:
       - 192.168.2.41:30051
       - 192.168.2.42:30052
