@@ -18,6 +18,7 @@ type FunctionInterface interface {
 	Create(*v1alpha1.Function) (*v1alpha1.Function, error)
 	Watch(opts metav1.ListOptions) (watch.Interface, error)
 	Delete(uid string, opts metav1.DeleteOptions) error
+	Update(*v1alpha1.Function) (*v1alpha1.Function, error)
 }
 
 type functionClient struct {
@@ -68,6 +69,21 @@ func (c *functionClient) Create(project *v1alpha1.Function) (*v1alpha1.Function,
 
 	err := req.Do(ctx).Into(&result)
 	logging.Error(fmt.Errorf("[Create] could not create function definition: %s", err.Error()))
+	return &result, err
+}
+
+func (c *functionClient) Update(function *v1alpha1.Function) (*v1alpha1.Function, error) {
+	logging.Info(fmt.Sprintf("applying patch to kubernetes function '%s'", function.Name))
+	result := v1alpha1.Function{}
+	ctx := context.TODO()
+	req := c.restClient.
+		Patch(types.ApplyPatchType).
+		Namespace(c.ns).
+		Resource("functions").
+		Body(function)
+
+	err := req.Do(ctx).Into(&result)
+	logging.Error(fmt.Errorf("[Patch] could not patch function definition: %s", err.Error()))
 	return &result, err
 }
 

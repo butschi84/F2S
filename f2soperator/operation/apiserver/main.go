@@ -69,7 +69,7 @@ func HandleRequests(hub *hub.F2SHub) {
 	frontendHandler := http.FileServer(http.Dir("./static/frontend"))
 	router.PathPrefix("/").Handler(frontendHandler)
 
-	logging.Info("listening on http://0.0.0.0:8080")
+	logging.Info("listening on http://0.0.0.0:8080/docs/")
 	http.ListenAndServe("0.0.0.0:8080", router)
 }
 

@@ -27,7 +27,7 @@ func RunOperator(hub *hub.F2SHub) {
 	f2shub = hub
 
 	// initialize default (no master)
-	f2shub.F2SOperatorState.IsMaster = false
+	f2shub.F2SOperatorState.IsMaster = true
 
 	// subscribe to configuration changes
 	logging.Info("subscribing to events")

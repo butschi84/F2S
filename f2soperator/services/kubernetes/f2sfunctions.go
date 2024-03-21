@@ -92,3 +92,33 @@ func DeleteF2SFunction(uid string) error {
 
 	return err
 }
+
+func AnnotateFunction(functionName string, annotations map[string]string) error {
+	// get clientset
+	clientSet, err := GetV1Alpha1ClientSet()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get the deployment
+	function, err := clientSet.Functions("f2s").Get(functionName, metav1.GetOptions{})
+	if err != nil {
+		return err
+	}
+
+	// Add or update annotations
+	if function.ObjectMeta.Annotations == nil {
+		function.ObjectMeta.Annotations = make(map[string]string)
+	}
+	for key, value := range annotations {
+		function.ObjectMeta.Annotations[key] = value
+	}
+
+	// Update the function with new annotations
+	_, err = clientSet.Functions("f2s").Update(function)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

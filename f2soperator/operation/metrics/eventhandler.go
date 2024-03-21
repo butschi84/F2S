@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	kubernetesservice "butschi84/f2s/services/kubernetes"
 	v1alpha1types "butschi84/f2s/state/configuration/api/types/v1alpha1"
 	"butschi84/f2s/state/eventmanager"
 	"butschi84/f2s/state/queue"
@@ -20,7 +21,11 @@ func handleEvent(event eventmanager.Event) {
 	case eventmanager.Event_FunctionScaled:
 		function := event.Data.(v1alpha1types.PrettyFunction)
 		logging.Info(fmt.Sprintf("function %s has just been scaled", function.Name))
-		metricLastFunctionScaling.WithLabelValues(function.Spec.Endpoint, string(function.UID), function.Name).Set(float64(time.Now().Unix()))
+		now := float64(time.Now().Unix())
+		metricLastFunctionScaling.WithLabelValues(function.Spec.Endpoint, string(function.UID), function.Name).Set(now)
+		kubernetesservice.AnnotateFunction(function.Name, map[string]string{
+			"f2s/lastScalingTime": fmt.Sprintf("%v", now),
+		})
 
 	case eventmanager.Event_InflightRequestsChanged:
 		request := event.Data.(queue.F2SRequest)

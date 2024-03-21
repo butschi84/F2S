@@ -10,6 +10,7 @@ import (
 
 type DispatcherFunctionTarget struct {
 	UID              string
+	Name             string
 	Address          corev1.EndpointAddress
 	InflightRequests []queue.F2SRequest
 }
@@ -46,6 +47,8 @@ type F2SDispatcherPrettyFunction struct {
 type F2SDispatcherPrettyFunctionPod struct {
 	IPAddress        string `json:"ip_address"`
 	InflightRequests int    `json:"inflight_requests"`
+	UID              string `json:"uid"`
+	Name             string `json:"name"`
 }
 
 func (f *F2SDispatcherFunction) Pretty() F2SDispatcherPrettyFunction {
@@ -65,6 +68,8 @@ func (fsp *DispatcherFunctionTarget) Pretty() F2SDispatcherPrettyFunctionPod {
 	return F2SDispatcherPrettyFunctionPod{
 		IPAddress:        fsp.Address.IP,
 		InflightRequests: len(fsp.InflightRequests),
+		UID:              fsp.UID,
+		Name:             fsp.Name,
 	}
 }
 func (hub *F2SDispatcherHub) Pretty() F2SDispatcherPrettyHub {

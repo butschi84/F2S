@@ -232,6 +232,9 @@ func scaleDeployments() {
 			kubernetesservice.AnnotateDeployment(function.Name, map[string]string{
 				"f2s/last-scaling": fmt.Sprintf("%v", timestampMillis),
 			})
+			kubernetesservice.AnnotateFunction(function.Name, map[string]string{
+				"f2s/last-scaling": fmt.Sprintf("%v", timestampMillis),
+			})
 
 			// send 'function scaled' event
 			f2shub.F2SEventManager.Publish(eventmanager.Event{

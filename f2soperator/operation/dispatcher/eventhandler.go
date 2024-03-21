@@ -43,7 +43,8 @@ func reloadEndpoints() {
 			for i, address := range endpoint.Subsets[0].Addresses {
 				logging.Info(fmt.Sprintf("add servingpod %s for function %s", string(address.IP), function.Name))
 				podUID := endpoint.Subsets[0].Addresses[i].TargetRef.UID
-				target.AddServingPod(address, string(podUID))
+				podName := endpoint.Subsets[0].Addresses[i].TargetRef.Name
+				target.AddServingPod(address, string(podUID), podName)
 			}
 
 			// remove surplus serving-pods
