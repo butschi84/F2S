@@ -98,6 +98,7 @@ func AnnotateFunction(functionName string, annotations map[string]string) error 
 	clientSet, err := GetV1Alpha1ClientSet()
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	// Get the deployment

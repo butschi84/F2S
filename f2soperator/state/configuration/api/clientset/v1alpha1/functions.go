@@ -54,7 +54,10 @@ func (c *functionClient) Get(name string, opts metav1.GetOptions) (*v1alpha1.Fun
 		VersionedParams(&opts, scheme.ParameterCodec)
 
 	err := req.Do(ctx).Into(&result)
-	logging.Error(fmt.Errorf("[Get] could no get function definitions: %s", err.Error()))
+	if err != nil {
+		logging.Error(fmt.Errorf("[Get] could no get function definitions: %s", err.Error()))
+		return nil, fmt.Errorf("[Get] could no get function definitions: %s", err.Error())
+	}
 	return &result, err
 }
 
@@ -68,7 +71,10 @@ func (c *functionClient) Create(project *v1alpha1.Function) (*v1alpha1.Function,
 		Body(project)
 
 	err := req.Do(ctx).Into(&result)
-	logging.Error(fmt.Errorf("[Create] could not create function definition: %s", err.Error()))
+	if err != nil {
+		logging.Error(fmt.Errorf("[Create] could not create function definition: %s", err.Error()))
+		return nil, fmt.Errorf("[Create] could not create function definition: %s", err.Error())
+	}
 	return &result, err
 }
 
@@ -83,7 +89,10 @@ func (c *functionClient) Update(function *v1alpha1.Function) (*v1alpha1.Function
 		Body(function)
 
 	err := req.Do(ctx).Into(&result)
-	logging.Error(fmt.Errorf("[Patch] could not patch function definition: %s", err.Error()))
+	if err != nil {
+		logging.Error(fmt.Errorf("[Patch] could not patch function definition: %s", err.Error()))
+		return nil, fmt.Errorf("[Patch] could not patch function definition: %s", err.Error())
+	}
 	return &result, err
 }
 
@@ -117,7 +126,9 @@ func (c *functionClient) Delete(uid string, opts metav1.DeleteOptions) error {
 				Name(f.Name).
 				Do(ctx).
 				Error()
-			logging.Error(fmt.Errorf("[Delete] could not delete function definition: %s", err.Error()))
+			if err != nil {
+				logging.Error(fmt.Errorf("[Delete] could not delete function definition: %s", err.Error()))
+			}
 			return err
 		}
 	}
