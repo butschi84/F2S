@@ -38,3 +38,8 @@ func (l F2SLogger) Error(err error) {
 func (l F2SLogger) Event(text ...string) {
 	l.Logger.Info(strings.Join(text, " "), "type", "event")
 }
+
+func (c *F2SLogger) Output(calldepth int, s string) error {
+	c.Logger.Info(s)
+	return nil
+}

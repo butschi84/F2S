@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: f2s-memberlist
+  namespace: f2s
+  labels:
+    app: f2s-operator
+spec:
+  selector:
+    app: f2s
+  clusterIP: None
+  ports:
+    - port: "{{ .Values.f2sconfig.f2s.memberlist.bind_port }}"
+      targetPort: "{{ .Values.f2sconfig.f2s.memberlist.bind_port }}"

@@ -22,11 +22,16 @@ type F2SConfigMapPrometheus struct {
 	URL string `yaml:"url"`
 }
 type F2SConfigMapF2S struct {
-	Timeouts F2SConfigMapF2STimeouts `yaml:"timeouts"`
-	Auth     F2SConfigMapAuth        `yaml:"auth"`
-	Kafka    F2SConfigMapKafka       `yaml:"kafka"`
+	Timeouts   F2SConfigMapF2STimeouts `yaml:"timeouts"`
+	Auth       F2SConfigMapAuth        `yaml:"auth"`
+	Kafka      F2SConfigMapKafka       `yaml:"kafka"`
+	Memberlist F2SConfigMapMemberlist  `yaml:"memberlist"`
 }
 
+type F2SConfigMapMemberlist struct {
+	BindPort int    `yaml:"bind_port"`
+	Cluster  string `yaml:"cluster"`
+}
 type F2SConfigMapF2STimeouts struct {
 	RequestTimeout int `yaml:"request_timeout"`
 	HttpTimeout    int `yaml:"http_timeout"`

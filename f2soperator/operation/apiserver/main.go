@@ -48,6 +48,7 @@ func HandleRequests(hub *hub.F2SHub) {
 	protectedRouter := router.PathPrefix("/").Subrouter()
 	protectedRouter.Use(authMiddleware)
 	protectedRouter.HandleFunc("/auth/signin", signin)
+	protectedRouter.HandleFunc("/cluster", getClusterState).Methods(http.MethodGet)
 	protectedRouter.HandleFunc("/functions", returnAllFunctions).Methods(http.MethodGet)
 	protectedRouter.HandleFunc("/functions", createFunction).Methods(http.MethodPost)
 	protectedRouter.HandleFunc("/functions/{id}", getFunction).Methods(http.MethodGet)
@@ -131,7 +132,7 @@ func authMiddleware(next http.Handler) http.Handler {
 				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
 			} else if mainRequestPath == "users" {
 				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
-			} else if mainRequestPath == "deployments" {
+			} else if mainRequestPath == "cluster" {
 				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)
 			} else if mainRequestPath == "prometheus" {
 				requiredPrivilege = string(configuration.F2SPrivilegeSettingsView)

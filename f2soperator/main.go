@@ -3,11 +3,13 @@ package main
 import (
 	"butschi84/f2s/hub"
 	"butschi84/f2s/operation/apiserver"
+	"butschi84/f2s/operation/cluster"
 	"butschi84/f2s/operation/dispatcher"
 	"butschi84/f2s/operation/kafka"
 	"butschi84/f2s/operation/metrics"
 	"butschi84/f2s/operation/operator"
 	"butschi84/f2s/services/logger"
+	clusterstate "butschi84/f2s/state/cluster"
 	"butschi84/f2s/state/configuration"
 	"butschi84/f2s/state/dispatcherstate"
 	"butschi84/f2s/state/eventmanager"
@@ -51,6 +53,7 @@ func main() {
 		F2SQueue:         queue.Initialize(),
 		F2SDispatcherHub: dispatcherstate.Initialize(),
 		F2SOperatorState: operatorstate.Initialize(),
+		F2SClusterState:  clusterstate.Initialize(),
 	}
 
 	var wg sync.WaitGroup
@@ -60,6 +63,8 @@ func main() {
 	wg.Add(numWorkers)
 
 	// start all components
+	logging.Info("=> initializng f2s cluster")
+	go handleComponent("cluster", cluster.Initialize, &wg)
 	logging.Info("=> initializng rest api server")
 	go handleComponent("api server", apiserver.HandleRequests, &wg)
 	go logging.Info("=> initializing operator")

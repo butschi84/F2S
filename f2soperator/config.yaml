@@ -4,6 +4,9 @@ prometheus:
   url: 192.168.2.40:32133
 
 f2s:
+  memberlist:
+    bind_port: 7079
+    cluster: memberlist.f2s
   timeouts:
     request_timeout: 120000
     http_timeout: 60000

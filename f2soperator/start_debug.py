@@ -25,7 +25,7 @@ else:
 print("Forward ports from Kubernetes services")
 subprocess.Popen(["kubectl", "port-forward", "-n", "f2s", "service/prometheus-service", "9090:9090"], stdout=subprocess.DEVNULL)
 subprocess.Popen(["kubectl", "port-forward", "-n", "f2s", "service/f2s-memberlist", "7079:7079"], stdout=subprocess.DEVNULL)
-subprocess.Popen(["kubectl", "port-forward", "-n", "f2s", "service/f2s-api", "8080:8080"], stdout=subprocess.DEVNULL)
+# subprocess.Popen(["kubectl", "port-forward", "-n", "f2s", "service/f2s-api", "8080:8080"], stdout=subprocess.DEVNULL)
 
 # Use forwarded services
 print("Set environment variables for f2s debugging")
