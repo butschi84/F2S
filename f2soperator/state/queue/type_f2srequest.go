@@ -22,11 +22,11 @@ type F2SRequest struct {
 }
 
 type F2SRequestResult struct {
-	UID         string                 `json:"uid"`
-	Success     bool                   `json:"success"`
-	Result      map[string]interface{} `json:"result"`
-	Details     string                 `json:"details"`
-	ContentType string                 `json:"contentType"`
+	UID         string `json:"uid"`
+	Success     bool   `json:"success"`
+	Result      []byte `json:"result"`
+	Details     string `json:"details"`
+	ContentType string `json:"contentType"`
 
 	Request F2SRequest `json:"-"`
 

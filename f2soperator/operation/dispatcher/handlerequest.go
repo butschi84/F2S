@@ -46,7 +46,7 @@ func handleRequestsWithTimeout(req *queue.F2SRequest) {
 		logging.Warn(fmt.Sprintf("request for function call '%s' timed out after %dms!", req.Path, timeout))
 		// send result to channel
 		result := queue.F2SRequestResult{
-			Result:  map[string]interface{}{},
+			Result:  make([]byte, 0),
 			Details: fmt.Sprintf("function %s: 'request_timeout' after %dms", req.Path, timeout),
 			Success: false,
 			UID:     req.UID,
@@ -97,7 +97,7 @@ func handleRequest(req *queue.F2SRequest, result *chan queue.F2SRequestResult) {
 
 	// prepare output
 	requestResult := queue.F2SRequestResult{
-		Result:   map[string]interface{}{},
+		Result:   make([]byte, 0),
 		Success:  false,
 		UID:      req.UID,
 		Duration: 0.0,

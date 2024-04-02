@@ -169,19 +169,17 @@ func fetchResponse(response *http.Response, result *queue.F2SRequestResult) (err
 		return err
 	}
 
-	result.Result = map[string]interface{}{"data": string(responseBody)}
-	result.ContentType = "text/plain"
+	// get the content type of the response
+	result.ContentType = response.Header.Get("Content-Type")
+	result.Result = responseBody
 
 	// Check if the response is application/json
-	if response.Header.Get("Content-Type") == "application/json" {
+	if result.ContentType == "application/json" {
 		logging.Debug("response is in json format")
-		var parsedResult map[string]interface{}
-		err := json.Unmarshal([]byte(responseBody), &parsedResult)
-		if err != nil {
-			logging.Warn(fmt.Sprintf("[%s] failed to parse request result to json for request: %s", result.Request.UID, &result.UID))
-		}
-		result.Result = parsedResult
-		result.ContentType = response.Header.Get("Content-Type")
+	} else if result.ContentType == "text/plain" {
+		logging.Debug("response is in text format")
+	} else {
+		logging.Warn("response is in an unknown format")
 	}
 	return nil
 }
